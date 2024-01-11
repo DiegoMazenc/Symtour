@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit RoleBand{% endblock %}
+
+{% block body %}
+    <h1>Edit RoleBand</h1>
+
+    {{ include('role_band/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_role_band_index') }}">back to list</a>
+
+    {{ include('role_band/_delete_form.html.twig') }}
+{% endblock %}

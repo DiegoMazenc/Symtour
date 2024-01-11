@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit HallMember{% endblock %}
+
+{% block body %}
+    <h1>Edit HallMember</h1>
+
+    {{ include('hall_member/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_hall_member_index') }}">back to list</a>
+
+    {{ include('hall_member/_delete_form.html.twig') }}
+{% endblock %}

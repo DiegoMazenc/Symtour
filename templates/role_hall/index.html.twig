@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}RoleHall index{% endblock %}
+
+{% block body %}
+    <h1>RoleHall index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Role_name</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for role_hall in role_halls %}
+            <tr>
+                <td>{{ role_hall.id }}</td>
+                <td>{{ role_hall.roleName }}</td>
+                <td>
+                    <a href="{{ path('app_role_hall_show', {'id': role_hall.id}) }}">show</a>
+                    <a href="{{ path('app_role_hall_edit', {'id': role_hall.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_role_hall_new') }}">Create new</a>
+{% endblock %}

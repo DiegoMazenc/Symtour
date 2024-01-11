@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}RoleHall{% endblock %}
+
+{% block body %}
+    <h1>RoleHall</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ role_hall.id }}</td>
+            </tr>
+            <tr>
+                <th>Role_name</th>
+                <td>{{ role_hall.roleName }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_role_hall_index') }}">back to list</a>
+
+    <a href="{{ path('app_role_hall_edit', {'id': role_hall.id}) }}">edit</a>
+
+    {{ include('role_hall/_delete_form.html.twig') }}
+{% endblock %}

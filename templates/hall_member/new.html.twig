@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New HallMember{% endblock %}
+
+{% block body %}
+    <h1>Create new HallMember</h1>
+
+    {{ include('hall_member/_form.html.twig') }}
+
+    <a href="{{ path('app_hall_member_index') }}">back to list</a>
+{% endblock %}

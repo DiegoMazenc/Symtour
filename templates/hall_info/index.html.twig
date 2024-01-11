@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}HallInfo index{% endblock %}
+
+{% block body %}
+    <h1>HallInfo index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Country</th>
+                <th>Region</th>
+                <th>Department</th>
+                <th>City</th>
+                <th>Zip_code</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Website</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for hall_info in hall_infos %}
+            <tr>
+                <td>{{ hall_info.id }}</td>
+                <td>{{ hall_info.country }}</td>
+                <td>{{ hall_info.region }}</td>
+                <td>{{ hall_info.department }}</td>
+                <td>{{ hall_info.city }}</td>
+                <td>{{ hall_info.zipCode }}</td>
+                <td>{{ hall_info.email }}</td>
+                <td>{{ hall_info.phone }}</td>
+                <td>{{ hall_info.website }}</td>
+                <td>
+                    <a href="{{ path('app_hall_info_show', {'id': hall_info.id}) }}">show</a>
+                    <a href="{{ path('app_hall_info_edit', {'id': hall_info.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_hall_info_new') }}">Create new</a>
+{% endblock %}

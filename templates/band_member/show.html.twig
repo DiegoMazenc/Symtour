@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BandMember{% endblock %}
+
+{% block body %}
+    <h1>BandMember</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ band_member.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_band_member_index') }}">back to list</a>
+
+    <a href="{{ path('app_band_member_edit', {'id': band_member.id}) }}">edit</a>
+
+    {{ include('band_member/_delete_form.html.twig') }}
+{% endblock %}

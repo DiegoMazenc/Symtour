@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}HallInfo{% endblock %}
+
+{% block body %}
+    <h1>HallInfo</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ hall_info.id }}</td>
+            </tr>
+            <tr>
+                <th>Country</th>
+                <td>{{ hall_info.country }}</td>
+            </tr>
+            <tr>
+                <th>Region</th>
+                <td>{{ hall_info.region }}</td>
+            </tr>
+            <tr>
+                <th>Department</th>
+                <td>{{ hall_info.department }}</td>
+            </tr>
+            <tr>
+                <th>City</th>
+                <td>{{ hall_info.city }}</td>
+            </tr>
+            <tr>
+                <th>Zip_code</th>
+                <td>{{ hall_info.zipCode }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ hall_info.email }}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{{ hall_info.phone }}</td>
+            </tr>
+            <tr>
+                <th>Website</th>
+                <td>{{ hall_info.website }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_hall_info_index') }}">back to list</a>
+
+    <a href="{{ path('app_hall_info_edit', {'id': hall_info.id}) }}">edit</a>
+
+    {{ include('hall_info/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit RoleHall{% endblock %}
+
+{% block body %}
+    <h1>Edit RoleHall</h1>
+
+    {{ include('role_hall/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_role_hall_index') }}">back to list</a>
+
+    {{ include('role_hall/_delete_form.html.twig') }}
+{% endblock %}

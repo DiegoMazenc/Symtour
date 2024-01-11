@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hall{% endblock %}
+
+{% block body %}
+    <h1>Hall</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ hall.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ hall.name }}</td>
+            </tr>
+            <tr>
+                <th>Logo</th>
+                <td>{{ hall.logo }}</td>
+            </tr>
+            <tr>
+                <th>Structure</th>
+                <td>{{ hall.structure }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_hall_index') }}">back to list</a>
+
+    <a href="{{ path('app_hall_edit', {'id': hall.id}) }}">edit</a>
+
+    {{ include('hall/_delete_form.html.twig') }}
+{% endblock %}

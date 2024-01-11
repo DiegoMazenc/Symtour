@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Hall{% endblock %}
+
+{% block body %}
+    <h1>Create new Hall</h1>
+
+    {{ include('hall/_form.html.twig') }}
+
+    <a href="{{ path('app_hall_index') }}">back to list</a>
+{% endblock %}
