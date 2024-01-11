@@ -21,6 +21,8 @@ class BandMemberRepository extends ServiceEntityRepository
         parent::__construct($registry, BandMember::class);
     }
 
+    
+
 //    /**
 //     * @return BandMember[] Returns an array of BandMember objects
 //     */

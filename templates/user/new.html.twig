@@ -3,9 +3,27 @@
 {% block title %}New User{% endblock %}
 
 {% block body %}
-    <h1>Create new User</h1>
+<div class="form-login-container  bg-slate-100">
+		<div class="intro-login">
+			<h1>Symtour</h1>
+			<h4>Tu as un groupe ou un projet musical ?</h4>
+			<p>Inscrit toi et enregistre ton groupe pour organiser des dates
+			</p>
+			<br><br>
+			<h4>Tu as une salle ?</h4>
+			<p>Inscrit toi et enregistre ta salle pour booker facilement les groupes
+			</p>
+		</div>
 
+		<div class="form-login bg-white rounded-lg shadow-md">
+			<h4>Inscription</h4>
     {{ include('user/_form.html.twig') }}
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
+			
+		</div>
+	</div>
+    {# <h1>Create new User</h1>
+
+
+    <a href="{{ path('app_user_index') }}">back to list</a> #}
 {% endblock %}

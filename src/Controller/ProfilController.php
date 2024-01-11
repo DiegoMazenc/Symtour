@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Profil;
 use App\Form\ProfilType;
+use App\Repository\BandMemberRepository;
 use App\Repository\ProfilRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Id;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,8 +47,11 @@ class ProfilController extends AbstractController
     #[Route('/{id}', name: 'app_profil_show', methods: ['GET'])]
     public function show(Profil $profil): Response
     {
+
+
         return $this->render('profil/show.html.twig', [
             'profil' => $profil,
+
         ]);
     }
 

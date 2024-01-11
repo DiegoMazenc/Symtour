@@ -21,6 +21,23 @@ class HallRepository extends ServiceEntityRepository
         parent::__construct($registry, Hall::class);
     }
 
+    public function filter(array $data)
+    {
+        $qb = $this->createQueryBuilder('h');
+        if (array_key_exists("musicCategory", $data)){
+            $qb
+                ->leftJoin('h.music_category', 'musicCategory')
+                ->andWhere('musicCategory.category = :val')
+                ->setParameter('val', $data['musicCategory'])
+                ;
+        }
+        $qb 
+        ->getQuery()
+        ->getResult()
+       ;
+       return $qb->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Hall[] Returns an array of Hall objects
 //     */

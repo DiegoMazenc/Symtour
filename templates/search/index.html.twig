@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+	<div
+		class="search-contain flex bg-sky-950 ">
+
+		{# SideBar Filter #}
+		<div class="sidebar-filter basis-1/4 bg-sky-950 p-5 h-screen">
+			{{ form_start(filterForm) }}
+			{{ form_widget(filterForm.type, {
+                    'attr': {
+                        'class': 'w-full p-2 rounded-lg ',
+                        'value': 'Une Salle'
+                    }
+                }) }}<br>
+
+
+
+
+			<div class="btn-choice flex justify-between pb-5">
+				<button class="bg-white py-2 px-5 rounded-lg hover:bg-blue-500 duration-300">Une Salle</button>
+				<button class="bg-white py-2 px-5 rounded-lg hover:bg-blue-500 duration-300">Un Groupe</button>
+			</div>
+			<hr class="py-2">
+			<div class="select-gender ">
+			<select id="{{ filterForm.musicCategory.vars.id }}" name="{{ filterForm.musicCategory.vars.full_name }}" class="w-full p-2 rounded-lg mt-2">
+				<option value="">Genre Musical</option>
+
+				{% for music_category in music_categories %}
+					<option value="{{ music_category.category }}">{{ music_category.category }}</option>
+				{% endfor %}
+			</select>
+				<div class="gender-selected text-white py-2">
+					<div class="row-gender flex flex-row py-2">
+						<p class=" text-black bg-white rounded-full px-2.5 pb-1 mr-3  hover:bg-blue-500">x</p>
+						<p>Pop</p>
+					</div>
+					<div class="row-gender flex flex-row py-2">
+						<p class=" text-black bg-white rounded-full px-2.5 pb-1 mr-3  hover:bg-blue-500">x</p>
+						<p>Rap</p>
+					</div>
+					<div class="row-gender flex flex-row py-2">
+						<p class=" text-black bg-white rounded-full px-2.5 pb-1 mr-3  hover:bg-blue-500">x</p>
+						<p>Jazz</p>
+					</div>
+				</div>
+			</div>
+			<hr class="py-2">
+			<div class="select-gender ">
+				<select name="" id="" class="w-full p-2 rounded-lg">
+					<option value="">Date</option>
+				</select>
+				<div class="gender-selected text-white py-2">
+					<div class="row-gender flex flex-row py-2">
+						<p class=" text-black bg-white rounded-full px-2.5 pb-1 mr-3  hover:bg-blue-500">x</p>
+						<p>Vendredi 12 Juin 2024</p>
+					</div>
+					<div class="row-gender flex flex-row py-2">
+						<p class=" text-black bg-white rounded-full px-2.5 pb-1 mr-3  hover:bg-blue-500">x</p>
+						<p>Samedi 13 Juin 2024</p>
+					</div>
+				</div>
+			</div>
+			<hr class="py-2">
+			<div class="select-gender ">
+				<input type="text" class="w-full p-2 rounded-lg" value="Ville, Région, Département">
+				<div class="gender-selected text-white py-2">
+					<div class="row-gender flex flex-row py-2">
+						<p class=" text-black bg-white rounded-full px-2.5 pb-1 mr-3  hover:bg-blue-500">x</p>
+						<p>Lyon</p>
+					</div>
+					<div class="row-gender flex flex-row py-2">
+						<p class=" text-black bg-white rounded-full px-2.5 pb-1 mr-3  hover:bg-blue-500">x</p>
+						<p>Rhône Alpes</p>
+					</div>
+				</div>
+			</div>
+			{{ form_widget(filterForm._token) }}
+			<button type="submit">Rechercher</button>
+			{{ form_end(filterForm, {render_rest: false}) }}
+		</div>
+
+		{# result cards #}
+		<div class="result-contain basis-3/4 px-28 py-5 bg bg-slate-100">
+			<input type="text" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300" placeholder="Recherche">
+			{% for hall in halls %}
+				<div class="card-result w-full my-5 bg-white p-3 rounded-lg shadow-md hover:shadow-lg duration-300">
+					<div class="top-card flex justify-between">
+						<div class="top-left-card flex">
+							<img src="https://placehold.co/80" alt="" class="mr-2 rounded-lg">
+							<div class="info-card">
+								<h4 class="font-semibold text-blue-400">{{ hall.name }}</h4>
+								<p>{{ hall.structure }}</p>
+								<p>Genre : </p>
+							</div>
+						</div>
+						<div class="note-card ">
+							<a href="#">254 votes</a>
+							<div class="stars flex">
+								<img src="https://placehold.co/10" alt="">
+								<img src="https://placehold.co/10" alt="">
+								<img src="https://placehold.co/10" alt="">
+								<img src="https://placehold.co/10" alt="">
+								<img src="https://placehold.co/10" alt="">
+							</div>
+						</div>
+					</div>
+					<div class="bottom-card flex justify-between">
+						<button>+ Follow</button>
+						<div class="left-btn-card text-white">
+							<a href="{{ path('app_hall_show', {'id': hall.id}) }}" class=" px-3 py-2 rounded-lg bg-blue-400">Voir détails</a>
+							<button class=" px-3 py-2 rounded-lg bg-emerald-400">Réserver</button>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+
+{% endblock %}

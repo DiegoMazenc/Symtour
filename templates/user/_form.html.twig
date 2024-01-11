@@ -1,4 +1,69 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+    {# {{ form_widget(form) }} #}
+    <div class="formulaire">
+            {{ form_widget(form.firstname, {
+                        'attr': {
+                            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full my-3',
+                            'placeholder': 'Votre Nom'
+                        }
+                    }) }}
+
+                    {{ form_widget(form.lastname, {
+                        'attr': {
+                            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full my-3',
+                            'placeholder': 'Votre Prénom'
+                        }
+                    }) }}
+
+                    {{ form_widget(form.birthday, {
+                        'attr': {
+                            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full my-3',
+                            'placeholder': 'Votre Pseudo'
+                        }
+                    }) }}
+
+
+  {{ form_widget(form.gender, {
+                        'attr': {
+                            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full my-3',
+                            'placeholder': 'Votre Genre'
+                        }
+                    }) }}
+				<div class="relative">
+					{{ form_widget(form.email, {
+                        'attr': {
+                            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full my-3',
+                            'placeholder': 'Votre Email'
+                        }
+                    }) }}
+					<i class="absolute text-white bottom-5 right-5">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24">
+							<path fill="#F25F4B" d="M12 12q-1.65 0-2.825-1.175T8 8q0-1.65 1.175-2.825T12 4q1.65 0 2.825 1.175T16 8q0 1.65-1.175 2.825T12 12Zm-8 8v-2.8q0-.85.438-1.563T5.6 14.55q1.55-.775 3.15-1.163T12 13q1.65 0 3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20H4Z"/>
+						</svg>
+					</i>
+				</div>
+
+				{{ form_widget(form.password, {
+                    'attr': {
+                        'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mt-3 ',
+                        'placeholder': 'Mot de Passe'
+                    }
+                }) }}
+				{# {{ form_row(form.submit, {
+                    'label':'Se connecter',
+                    'attr': {
+                        'class': 'rounded-lg p-2 bg-green-700 w-full mt-3 text-white',
+                        'value': 'Se connecter'
+                    }
+                }) }} #}
+				<br>
+				<hr>
+				<br>
+
+				{# <button class="rounded-lg p-2 bg-blue-700 w-full mt-3 text-white">Créer un compte</button> #}
+
+    <button class="btn rounded-lg p-2 bg-blue-700 w-full mt-3 text-white">{{ button_label|default("S'inscrir") }}</button>
+			</div>
+            			{{ form_widget(form._token) }}
+
+{{ form_end(form, {render_rest: false} )}}

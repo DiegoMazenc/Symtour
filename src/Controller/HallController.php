@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Hall;
+use App\Form\FilterSearchType;
 use App\Form\HallType;
 use App\Repository\HallRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,11 +16,16 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/hall')]
 class HallController extends AbstractController
 {
-    #[Route('/', name: 'app_hall_index', methods: ['GET'])]
-    public function index(HallRepository $hallRepository): Response
+    #[Route('/', name: 'app_hall_index', methods: ['GET', 'POST'])]
+    public function index(Request $request, HallRepository $hallRepository): Response
     {
+        $filter = $this->createForm(FilterSearchType::class);
+        $filter->handleRequest($request);
+        if ($filter->isSubmitted() && $filter->isValid()){
+            $halls = $hallRepository->filter($filter->getData());
+        }
         return $this->render('hall/index.html.twig', [
-            'halls' => $hallRepository->findAll(),
+            'halls' => $halls,
         ]);
     }
 

@@ -3,6 +3,41 @@
 {% block title %}Profil{% endblock %}
 
 {% block body %}
+
+
+	<div class="user-dashboard  flex bg-sky-950 ">
+		<div class="user-sidebar basis-1/4 bg-sky-950 p-5 h-screen text-white">
+			<h4>Notifications</h4>
+		</div>
+		<div class="user-contain   basis-3/4 px-28 py-5 bg bg-slate-100">
+			<div class="header-user flex justify-evenly">
+            <div class="pic_profil">
+				<img src="{{ profil.picture }}" alt="" class="user-img">
+            </div>
+				<div class="user-infos">
+					<h3 class="mb-8">{{ profil.pseudo }}</h3>
+					<div class="nav-params-user">
+						<ul class="flex">
+							<li class="mx-5">Mes infos</li>
+							<li class="mx-5">Messagerie</li>
+							<li class="mx-5">Notifications</li>
+							<li class="mx-5">Paramètres</li>
+						</ul>
+						<hr>
+					</div>
+				</div>
+               
+			</div>
+ <div class="tab_project">
+                <h4>Mes salles</h4>
+                
+                <h4>Mes Groupes</h4>
+                </div>
+
+		</div>
+	</div>
+
+
     <h1>Profil</h1>
 
     <table class="table">
@@ -29,7 +64,7 @@
             </tr>
             <tr>
                 <th>Picture</th>
-                <td>{{ profil.picture }}</td>
+                <td></td>
             </tr>
             <tr>
                 <th>Pseudo</th>
