@@ -14,7 +14,7 @@ class HallInfo
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'hallInfos')]
-    private ?hall $hall = null;
+    private ?Hall $hall = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $country = null;
@@ -45,12 +45,12 @@ class HallInfo
         return $this->id;
     }
 
-    public function getHall(): ?hall
+    public function getHall(): ?Hall
     {
         return $this->hall;
     }
 
-    public function setHall(?hall $hall): static
+    public function setHall(?Hall $hall): static
     {
         $this->hall = $hall;
 

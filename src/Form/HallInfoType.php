@@ -23,7 +23,7 @@ class HallInfoType extends AbstractType
             ->add('phone')
             ->add('website')
             ->add('hall', EntityType::class, [
-                'class' => hall::class,
+                'class' => Hall::class,
 'choice_label' => 'id',
             ])
         ;

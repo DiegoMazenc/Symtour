@@ -22,7 +22,7 @@ class BandInfoType extends AbstractType
             ->add('phone')
             ->add('website')
             ->add('band', EntityType::class, [
-                'class' => band::class,
+                'class' => Band::class,
 'choice_label' => 'id',
             ])
         ;

@@ -18,6 +18,25 @@
         <li><a href="/" aria-label="Product pricing" title="Product pricing" class="font-medium tracking-wide text-gray-100 transition-colors duration-200 hover:text-teal-accent-400">Pricing</a></li> #}
         <li><a href="{{ path('app_search') }}" aria-label="About us" title="About us" class="font-medium tracking-wide text-gray-100 transition-colors duration-200 hover:text-teal-accent-400">Rechercher</a></li>
         <li>
+          
+          {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+           <a
+            href="{{ path('app_profil_show', {'id': profil.getId()}) }}"
+            class="inline-flex items-center justify-center h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-deep-purple-accent-400 hover:bg-deep-purple-accent-700 focus:shadow-outline focus:outline-none"
+            aria-label="Sign up"
+            title="Sign up"
+          >
+            Mon Profile
+          </a>
+          <a
+            href="{{ path('app_logout') }}"
+            class="inline-flex items-center justify-center h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-deep-purple-accent-400 hover:bg-deep-purple-accent-700 focus:shadow-outline focus:outline-none"
+            aria-label="Sign up"
+            title="Sign up"
+          >
+            Déconnexion
+          </a>
+          {% else %}
           <a
             href="{{ path('app_user_new') }}"
             class="inline-flex items-center justify-center h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-deep-purple-accent-400 hover:bg-deep-purple-accent-700 focus:shadow-outline focus:outline-none"
@@ -27,13 +46,14 @@
             Inscription
           </a>
           <a
-            href="{{ path('app_user_new') }}"
+            href="{{ path('app_login') }}"
             class="inline-flex items-center justify-center h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-deep-purple-accent-400 hover:bg-deep-purple-accent-700 focus:shadow-outline focus:outline-none"
             aria-label="Sign up"
             title="Sign up"
           >
             Connexion
           </a>
+           {% endif %}
         </li>
       </ul>
       <!-- Mobile menu -->

@@ -45,10 +45,12 @@ class ProfilController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_profil_show', methods: ['GET'])]
-    public function show(Profil $profil): Response
+    public function show(Profil $profil, ProfilRepository $profilRepository, BandMemberRepository $bandMemberRepository): Response
     {
-
-
+        
+        // $bandlist = $bandMemberRepository->getbandUser($profil);
+        // $profil = $profilRepository->getbandMemberUser($profil);
+        
         return $this->render('profil/show.html.twig', [
             'profil' => $profil,
 
@@ -62,11 +64,12 @@ class ProfilController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_profil_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_profil_show', ["id"=>$profil->getId()], Response::HTTP_SEE_OTHER);
         }
-
+       
         return $this->render('profil/edit.html.twig', [
             'profil' => $profil,
             'form' => $form,

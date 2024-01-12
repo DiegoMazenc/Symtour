@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\BandMember;
+use App\Entity\Profil;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,6 +21,9 @@ class BandMemberRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, BandMember::class);
     }
+
+   
+
 
     
 

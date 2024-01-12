@@ -12,32 +12,16 @@
                 <td>{{ user.id }}</td>
             </tr>
             <tr>
-                <th>Firstname</th>
-                <td>{{ user.firstname }}</td>
-            </tr>
-            <tr>
-                <th>Lastname</th>
-                <td>{{ user.lastname }}</td>
-            </tr>
-            <tr>
-                <th>Birthday</th>
-                <td>{{ user.birthday ? user.birthday|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
                 <th>Email</th>
                 <td>{{ user.email }}</td>
             </tr>
             <tr>
+                <th>Roles</th>
+                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+            </tr>
+            <tr>
                 <th>Password</th>
                 <td>{{ user.password }}</td>
-            </tr>
-            <tr>
-                <th>Reg_date</th>
-                <td>{{ user.regDate ? user.regDate|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Is_active</th>
-                <td>{{ user.isActive ? 'Yes' : 'No' }}</td>
             </tr>
         </tbody>
     </table>

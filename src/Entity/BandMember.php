@@ -14,13 +14,13 @@ class BandMember
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'bandMembers')]
-    private ?band $band = null;
+    private ?Band $band = null;
 
     #[ORM\ManyToOne]
-    private ?roleband $role = null;
+    private ?RoleBand $role = null;
 
     #[ORM\ManyToOne(inversedBy: 'bandMembers')]
-    private ?profil $profil = null;
+    private ?Profil $profil = null;
 
    
     public function getId(): ?int
@@ -28,24 +28,24 @@ class BandMember
         return $this->id;
     }
 
-    public function getBand(): ?band
+    public function getBand(): ?Band
     {
         return $this->band;
     }
 
-    public function setBand(?band $band): static
+    public function setBand(?Band $band): static
     {
         $this->band = $band;
 
         return $this;
     }
 
-    public function getRole(): ?roleband
+    public function getRole(): ?RoleBand
     {
         return $this->role;
     }
 
-    public function setRole(?roleband $role): static
+    public function setRole(?RoleBand $role): static
     {
         $this->role = $role;
 

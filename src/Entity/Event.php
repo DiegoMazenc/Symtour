@@ -15,10 +15,10 @@ class Event
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
-    private ?hall $hall = null;
+    private ?Hall $hall = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
-    private ?band $band = null;
+    private ?Band $band = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date = null;
@@ -31,24 +31,24 @@ class Event
         return $this->id;
     }
 
-    public function getHall(): ?hall
+    public function getHall(): ?Hall
     {
         return $this->hall;
     }
 
-    public function setHall(?hall $hall): static
+    public function setHall(?Hall $hall): static
     {
         $this->hall = $hall;
 
         return $this;
     }
 
-    public function getBand(): ?band
+    public function getBand(): ?Band
     {
         return $this->band;
     }
 
-    public function setBand(?band $band): static
+    public function setBand(?Band $band): static
     {
         $this->band = $band;
 

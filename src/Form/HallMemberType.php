@@ -17,7 +17,7 @@ class HallMemberType extends AbstractType
     {
         $builder
             ->add('hall', EntityType::class, [
-                'class' => hall::class,
+                'class' => Hall::class,
 'choice_label' => 'id',
             ])
             ->add('role', EntityType::class, [

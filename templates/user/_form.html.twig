@@ -1,35 +1,5 @@
 {{ form_start(form) }}
-    {# {{ form_widget(form) }} #}
-    <div class="formulaire">
-            {{ form_widget(form.firstname, {
-                        'attr': {
-                            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full my-3',
-                            'placeholder': 'Votre Nom'
-                        }
-                    }) }}
-
-                    {{ form_widget(form.lastname, {
-                        'attr': {
-                            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full my-3',
-                            'placeholder': 'Votre Prénom'
-                        }
-                    }) }}
-
-                    {{ form_widget(form.birthday, {
-                        'attr': {
-                            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full my-3',
-                            'placeholder': 'Votre Pseudo'
-                        }
-                    }) }}
-
-
-  {{ form_widget(form.gender, {
-                        'attr': {
-                            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full my-3',
-                            'placeholder': 'Votre Genre'
-                        }
-                    }) }}
-				<div class="relative">
+<div class="relative">
 					{{ form_widget(form.email, {
                         'attr': {
                             'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full my-3',
@@ -42,28 +12,12 @@
 						</svg>
 					</i>
 				</div>
-
-				{{ form_widget(form.password, {
+                {{ form_widget(form.password, {
                     'attr': {
                         'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mt-3 ',
                         'placeholder': 'Mot de Passe'
                     }
                 }) }}
-				{# {{ form_row(form.submit, {
-                    'label':'Se connecter',
-                    'attr': {
-                        'class': 'rounded-lg p-2 bg-green-700 w-full mt-3 text-white',
-                        'value': 'Se connecter'
-                    }
-                }) }} #}
-				<br>
-				<hr>
-				<br>
-
-				{# <button class="rounded-lg p-2 bg-blue-700 w-full mt-3 text-white">Créer un compte</button> #}
-
-    <button class="btn rounded-lg p-2 bg-blue-700 w-full mt-3 text-white">{{ button_label|default("S'inscrir") }}</button>
-			</div>
-            			{{ form_widget(form._token) }}
-
-{{ form_end(form, {render_rest: false} )}}
+    {# {{ form_widget(form) }} #}
+    <button class="rounded-lg p-2 bg-blue-700 w-full mt-3 text-white">{{ button_label|default('Inscription') }}</button>
+{{ form_end(form) }}

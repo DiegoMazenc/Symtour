@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Profil{% endblock %}
+{% block title %}Profil
+{% endblock %}
 
 {% block body %}
 
@@ -11,14 +12,14 @@
 		</div>
 		<div class="user-contain   basis-3/4 px-28 py-5 bg bg-slate-100">
 			<div class="header-user flex justify-evenly">
-            <div class="pic_profil">
-				<img src="{{ profil.picture }}" alt="" class="user-img">
-            </div>
+				<div class="pic_profil">
+					<img src="{{ profil.picture }}" alt="" class="user-img">
+				</div>
 				<div class="user-infos">
 					<h3 class="mb-8">{{ profil.pseudo }}</h3>
 					<div class="nav-params-user">
 						<ul class="flex">
-							<li class="mx-5">Mes infos</li>
+							<li class="mx-5"><a href="/profil/{{ profil.id }}/edit">Mes infos</a></li>
 							<li class="mx-5">Messagerie</li>
 							<li class="mx-5">Notifications</li>
 							<li class="mx-5">Paramètres</li>
@@ -26,56 +27,70 @@
 						<hr>
 					</div>
 				</div>
-               
+
 			</div>
- <div class="tab_project">
-                <h4>Mes salles</h4>
-                
-                <h4>Mes Groupes</h4>
+			<div class="tab_project">
+				<h4>Mes salles</h4>
+
+				<h4>Mes Groupes</h4>
+                <div class="bg-white rounded-lg shadow-md p-3">
+				{% for bandMember in profil.bandMembers %}
+                <div class="cardAdminProfil flex justify-between ">
+					<p>{{ bandMember.band.id}}</p>
+					<p>{{ bandMember.band.name}}</p>
+					<p>{{ bandMember.band.musicCategory.category}}</p>
+					<p>{{ bandMember.band.defineStyle}}</p>
+					<p>{{ bandMember.role.roleName}}</p>
                 </div>
+                <hr class="my-3">
+				{% endfor %}
+                <button class="bg-slate-700 rounded-full px-2 pb-4 mr-4 text-white font-bold">+</button><a href="" class="ml-4">Créer un nouveau groupe</a>
+                </div>
+				
+			</div>
 
 		</div>
 	</div>
 
 
-    <h1>Profil</h1>
+	<h1>Profil</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ profil.id }}</td>
-            </tr>
-            <tr>
-                <th>Country</th>
-                <td>{{ profil.country }}</td>
-            </tr>
-            <tr>
-                <th>City</th>
-                <td>{{ profil.city }}</td>
-            </tr>
-            <tr>
-                <th>Zip_code</th>
-                <td>{{ profil.zipCode }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ profil.description }}</td>
-            </tr>
-            <tr>
-                <th>Picture</th>
-                <td></td>
-            </tr>
-            <tr>
-                <th>Pseudo</th>
-                <td>{{ profil.pseudo }}</td>
-            </tr>
-        </tbody>
-    </table>
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ profil.id }}</td>
+			</tr>
+			<tr>
+				<th>Country</th>
+				<td>{{ profil.country }}</td>
+			</tr>
+			<tr>
+				<th>City</th>
+				<td>{{ profil.city }}</td>
+			</tr>
+			<tr>
+				<th>Zip_code</th>
+				<td>{{ profil.zipCode }}</td>
+			</tr>
+			<tr>
+				<th>Description</th>
+				<td>{{ profil.description }}</td>
+			</tr>
+			<tr>
+				<th>Picture</th>
+				<td></td>
+			</tr>
+			<tr>
+				<th>Pseudo</th>
+				<td>{{ profil.pseudo }}</td>
+			</tr>
+		</tbody>
+	</table>
 
-    <a href="{{ path('app_profil_index') }}">back to list</a>
+	<a href="{{ path('app_profil_index') }}">back to list</a>
 
-    <a href="{{ path('app_profil_edit', {'id': profil.id}) }}">edit</a>
+	<a href="{{ path('app_profil_edit', {'id': profil.id}) }}">edit</a>
 
-    {{ include('profil/_delete_form.html.twig') }}
+	{{ include('profil/_delete_form.html.twig') }}
 {% endblock %}

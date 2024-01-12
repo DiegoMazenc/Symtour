@@ -1,4 +1,40 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {# {{ form_widget(form) }} #}
+    {{ form_widget(form.pseudo, {
+        'attr': {
+            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mt-3 ',
+            'placeholder': 'Pseudo'
+        }
+    }) }}
+    {{ form_widget(form.country, {
+        'attr': {
+            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mt-3 ',
+            'placeholder': 'Pays'
+        }
+    }) }}
+     {{ form_widget(form.city, {
+        'attr': {
+            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mt-3 ',
+            'placeholder': 'Ville'
+        }
+    }) }}
+     {{ form_widget(form.zip_code, {
+        'attr': {
+            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mt-3 ',
+            'placeholder': 'Code Postal'
+        }
+    }) }}
+     {{ form_widget(form.description, {
+        'attr': {
+            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mt-3 ',
+            'placeholder': 'Description'
+        }
+    }) }}
+     {{ form_widget(form.picture, {
+        'attr': {
+            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mt-3 ',
+            'placeholder': 'Lien Photo'
+        }
+    }) }}
     <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{{ form_end(form ) }}

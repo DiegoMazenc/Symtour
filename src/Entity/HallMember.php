@@ -14,7 +14,7 @@ class HallMember
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'hallMembers')]
-    private ?hall $hall = null;
+    private ?Hall $hall = null;
 
     #[ORM\ManyToOne]
     private ?RoleHall $role = null;
@@ -29,12 +29,12 @@ class HallMember
         return $this->id;
     }
 
-    public function getHall(): ?hall
+    public function getHall(): ?Hall
     {
         return $this->hall;
     }
 
-    public function setHall(?hall $hall): static
+    public function setHall(?Hall $hall): static
     {
         $this->hall = $hall;
 

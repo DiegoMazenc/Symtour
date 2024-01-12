@@ -17,15 +17,15 @@ class BandMemberType extends AbstractType
     {
         $builder
             ->add('band', EntityType::class, [
-                'class' => band::class,
+                'class' => Band::class,
 'choice_label' => 'id',
             ])
             ->add('role', EntityType::class, [
-                'class' => roleband::class,
+                'class' => RoleBand::class,
 'choice_label' => 'id',
             ])
             ->add('profil', EntityType::class, [
-                'class' => profil::class,
+                'class' => Profil::class,
 'choice_label' => 'id',
             ])
         ;
