@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Profil;
+use App\Entity\User;
 use App\Form\ProfilType;
 use App\Repository\BandMemberRepository;
 use App\Repository\ProfilRepository;
@@ -47,9 +48,6 @@ class ProfilController extends AbstractController
     #[Route('/{id}', name: 'app_profil_show', methods: ['GET'])]
     public function show(Profil $profil, ProfilRepository $profilRepository, BandMemberRepository $bandMemberRepository): Response
     {
-        
-        // $bandlist = $bandMemberRepository->getbandUser($profil);
-        // $profil = $profilRepository->getbandMemberUser($profil);
         
         return $this->render('profil/show.html.twig', [
             'profil' => $profil,

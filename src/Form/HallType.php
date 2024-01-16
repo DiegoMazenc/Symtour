@@ -19,8 +19,9 @@ class HallType extends AbstractType
             ->add('structure')
             ->add('music_category', EntityType::class, [
                 'class' => MusicCategory::class,
-'choice_label' => 'id',
+'choice_label' => 'category',
 'multiple' => true,
+'expanded' => true,
             ])
         ;
     }

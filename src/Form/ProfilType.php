@@ -20,10 +20,7 @@ class ProfilType extends AbstractType
             ->add('description')
             ->add('picture')
             ->add('pseudo')
-            ->add('id_user', EntityType::class, [
-                'class' => User::class,
-'choice_label' => 'id',
-            ])
+            
         ;
     }
 

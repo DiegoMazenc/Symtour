@@ -1,4 +1,27 @@
 {{ form_start(form) }}
+{{ form_widget(form.name, {
+        'attr': {
+            'class': 'rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5 ',
+            'placeholder': 'Nom Structure'
+        }
+    }) }}
+    <hr class="my-5 border-1"> 
+
+    {# {{ form_label(form.logo, null, {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br> #}
+    {{ form_widget(form.logo, {
+        'attr': {
+            'class': 'rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5 ',
+            'placeholder': 'lien Logo'
+        }
+    }) }} <br>
+
+    {{ form_widget(form.structure, {
+        'attr': {
+            'class': 'rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5 ',
+            'placeholder': 'Type de structure (ex: Bar, Salle de Concert)'
+        }
+    }) }} <br>
+    {{ form_widget(form.music_category) }}<br>
     {{ form_widget(form) }}
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

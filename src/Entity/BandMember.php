@@ -52,12 +52,12 @@ class BandMember
         return $this;
     }
 
-    public function getProfil(): ?profil
+    public function getProfil(): ?Profil
     {
         return $this->profil;
     }
 
-    public function setProfil(?profil $profil): static
+    public function setProfil(?Profil $profil): static
     {
         $this->profil = $profil;
 

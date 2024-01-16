@@ -1,34 +1,90 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Band{% endblock %}
+{% block title %}Band
+{% endblock %}
 
 {% block body %}
-    <h1>Band</h1>
+	<div class="user-dashboard  flex bg-sky-950 ">
+		<div class="user-sidebar basis-1/4 bg-sky-950 p-5 h-screen text-white">
+			<h4>Notifications</h4>
+		</div>
+		<div class="user-contain   basis-3/4 px-28 py-5 bg bg-slate-100">
+			<div class="header-user flex justify-evenly">
+				<div class="pic_profil">
+					<img src="{{ band.logo }}" alt="" class="user-img">
+				</div>
+				<div class="user-infos">
+					<h3 class="font-bold ">{{ band.name }}</h3>
+					<h3 class="mb-8">{{ band.musicCategory.category }} ( {{ band.defineStyle }} )</h3>
+					<div class="nav-params-user">
+						<ul class="flex">
+							<li class="mx-5">
+								<a href="/band/{{ band.id }}/edit">Mes infos</a>
+							</li>
+							<li class="mx-5">Messagerie</li>
+							<li class="mx-5">Notifications</li>
+							<li class="mx-5">Paramètres</li>
+						</ul>
+						<hr>
+					</div>
+				</div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ band.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ band.name }}</td>
-            </tr>
-            <tr>
-                <th>Logo</th>
-                <td>{{ band.logo }}</td>
-            </tr>
-            <tr>
-                <th>Define_style</th>
-                <td>{{ band.defineStyle }}</td>
-            </tr>
-        </tbody>
-    </table>
+			</div>
+			<div class="tab_project">
 
-    <a href="{{ path('app_band_index') }}">back to list</a>
+				<h4>Membres</h4>
+				<div class="bg-white rounded-lg shadow-md p-3">
+					
+					{% for member in band.bandMembers %}
+						<div
+							class="cardAdminProfil flex justify-between ">
+							{# <p>{{ bandMember.band.logo}}</p> #}
+							{# <p>{{ member.profil.id }}</p> #}
+							<p>{{ member.role.roleName}}</p>
+							<p>{{ member.profil.pseudo}}</p>
+						</div>
+						<hr class="my-3">
+					{% endfor %}
+					<a href="{{ path('app_band_new') }}" class="text-slate-400 hover:text-blue-500 ">
+						<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Ajouter un nouveau membre</a>
+				</div>
 
-    <a href="{{ path('app_band_edit', {'id': band.id}) }}">edit</a>
+			</div>
 
-    {{ include('band/_delete_form.html.twig') }}
+		</div>
+	</div>
+	<h1>Band</h1>
+
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ band.id }}</td>
+			</tr>
+			<tr>
+				<th>Name</th>
+				<td>{{ band.name }}</td>
+			</tr>
+			<tr>
+				<th>Logo</th>
+				<td>{{ band.logo }}</td>
+			</tr>
+			<tr>
+				<th>Define_style</th>
+				<td>{{ band.defineStyle }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{% for member in band.bandMembers %}
+		<p>{{ member.profil.id }}</p>
+		<p>{{ member.profil.pseudo}}</p>
+		<p>{{ member.role.roleName}}</p>
+	{% endfor %}
+
+	<a href="{{ path('app_band_index') }}">back to list</a>
+
+	<a href="{{ path('app_band_edit', {'id': band.id}) }}">edit</a>
+
+	{{ include('band/_delete_form.html.twig') }}
 {% endblock %}

@@ -16,8 +16,8 @@ class Profil
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?User $id_user = null;
+    // #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    // private ?User $id_user = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $country = null;
@@ -43,6 +43,9 @@ class Profil
     #[ORM\OneToMany(mappedBy: 'profile', targetEntity: HallMember::class)]
     private Collection $hallMembers;
 
+    #[ORM\OneToOne(inversedBy: 'profil', cascade: ['persist', 'remove'])]
+    private ?User $IdUser = null;
+
     public function __construct()
     {
         $this->bandMembers = new ArrayCollection();
@@ -56,12 +59,12 @@ class Profil
 
     public function getIdUser(): ?User
     {
-        return $this->id_user;
+        return $this->IdUser;
     }
 
-    public function setIdUser(?User $id_user): static
+    public function setIdUser(?User $IdUser): static
     {
-        $this->id_user = $id_user;
+        $this->IdUser = $IdUser;
 
         return $this;
     }

@@ -19,7 +19,7 @@ class BandType extends AbstractType
             ->add('define_style')
             ->add('music_category', EntityType::class, [
                 'class' => MusicCategory::class,
-'choice_label' => 'id',
+'choice_label' => 'category',
             ])
         ;
     }

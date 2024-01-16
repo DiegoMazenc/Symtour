@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Hall;
+use App\Entity\HallMember;
 use App\Form\FilterSearchType;
 use App\Form\HallType;
+use App\Entity\Profil;
+use App\Entity\RoleHall;
 use App\Repository\HallRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Types\This;
@@ -12,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 #[Route('/hall')]
 class HallController extends AbstractController
@@ -25,12 +29,12 @@ class HallController extends AbstractController
             $halls = $hallRepository->filter($filter->getData());
         }
         return $this->render('hall/index.html.twig', [
-            'halls' => $halls,
+            'halls' => $hallRepository->findAll(),
         ]);
     }
 
     #[Route('/new', name: 'app_hall_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, TokenInterface $token): Response
     {
         $hall = new Hall();
         $form = $this->createForm(HallType::class, $hall);
@@ -39,8 +43,18 @@ class HallController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($hall);
             $entityManager->flush();
+            $hallMember = new HallMember();
+            $profil = $entityManager->getRepository(Profil::class)->findBy(["IdUser" => $token->getUser()]);
+            $defaultRoleId = 1;
+            $defaultRole = $entityManager->getRepository(RoleHall::class)->find($defaultRoleId);
 
-            return $this->redirectToRoute('app_hall_index', [], Response::HTTP_SEE_OTHER);
+            $hallMember->setHall($hall)
+            ->setProfile($profil[0])
+            ->setRole($defaultRole);
+            $entityManager->persist($hallMember);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_hall_show', ["id"=>$hall->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('hall/new.html.twig', [

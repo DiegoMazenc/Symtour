@@ -3,11 +3,23 @@
 {% block title %}Edit Profil{% endblock %}
 
 {% block body %}
+    <div class="edit-band  flex bg-sky-950 ">
+		<div class="nav-edit-profil basis-1/4 bg-sky-950 p-5 h-screen text-white ">
     <h1>Edit Profil</h1>
-
+    <div class="nav-contain ">
+			<ul>
+				<li class="py-5 flex"><a href="{{ path('app_profil_edit', {'id': app.user.profil.id}) }} ">Informations </a><img src="https://placehold.co/40" alt=""></li>
+				<li class="py-5 flex"><a href="{{ path('app_user_edit', {'id': app.user.id}) }}" >Mon compte </a><img src="https://placehold.co/40" alt=""></li>
+				{# <li>Paramètres profile</li> #}
+			</ul>
+    </div>
+		</div>
+		<div class="form-contain basis-3/4  py-20 bg bg-slate-100">
+        <div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
     {{ include('profil/_form.html.twig', {'button_label': 'Update'}) }}
+        </div>
+        </div>
+	</div>
 
-    <a href="{{ path('app_profil_index') }}">back to list</a>
 
-    {{ include('profil/_delete_form.html.twig') }}
 {% endblock %}

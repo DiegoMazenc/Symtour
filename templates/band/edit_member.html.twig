@@ -1,12 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Band{% endblock %}
+{% block title %}Edit BandMember{% endblock %}
 
 {% block body %}
     <div class="edit-band  flex bg-sky-950 ">
 		<div class="nav-edit-profil basis-1/4 bg-sky-950 p-5 h-screen text-white ">
-    {# <h1>Edit Band</h1> #}
-    <a href="{{ path('app_band_show', {'id': band.id}) }}" class="mb-5"> < Return to {{band.name}} Dashboard </a>
+    <h1>Edit Band</h1>
     <div class="nav-contain ">
 			<ul>
 				<li class="py-5 flex"><a href="{{ path('app_band_edit', {'id': band.id }) }} ">Informations </a><img src="https://placehold.co/40" alt=""></li>
@@ -17,16 +16,26 @@
 		</div>
 		<div class="form-contain basis-3/4  py-20 bg bg-slate-100">
         <div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
-    {{ include('band/_form.html.twig', {'button_label': 'Update'}) }}
+    <h1>Edit BandMember</h1>
+    <div class="w-3/5">
+    {% for member in band.bandMembers %}
+						<div
+							class="cardAdminProfil flex justify-between">
+							{# <p>{{ bandMember.band.logo}}</p> #}
+							{# <p>{{ member.profil.id }}</p> #}
+							<p>{{ member.profil.pseudo}}</p>
+							<p>{{ member.role.roleName}}</p>
+						</div>
+						<hr class="my-3">
+					{% endfor %}
+    </div>
+    {{ include('/band_member/_form.html.twig') }}
         </div>
         </div>
 	</div>
-    <h1>Edit Band</h1>
 
 
-    <a href="{{ path('app_band_index') }}">back to list</a>
+    <a href="{{ path('app_band_member_index') }}">back to list</a>
 
-    {{ include('band/_delete_form.html.twig') }}
-
-    
+    {# {{ include('band_member/_delete_form.html.twig') }} #}
 {% endblock %}
