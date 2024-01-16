@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Band;
 use App\Entity\BandInfo;
 use App\Form\BandInfoType;
 use App\Repository\BandInfoRepository;

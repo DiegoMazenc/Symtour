@@ -35,15 +35,16 @@ class Hall
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $structure = null;
 
-    #[ORM\OneToMany(mappedBy: 'hall', targetEntity: HallInfo::class)]
-    private Collection $hallInfos;
+    #[ORM\OneToOne(mappedBy: 'hall', cascade: ['persist', 'remove'])]
+    private ?HallInfo $hallInfo = null;
+
+
 
     public function __construct()
     {
         $this->hallMembers = new ArrayCollection();
         $this->music_category = new ArrayCollection();
         $this->events = new ArrayCollection();
-        $this->hallInfos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -175,30 +176,30 @@ class Hall
     /**
      * @return Collection<int, HallInfo>
      */
-    public function getHallInfos(): Collection
+
+
+    public function getHallInfo(): ?HallInfo
     {
-        return $this->hallInfos;
+        return $this->hallInfo;
     }
 
-    public function addHallInfo(HallInfo $hallInfo): static
+    public function setHallInfo(?HallInfo $hallInfo): static
     {
-        if (!$this->hallInfos->contains($hallInfo)) {
-            $this->hallInfos->add($hallInfo);
+        // unset the owning side of the relation if necessary
+        if ($hallInfo === null && $this->hallInfo !== null) {
+            $this->hallInfo->setHall(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($hallInfo !== null && $hallInfo->getHall() !== $this) {
             $hallInfo->setHall($this);
         }
 
-        return $this;
-    }
-
-    public function removeHallInfo(HallInfo $hallInfo): static
-    {
-        if ($this->hallInfos->removeElement($hallInfo)) {
-            // set the owning side to null (unless already changed)
-            if ($hallInfo->getHall() === $this) {
-                $hallInfo->setHall(null);
-            }
-        }
+        $this->hallInfo = $hallInfo;
 
         return $this;
     }
+
+
+
 }

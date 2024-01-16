@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Hall;
+use App\Entity\HallInfo;
 use App\Entity\HallMember;
 use App\Form\FilterSearchType;
 use App\Form\HallType;
@@ -52,6 +53,11 @@ class HallController extends AbstractController
             ->setProfile($profil[0])
             ->setRole($defaultRole);
             $entityManager->persist($hallMember);
+            $entityManager->flush();
+
+            $hallInfo = new HallInfo;
+            $hallInfo->setHall($hall);
+            $entityManager->persist($hallInfo);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_hall_show', ["id"=>$hall->getId()], Response::HTTP_SEE_OTHER);

@@ -65,3 +65,16 @@ padding: 15px;
 .btn-gerer:hover{
     background-color: rgb(59, 130, 246);
 }
+
+.checkbox-item {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 0 15px; /* Ajustez la valeur de la deuxième propriété selon vos besoins */
+}
+

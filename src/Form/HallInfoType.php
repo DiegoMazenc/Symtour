@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\HallInfo;
-use App\Entity\hall;
+use App\Entity\Hall;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -24,7 +24,7 @@ class HallInfoType extends AbstractType
             ->add('website')
             ->add('hall', EntityType::class, [
                 'class' => Hall::class,
-'choice_label' => 'id',
+'choice_label' => 'name',
             ])
         ;
     }

@@ -18,15 +18,15 @@ class HallMemberType extends AbstractType
         $builder
             ->add('hall', EntityType::class, [
                 'class' => Hall::class,
-'choice_label' => 'id',
+'choice_label' => 'name',
             ])
             ->add('role', EntityType::class, [
                 'class' => RoleHall::class,
-'choice_label' => 'id',
+'choice_label' => 'role_name',
             ])
             ->add('profile', EntityType::class, [
                 'class' => Profil::class,
-'choice_label' => 'id',
+'choice_label' => 'pseudo',
             ])
         ;
     }

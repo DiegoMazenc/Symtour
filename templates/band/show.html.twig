@@ -6,6 +6,8 @@
 {% block body %}
 	<div class="user-dashboard  flex bg-sky-950 ">
 		<div class="user-sidebar basis-1/4 bg-sky-950 p-5 h-screen text-white">
+			<div id="calendar-holder"></div>
+
 			<h4>Notifications</h4>
 		</div>
 		<div class="user-contain   basis-3/4 px-28 py-5 bg bg-slate-100">
@@ -15,7 +17,10 @@
 				</div>
 				<div class="user-infos">
 					<h3 class="font-bold ">{{ band.name }}</h3>
-					<h3 class="mb-8">{{ band.musicCategory.category }} ( {{ band.defineStyle }} )</h3>
+					<h3 class="mb-8">{{ band.musicCategory.category }}
+						(
+						{{ band.defineStyle }}
+						)</h3>
 					<div class="nav-params-user">
 						<ul class="flex">
 							<li class="mx-5">
@@ -31,60 +36,129 @@
 
 			</div>
 			<div class="tab_project">
+				<div class="my-10">
 
-				<h4>Membres</h4>
-				<div class="bg-white rounded-lg shadow-md p-3">
-					
-					{% for member in band.bandMembers %}
-						<div
-							class="cardAdminProfil flex justify-between ">
-							{# <p>{{ bandMember.band.logo}}</p> #}
-							{# <p>{{ member.profil.id }}</p> #}
-							<p>{{ member.role.roleName}}</p>
-							<p>{{ member.profil.pseudo}}</p>
-						</div>
-						<hr class="my-3">
-					{% endfor %}
-					<a href="{{ path('app_band_new') }}" class="text-slate-400 hover:text-blue-500 ">
-						<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Ajouter un nouveau membre</a>
+					<h4>Events</h4>
+					<div class="bg-white rounded-lg shadow-md p-3">
+						{% for event in band.events %}
+							<div class="cardAdminProfil flex justify-between ">
+								<p>{{ event.date|date('d-m-Y')  }}</p>
+								<p>{{ event.hall.name }}</p>
+								<p>
+									{% if event.status == 1 %}
+										<span style="color: green;">✓ Validé</span>
+									{% elseif event.status == 2 %}
+										<span style="color: red;">x Refusé</span>
+										{# {% elseif event.date < 'now' %}
+																			<span style="color: orange;">x Demande expirée</span> #}
+									{% elseif event.status == 3 %}
+										<span style="color: gray;">... En cours</span>
+									{% else %}
+										{{ event.status }}
+									{% endif %}
+
+
+								</p>
+
+							</div><hr class="my-3">
+						{% endfor %}
+						<a href="{{ path('app_event_new') }}" class="text-slate-400 hover:text-blue-500 ">
+							<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Organiser un nouvel Event</a>
+					</div>
 				</div>
+				<div class="my-10">
 
+					<h4>Membres</h4>
+					<div class="bg-white rounded-lg shadow-md p-3">
+
+						{% for member in band.bandMembers %}
+							<div class="cardAdminProfil flex justify-between ">
+								{# <p>{{ bandMember.band.logo}}</p> #}
+								{# <p>{{ member.profil.id }}</p> #}
+									<p>
+								{{ member.role.roleName}}
+								</p>
+									<p>
+								{{ member.profil.pseudo}}
+							</p>
+							</div>
+						<hr class="my-3"> {% endfor %}
+						<a href="{{ path('app_band_new') }}" class="text-slate-400 hover:text-blue-500 ">
+							<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Ajouter un nouveau membre</a>
+					</div>
+
+				</div>
 			</div>
 
 		</div>
 	</div>
-	<h1>Band</h1>
+	{# <h1>Band</h1>
+			
+				<table class="table">
+					<tbody>
+						<tr>
+							<th>Id</th>
+							<td>{{ band.id }}</td>
+						</tr>
+						<tr>
+							<th>Name</th>
+							<td>{{ band.name }}</td>
+						</tr>
+						<tr>
+							<th>Logo</th>
+							<td>{{ band.logo }}</td>
+						</tr>
+						<tr>
+							<th>Define_style</th>
+							<td>{{ band.defineStyle }}</td>
+						</tr>
+					</tbody>
+				</table>
+			
+				{% for member in band.bandMembers %}
+					<p>{{ member.profil.id }}</p>
+					<p>{{ member.profil.pseudo}}</p>
+					<p>{{ member.role.roleName}}</p>
+				{% endfor %}
+			
+				<a href="{{ path('app_band_index') }}">back to list</a>
+			
+				<a href="{{ path('app_band_edit', {'id': band.id}) }}">edit</a>
+			
+				{{ include('band/_delete_form.html.twig') }} #}
+{% endblock %}
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>Id</th>
-				<td>{{ band.id }}</td>
-			</tr>
-			<tr>
-				<th>Name</th>
-				<td>{{ band.name }}</td>
-			</tr>
-			<tr>
-				<th>Logo</th>
-				<td>{{ band.logo }}</td>
-			</tr>
-			<tr>
-				<th>Define_style</th>
-				<td>{{ band.defineStyle }}</td>
-			</tr>
-		</tbody>
-	</table>
+{% block javascripts %}
+	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/index.global.min.js" integrity="sha256-dHUNnePy81fXq4D/wfu7cPsEIP7zl6MvLb84jtZf+UY=" crossorigin="anonymous"></script>
 
-	{% for member in band.bandMembers %}
-		<p>{{ member.profil.id }}</p>
-		<p>{{ member.profil.pseudo}}</p>
-		<p>{{ member.role.roleName}}</p>
-	{% endfor %}
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+var calendarEl = document.getElementById('calendar-holder');
 
-	<a href="{{ path('app_band_index') }}">back to list</a>
+var calendar = new FullCalendar.Calendar(calendarEl, {
 
-	<a href="{{ path('app_band_edit', {'id': band.id}) }}">edit</a>
+defaultView: 'dayGridMonth',
+editable: true,
+eventSources: [
+{
+url: "/fc-load-events",
+method: "POST",
+extraParams: {
+filters: JSON.stringify({})
+},
+failure: () => { // alert("There was an error while fetching FullCalendar!");
+}
+},
+],
+headerToolbar: {
+start: 'prev,next today',
+center: 'title',
+end: 'dayGridMonth,timeGridWeek,timeGridDay'
+},
+timeZone: 'UTC'
+});
+calendar.render();
+});
+	</script>
 
-	{{ include('band/_delete_form.html.twig') }}
 {% endblock %}

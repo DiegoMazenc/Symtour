@@ -24,20 +24,38 @@ class HallRepository extends ServiceEntityRepository
     public function filter(array $data)
     {
         $qb = $this->createQueryBuilder('h');
-        if (array_key_exists("musicCategory", $data)){
+        if (!empty($data['musicCategory'])) {
             $qb
                 ->leftJoin('h.music_category', 'musicCategory')
-                ->andWhere('musicCategory.category = :val')
-                ->setParameter('val', $data['musicCategory'])
-                ;
+                ->andWhere('musicCategory.category = :category')
+                ->setParameter('category', $data['musicCategory']);
         }
-        $qb 
-        ->getQuery()
-        ->getResult()
-       ;
-       return $qb->getQuery()->getResult();
+    
+        if (!empty($data['city'])) {
+            $qb
+                ->leftJoin('h.hallInfo', 'hallInfo')
+                ->andWhere('hallInfo.city = :city')
+                ->setParameter('city', $data['city']);
+        }
+
+        if (!empty($data['date'])) {
+            $qb
+                ->leftJoin('h.events', 'event')
+                ->andWhere('event.date != :date')
+                ->setParameter('date', $data['date']);
+        }
+        return $qb->getQuery()->getResult();
     }
 
+
+    public function findBySearch($searchTerm)
+    {
+        return $this->createQueryBuilder('h')
+            ->andWhere('h.name LIKE :searchTerm')
+            ->setParameter('searchTerm', '%' . $searchTerm . '%')
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Hall[] Returns an array of Hall objects
 //     */

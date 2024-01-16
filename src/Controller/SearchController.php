@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Form\SearchFormType;
 
 use App\Form\FilterSearchType;
 use App\Repository\MusicCategoryRepository;
@@ -18,17 +19,28 @@ class SearchController extends AbstractController
     {
         $filter = $this->createForm(FilterSearchType::class);
         $filter->handleRequest($request);
+       
+
         $halls = $hallRepository->findAll();
         if ($filter->isSubmitted() && $filter->isValid()){
             $halls = $hallRepository->filter($filter->getData());
         }
-        // dd($filter->getData());
+
+        $searchForm = $this->createForm(SearchFormType::class);
+        $searchForm->handleRequest($request);
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $searchData = $searchForm->getData();
+            $halls = $hallRepository->findBySearch($searchData['search']);
+        }
         // dd($filter->createView()->children);
         return $this->render('search/index.html.twig', [
             'controller_name' => 'SearchController',
             'halls' => $halls,
             'music_categories' => $musicCategoryRepository->findAll(),
-            'filterForm' => $filter->createView()
+            'filterForm' => $filter->createView(),
+            'searchForm' => $searchForm->createView()
+
         ]);
     }
 }
+

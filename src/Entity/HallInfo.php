@@ -13,8 +13,6 @@ class HallInfo
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'hallInfos')]
-    private ?Hall $hall = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $country = null;
@@ -40,22 +38,16 @@ class HallInfo
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $website = null;
 
+    #[ORM\OneToOne(inversedBy: 'hallInfo', cascade: ['persist', 'remove'])]
+    private ?Hall $hall = null;
+
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getHall(): ?Hall
-    {
-        return $this->hall;
-    }
 
-    public function setHall(?Hall $hall): static
-    {
-        $this->hall = $hall;
-
-        return $this;
-    }
 
     public function getcountry(): ?string
     {
@@ -152,4 +144,18 @@ class HallInfo
 
         return $this;
     }
+
+    public function getHall(): ?Hall
+    {
+        return $this->hall;
+    }
+
+    public function setHall(?Hall $hall): static
+    {
+        $this->hall = $hall;
+
+        return $this;
+    }
+
+
 }

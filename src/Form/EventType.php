@@ -19,11 +19,11 @@ class EventType extends AbstractType
             ->add('status')
             ->add('hall', EntityType::class, [
                 'class' => Hall::class,
-'choice_label' => 'id',
+'choice_label' => 'name',
             ])
             ->add('band', EntityType::class, [
                 'class' => Band::class,
-'choice_label' => 'id',
+'choice_label' => 'name',
             ])
         ;
     }

@@ -3,7 +3,13 @@
 {% block title %}Event index{% endblock %}
 
 {% block body %}
-    <h1>Event index</h1>
+<h1>Les events</h1>
+				<div id="calendar-holder"></div>
+
+
+
+
+    {# <h1>Event index</h1>
 
     <table class="table">
         <thead>
@@ -33,5 +39,40 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_event_new') }}">Create new</a>
+    <a href="{{ path('app_event_new') }}">Create new</a> #}
+{% endblock %}
+
+{% block javascripts %}
+	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/index.global.min.js" integrity="sha256-dHUNnePy81fXq4D/wfu7cPsEIP7zl6MvLb84jtZf+UY=" crossorigin="anonymous"></script>
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+	    var calendarEl = document.getElementById('calendar-holder');
+	
+	    var calendar = new FullCalendar.Calendar(calendarEl, {
+	        defaultView: 'dayGridMonth',
+	        editable: true,
+	        eventSources: [
+	            {
+	                url: "/fc-load-events",
+	                method: "POST",
+	                extraParams: {
+	                    filters: JSON.stringify({})
+	                },
+	                failure: () => {
+	                    // alert("There was an error while fetching FullCalendar!");
+	                },
+	            },
+	        ],
+	        headerToolbar: {
+	            start: 'prev,next today',
+	            center: 'title',
+	            end: 'dayGridMonth,timeGridWeek,timeGridDay'
+	        },
+	        timeZone: 'UTC',
+	    });
+	    calendar.render();
+	});
+    </script>
+	
 {% endblock %}

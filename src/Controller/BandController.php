@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Band;
+use App\Entity\BandInfo;
 use App\Entity\BandMember;
 use App\Entity\Profil;
 use App\Entity\RoleBand;
@@ -50,6 +51,13 @@ class BandController extends AbstractController
             ->setRole($defaultRole);
             $entityManager->persist($bandMember);
             $entityManager->flush();
+
+            $bandInfo = new BandInfo();
+            $bandInfo->setBandId($band); 
+            $entityManager->persist($bandInfo);
+            $entityManager->flush();
+
+
 
             return $this->redirectToRoute('app_band_show', ["id"=>$band->getId()], Response::HTTP_SEE_OTHER);
         }

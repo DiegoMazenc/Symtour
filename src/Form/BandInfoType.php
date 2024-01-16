@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\BandInfo;
-use App\Entity\band;
+use App\Entity\Band;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,9 +21,9 @@ class BandInfoType extends AbstractType
             ->add('email')
             ->add('phone')
             ->add('website')
-            ->add('band', EntityType::class, [
+            ->add('bandId', EntityType::class, [
                 'class' => Band::class,
-'choice_label' => 'id',
+'choice_label' => 'name',
             ])
         ;
     }

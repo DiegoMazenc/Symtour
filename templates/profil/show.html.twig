@@ -20,7 +20,9 @@
 					<h3 class="mb-8">{{ profil.description }}</h3>
 					<div class="nav-params-user">
 						<ul class="flex">
-							<li class="mx-5"><a href="/profil/{{ profil.id }}/edit">Mes infos</a></li>
+							<li class="mx-5">
+								<a href="/profil/{{ profil.id }}/edit">Mes infos</a>
+							</li>
 							<li class="mx-5">Messagerie</li>
 							<li class="mx-5">Notifications</li>
 							<li class="mx-5">Paramètres</li>
@@ -31,40 +33,65 @@
 
 			</div>
 			<div class="tab_project">
-				<h4>Mes salles</h4>
-				<div class="bg-white rounded-lg shadow-md p-3">
-				{% for hallMember in profil.hallMembers %}
-                <div class="cardAdminProfil flex justify-between ">
-					{# <p>{{ bandMember.band.logo}}</p> #}
-					<img src="{{ hallMember.hall.logo}}" alt="" class=" w-5 rounded-s-full">
-					<p>{{ hallMember.hall.name}}</p>
-					{# <p>{{ hallMember.hall.musicCategory.category}}</p>
-					<p>{{ hallMember.hall.defineStyle}}</p> #}
-					<p>{{ hallMember.role.roleName}}</p>
-					<a href="/hall/{{ hallMember.hall.id }}" class="btn-gerer">Gérer</a>
-                </div>
-                <hr class="my-3">
-				{% endfor %}
-                <a href="{{ path('app_hall_new') }}" class="text-slate-400 hover:text-blue-500 "> <button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Créer une nouvelle salle</a>
-                </div>
+				<div class="my-10">
+					<h4>Mes salles</h4>
+					<div class="bg-white rounded-lg shadow-md p-3">
+						{% for hallMember in profil.hallMembers %}
+							<div
+								class="cardAdminProfil flex justify-between ">
+								{# <p>{{ bandMember.band.logo}}</p> #}
+								<img src="{{ hallMember.hall.logo}}" alt="" class=" w-5 rounded-s-full">
+								<p>{{ hallMember.hall.name}}</p>
+								{# <p>{{ hallMember.hall.musicCategory.category}}</p>
+																																				<p>{{ hallMember.hall.defineStyle}}</p> #}
+								<p>{{ hallMember.role.roleName}}</p>
+								<a href="/hall/{{ hallMember.hall.id }}" class="btn-gerer">Gérer</a>
+							</div>
+							<hr class="my-3">
+						{% endfor %}
+						<a href="{{ path('app_hall_new') }}" class="text-slate-400 hover:text-blue-500 ">
+							<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Créer une nouvelle salle</a>
+					</div>
+				</div>
+				<div class="my-10">
+					<h4>Mes Groupes</h4>
+					<div class="bg-white rounded-lg shadow-md p-3">
+						<table class="tab-band w-full">
+							<thead>
+								<tr>
+									<th class="text-left">Band</th>
+									<th class="text-left">Catégorie</th>
+									<th class="text-left">Genre</th>
+									<th class="text-left">Role</th>
+									<th class="text-left">Gérer</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for bandMember in profil.bandMembers %}
+									<tr class="mb-10">
+										<td>
+											<div class="flex">
+												<img src="{{ bandMember.band.logo}}" alt="" class=" w-5 rounded-s-full">
+												<p class="ml-3">{{ bandMember.band.name}}</p>
+											</div>
+										</td>
+										<td>{{ bandMember.band.musicCategory.category}}</td>
+										<td>{{ bandMember.band.defineStyle}}</td>
+										<td>{{ bandMember.role.roleName}}</td>
+										<td>
+											<a href="/band/{{ bandMember.band.id }}" class="btn-gerer">Gérer</a>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
 
-				<h4>Mes Groupes</h4>
-                <div class="bg-white rounded-lg shadow-md p-3">
-				{% for bandMember in profil.bandMembers %}
-                <div class="cardAdminProfil flex justify-between ">
-					{# <p>{{ bandMember.band.logo}}</p> #}
-					<img src="{{ bandMember.band.logo}}" alt="" class=" w-5 rounded-s-full">
-					<p>{{ bandMember.band.name}}</p>
-					<p>{{ bandMember.band.musicCategory.category}}</p>
-					<p>{{ bandMember.band.defineStyle}}</p>
-					<p>{{ bandMember.role.roleName}}</p>
-					<a href="/band/{{ bandMember.band.id }}" class="btn-gerer">Gérer</a>
-                </div>
-                <hr class="my-3">
-				{% endfor %}
-                <a href="{{ path('app_band_new') }}" class="text-slate-400 hover:text-blue-500 "> <button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Créer un nouveau groupe</a>
-                </div>
-				
+						<hr class="my-5">
+						<a href="{{ path('app_band_new') }}" class="text-slate-400 hover:text-blue-500 ">
+							<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Créer un nouveau groupe</a>
+					</div>
+				</div>
+
 			</div>
 
 		</div>

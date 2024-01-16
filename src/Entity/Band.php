@@ -38,6 +38,9 @@ class Band
     #[ORM\OneToMany(mappedBy: 'band', targetEntity: BandInfo::class)]
     private Collection $bandInfos;
 
+    #[ORM\OneToOne(mappedBy: 'bandId', cascade: ['persist', 'remove'])]
+    private ?BandInfo $bandInfo = null;
+
     public function __construct()
     {
         $this->bandMembers = new ArrayCollection();
@@ -169,25 +172,27 @@ class Band
         return $this->bandInfos;
     }
 
-    public function addBandInfo(BandInfo $bandInfo): static
+    public function getBandInfo(): ?BandInfo
     {
-        if (!$this->bandInfos->contains($bandInfo)) {
-            $this->bandInfos->add($bandInfo);
-            $bandInfo->setBand($this);
+        return $this->bandInfo;
+    }
+
+    public function setBandInfo(?BandInfo $bandInfo): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($bandInfo === null && $this->bandInfo !== null) {
+            $this->bandInfo->setBandId(null);
         }
+
+        // set the owning side of the relation if necessary
+        if ($bandInfo !== null && $bandInfo->getBandId() !== $this) {
+            $bandInfo->setBandId($this);
+        }
+
+        $this->bandInfo = $bandInfo;
 
         return $this;
     }
 
-    public function removeBandInfo(BandInfo $bandInfo): static
-    {
-        if ($this->bandInfos->removeElement($bandInfo)) {
-            // set the owning side to null (unless already changed)
-            if ($bandInfo->getBand() === $this) {
-                $bandInfo->setBand(null);
-            }
-        }
-
-        return $this;
-    }
+   
 }

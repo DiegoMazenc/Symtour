@@ -13,8 +13,6 @@ class BandInfo
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'bandInfos')]
-    private ?Band $band = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $country = null;
@@ -37,21 +35,14 @@ class BandInfo
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $website = null;
 
+    #[ORM\OneToOne(inversedBy: 'bandInfo', cascade: ['persist', 'remove'])]
+    private ?Band $bandId = null;
+
+
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getBand(): ?Band
-    {
-        return $this->band;
-    }
-
-    public function setBand(?Band $band): static
-    {
-        $this->band = $band;
-
-        return $this;
     }
 
     public function getCountry(): ?string
@@ -137,4 +128,17 @@ class BandInfo
 
         return $this;
     }
+
+    public function getBandId(): ?Band
+    {
+        return $this->bandId;
+    }
+
+    public function setBandId(?Band $bandId): static
+    {
+        $this->bandId = $bandId;
+
+        return $this;
+    }
+
 }

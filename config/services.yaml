@@ -20,6 +20,8 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\EventSubscriber\CalendarSubscriber:
+
     # App\EventListener\UserCreatedListener:
     #     tags:
     #         -
