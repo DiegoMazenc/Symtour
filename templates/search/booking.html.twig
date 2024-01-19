@@ -20,10 +20,11 @@
 					{% for musicCategory in hall.musicCategory %}
 						<p>{{ musicCategory.category }} , </p>
 					{% endfor %}
+					
+					</div>
 					{% for event in hall.events %}
 						<p>{{event.date|date('l j F Y')}}</p>
 					{% endfor %}
-					</div>
 				</div>
 
 			</div>
