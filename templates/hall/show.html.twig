@@ -56,7 +56,7 @@
 						</div>
 
 						<div class="event-list-db bg-white rounded-md shadow-md ">
-							<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Historique de mes évènements
+							<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes demandes de date
 							</h4>
 							<div class="p-3">
 						{% for event in hall.events %}
@@ -72,8 +72,8 @@
 								</div>
 								<hr class="my-3">
 							{% endif %}
-							<a href="{{ path('app_event_new') }}" class="text-slate-400 hover:text-blue-500 ">
 							{% endfor %}
+							<a href="{{ path('app_event_new') }}" class="text-slate-400 hover:text-blue-500 ">
 							<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Organiser un nouvel Event</a>
 					</div>
 						</div>

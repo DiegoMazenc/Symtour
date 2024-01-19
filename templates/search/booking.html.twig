@@ -11,11 +11,19 @@
 					<img src="{{ hall.logo }}" alt="" class="user-img">
 				</div>
 				<div class="user-infos">
-					<h3 class="font-bold ">{{ hall.name }}</h3>
+					<h3 class="font-bold ">{{ hall.name }} ({{hall.structure}})</h3>
 					<p>{{ hall.hallInfo.country }}</p>
-					<p>{{ hall.hallInfo.city }}</p>
+					<p>{{ hall.hallInfo.zipCode }}, {{ hall.hallInfo.city }}</p>
 					<p>{{ hall.hallInfo.email }}</p>
 					<p>{{ hall.hallInfo.phone }}</p>
+					<div class="flex">
+					{% for musicCategory in hall.musicCategory %}
+						<p>{{ musicCategory.category }} , </p>
+					{% endfor %}
+					{% for event in hall.events %}
+						<p>{{event.date|date('l j F Y')}}</p>
+					{% endfor %}
+					</div>
 				</div>
 
 			</div>
@@ -27,22 +35,30 @@
 							<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Historique de mes évènements
 							</h4>
 							<div class="p-3">
-									<label for="booking_date" class='text-blue-400 font-semibold'>Date Sélectionné :</label><br>
-									<input type="date" id="booking_date" name="booking_date" value="{{ date }}" class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5" required>
-									
+								<label for="booking_date" class='text-blue-400 font-semibold'>Date Sélectionné :</label><br>
+								<input type="date" id="booking_date" name="booking_date" value="{{ date }}" class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5" required>
 
-									<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
 
-									<label for="band_id" class='text-blue-400 font-semibold'>Pour quel projet souhaitez vous réserver ?</label><br>
-										<select name="band_id" required class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5">
-											{% for bandMember in app.user.profil.bandMembers %}
-												<option value="{{ bandMember.band.id }}"><img src="{{ bandMember.band.logo }}" alt="">{{ bandMember.band.name }}</option>
-											{% endfor %}
-										</select><br>
-										<input type="hidden" name="booking_date" value="{{ date }}">
-										<button type="submit">Réserver</button>
-									</form>
-							
+								<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
+									<label for="band_id" class='text-blue-400 font-semibold'>Pour quel projet souhaitez-vous réserver ?</label><br>
+									<select name="band_id" required class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5">
+										{% for bandMember in app.user.profil.bandMembers %}
+											{% set musicCategory = bandMember.band.musicCategory.category %}
+											{% set isMusicAccepted = hall.musicCategory|filter(category => category.category == musicCategory)|length > 0 %}
+											<option value="{{ bandMember.band.id }}" {% if not isMusicAccepted %} disabled {% endif %}>
+												{{ bandMember.band.name }}
+												({{ musicCategory }})
+												
+												{% if not isMusicAccepted %}
+													(Genre musical non acceptée)
+												{% endif %}
+
+											</option>
+										{% endfor %}
+									</select><br>
+									<button type="submit">Réserver</button>
+								</form>
+
 							</div>
 						</div>
 					</div>
@@ -61,41 +77,41 @@
 
 		</div>
 		{# <div class="user-contain py-20 bg bg-slate-100">
-					<div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
-						<div class="flex ">
-							<img src="{{hall.logo}}" alt="{{hall.name}}" class=" w-52 rounded-md">
-							<p class="text-blue-400 font-semibold ml-10 text-lg">
-								{{hall.name}}
-							</p>
-						</div>
-		
-						{% if date is not empty %}
-							Date sélectionnée depuis la page de recherche :
-							{{ date }}
-							<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
-								<select name="band_id" required>
-									{% for bandMember in app.user.profil.bandMembers %}
-										<option value="{{ bandMember.band.id }}">{{ bandMember.band.name }}</option>
-									{% endfor %}
-								</select>
-								<input type="hidden" name="booking_date" value="{{ date }}">
-								<button type="submit">Réserver</button>
-							</form>
-						{% else %}
-							<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
-								<select name="band_id" required>
-									{% for bandMember in app.user.profil.bandMembers %}
-										<option value="{{ bandMember.band.id }}">{{ bandMember.band.name }}</option>
-									{% endfor %}
-								</select>
-		
-								<label for="booking_date">Sélectionnez une date :</label>
-								<input type="date" id="booking_date" name="booking_date" required>
-								<button type="submit">Réserver</button>
-							</form>
-						{% endif %}
-					</div>
-				</div> #}
+							<div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
+								<div class="flex ">
+									<img src="{{hall.logo}}" alt="{{hall.name}}" class=" w-52 rounded-md">
+									<p class="text-blue-400 font-semibold ml-10 text-lg">
+										{{hall.name}}
+									</p>
+								</div>
+				
+								{% if date is not empty %}
+									Date sélectionnée depuis la page de recherche :
+									{{ date }}
+									<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
+										<select name="band_id" required>
+											{% for bandMember in app.user.profil.bandMembers %}
+												<option value="{{ bandMember.band.id }}">{{ bandMember.band.name }}</option>
+											{% endfor %}
+										</select>
+										<input type="hidden" name="booking_date" value="{{ date }}">
+										<button type="submit">Réserver</button>
+									</form>
+								{% else %}
+									<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
+										<select name="band_id" required>
+											{% for bandMember in app.user.profil.bandMembers %}
+												<option value="{{ bandMember.band.id }}">{{ bandMember.band.name }}</option>
+											{% endfor %}
+										</select>
+				
+										<label for="booking_date">Sélectionnez une date :</label>
+										<input type="date" id="booking_date" name="booking_date" required>
+										<button type="submit">Réserver</button>
+									</form>
+								{% endif %}
+							</div>
+						</div> #}
 	</div>
 
 {% endblock %}
