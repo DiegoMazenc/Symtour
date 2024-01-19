@@ -24,6 +24,10 @@ class BandInfoType extends AbstractType
             ->add('bandId', EntityType::class, [
                 'class' => Band::class,
 'choice_label' => 'name',
+'label' => false,
+                'attr' => [
+                    'style' => 'display: none;', 
+                ],
             ])
         ;
     }

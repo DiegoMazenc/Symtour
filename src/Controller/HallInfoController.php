@@ -55,11 +55,12 @@ class HallInfoController extends AbstractController
     {
         $form = $this->createForm(HallInfoType::class, $hallInfo);
         $form->handleRequest($request);
-
+        // dd($hallInfo);
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_hall_info_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_hall_info_edit', ["id"=>$hallInfo->getId()], Response::HTTP_SEE_OTHER);
+
         }
 
         return $this->render('hall_info/edit.html.twig', [

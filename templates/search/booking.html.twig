@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+	<div class="search-contain flex bg-sky-950 ">
+
+		<div class="sidebar-filter basis-1/4 bg-sky-950 p-5 h-screen"></div>
+
+		<div class="user-contain px-28 py-5 bg bg-slate-100">
+			<div class="header-user flex justify-evenly">
+				<div class="pic_profil">
+					<img src="{{ hall.logo }}" alt="" class="user-img">
+				</div>
+				<div class="user-infos">
+					<h3 class="font-bold ">{{ hall.name }}</h3>
+					<p>{{ hall.hallInfo.country }}</p>
+					<p>{{ hall.hallInfo.city }}</p>
+					<p>{{ hall.hallInfo.email }}</p>
+					<p>{{ hall.hallInfo.phone }}</p>
+				</div>
+
+			</div>
+			<div class="tab_project">
+				<div class="my-10">
+					<div class="flex ">
+
+						<div class="event-list-db bg-white rounded-md shadow-md ">
+							<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Historique de mes évènements
+							</h4>
+							<div class="p-3">
+									<label for="booking_date" class='text-blue-400 font-semibold'>Date Sélectionné :</label><br>
+									<input type="date" id="booking_date" name="booking_date" value="{{ date }}" class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5" required>
+									
+
+									<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
+
+									<label for="band_id" class='text-blue-400 font-semibold'>Pour quel projet souhaitez vous réserver ?</label><br>
+										<select name="band_id" required class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5">
+											{% for bandMember in app.user.profil.bandMembers %}
+												<option value="{{ bandMember.band.id }}"><img src="{{ bandMember.band.logo }}" alt="">{{ bandMember.band.name }}</option>
+											{% endfor %}
+										</select><br>
+										<input type="hidden" name="booking_date" value="{{ date }}">
+										<button type="submit">Réserver</button>
+									</form>
+							
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="my-10">
+					<h4>Membres</h4>
+					<div class="bg-white rounded-lg shadow-md p-3">
+
+
+						<a href="{{ path('app_hall_member_new') }}" class="text-slate-400 hover:text-blue-500 ">
+							<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Inviter un Groupe</a>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+		{# <div class="user-contain py-20 bg bg-slate-100">
+					<div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
+						<div class="flex ">
+							<img src="{{hall.logo}}" alt="{{hall.name}}" class=" w-52 rounded-md">
+							<p class="text-blue-400 font-semibold ml-10 text-lg">
+								{{hall.name}}
+							</p>
+						</div>
+		
+						{% if date is not empty %}
+							Date sélectionnée depuis la page de recherche :
+							{{ date }}
+							<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
+								<select name="band_id" required>
+									{% for bandMember in app.user.profil.bandMembers %}
+										<option value="{{ bandMember.band.id }}">{{ bandMember.band.name }}</option>
+									{% endfor %}
+								</select>
+								<input type="hidden" name="booking_date" value="{{ date }}">
+								<button type="submit">Réserver</button>
+							</form>
+						{% else %}
+							<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
+								<select name="band_id" required>
+									{% for bandMember in app.user.profil.bandMembers %}
+										<option value="{{ bandMember.band.id }}">{{ bandMember.band.name }}</option>
+									{% endfor %}
+								</select>
+		
+								<label for="booking_date">Sélectionnez une date :</label>
+								<input type="date" id="booking_date" name="booking_date" required>
+								<button type="submit">Réserver</button>
+							</form>
+						{% endif %}
+					</div>
+				</div> #}
+	</div>
+
+{% endblock %}

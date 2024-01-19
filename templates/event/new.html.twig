@@ -4,8 +4,14 @@
 
 {% block body %}
     <h1>Create new Event</h1>
-
+<div class="form-content m-20 p-20 bg-white rounded-lg shadow-lg">
     {{ include('event/_form.html.twig') }}
+</div>
+<select name="" id="">
+    {% for bandMembers in app.user.profil.bandMembers %}
+        <option value="">{{bandMembers.band.name}}</option>
+    {% endfor %}
+</select>
 
     <a href="{{ path('app_event_index') }}">back to list</a>
 {% endblock %}

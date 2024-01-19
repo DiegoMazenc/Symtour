@@ -1,11 +1,14 @@
 <?php
 
 namespace App\Controller;
-use App\Form\SearchFormType;
 
+use App\Entity\Event;
+use App\Form\SearchFormType;
+use App\Entity\Band;
 use App\Form\FilterSearchType;
 use App\Repository\MusicCategoryRepository;
 use App\Repository\HallRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,6 +43,36 @@ class SearchController extends AbstractController
             'filterForm' => $filter->createView(),
             'searchForm' => $searchForm->createView()
 
+        ]);
+    }
+
+    #[Route('/search/booking/{id}', name: 'app_search_booking', methods: ['GET', 'POST'])]
+    public function booking(Request $request, $id, HallRepository $hallRepository, EntityManagerInterface $em ): Response
+    {
+        $date = $request->query->get('date');
+        $hall = $hallRepository->find($id);
+        $dateBooking = $request->request->get('booking_date');
+        $bandId = $request->request->get('band_id');
+    
+        if ($request->isMethod('POST')) {
+            // Vous devez remplacer 'Your\Entity\Namespace\Band' par la classe réelle de votre entité Band
+            $band = $em->getRepository(Band::class)->find($bandId);
+    
+            $event = new Event();
+            $event->setHall($hall)
+                ->setBand($band)
+                ->setDate(new \DateTime($dateBooking))
+                ->setStatus(3);
+    
+            $em->persist($event);
+            $em->flush();
+    
+            // Redirigez l'utilisateur ou affichez un message de confirmation ici
+        }
+
+        return $this->render('search/booking.html.twig', [
+            'hall' => $hall,
+            'date' => $date,
         ]);
     }
 }

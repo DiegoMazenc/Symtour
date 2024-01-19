@@ -35,8 +35,8 @@ class Band
     #[ORM\OneToMany(mappedBy: 'band', targetEntity: Event::class)]
     private Collection $events;
 
-    #[ORM\OneToMany(mappedBy: 'band', targetEntity: BandInfo::class)]
-    private Collection $bandInfos;
+    // #[ORM\OneToMany(mappedBy: 'band', targetEntity: BandInfo::class)]
+    // private Collection $bandInfos;
 
     #[ORM\OneToOne(mappedBy: 'bandId', cascade: ['persist', 'remove'])]
     private ?BandInfo $bandInfo = null;
@@ -45,7 +45,7 @@ class Band
     {
         $this->bandMembers = new ArrayCollection();
         $this->events = new ArrayCollection();
-        $this->bandInfos = new ArrayCollection();
+        // $this->bandInfos = new ArrayCollection();
     }
 
 
@@ -167,10 +167,10 @@ class Band
     /**
      * @return Collection<int, BandInfo>
      */
-    public function getBandInfos(): Collection
-    {
-        return $this->bandInfos;
-    }
+    // public function getBandInfos(): Collection
+    // {
+    //     return $this->bandInfos;
+    // }
 
     public function getBandInfo(): ?BandInfo
     {

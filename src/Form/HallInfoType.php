@@ -25,6 +25,11 @@ class HallInfoType extends AbstractType
             ->add('hall', EntityType::class, [
                 'class' => Hall::class,
 'choice_label' => 'name',
+'label' => false,
+                'attr' => [
+                    'style' => 'display: none;', 
+                ],
+
             ])
         ;
     }

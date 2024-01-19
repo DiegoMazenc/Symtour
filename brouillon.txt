@@ -349,3 +349,134 @@ class UserType extends AbstractType
 
     <a href="{{ path('app_user_index') }}">back to list</a> #}
 {% endblock %}
+
+
+calendrier
+
+ <div id="calendar-nav">
+        <button onclick="prevMonth()">Mois précédent</button>
+        <button onclick="prevYear()">Année précédente</button>
+        <h2 id="current-month"></h2>
+        <button onclick="nextMonth()">Mois suivant</button>
+        <button onclick="nextYear()">Année suivante</button>
+    </div>
+
+    <div id="calendar"></div>
+
+    <script>
+        let currentYear, currentMonth;
+
+        function generateCalendar(year, month) {
+            const calendarDiv = document.getElementById('calendar');
+
+            // Obtenez le premier jour du mois et le dernier jour du mois
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+
+            // Créez un tableau pour stocker les jours du mois
+            const days = [];
+
+            // Ajoutez les jours du mois au tableau
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                days.push(i);
+            }
+
+            // Créez le tableau HTML du calendrier
+            const calendarTable = document.createElement('table');
+            const headerRow = calendarTable.insertRow();
+            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            // Ajoutez les jours de la semaine comme en-têtes
+            for (let day of daysOfWeek) {
+                const th = document.createElement('th');
+                th.textContent = day;
+                headerRow.appendChild(th);
+            }
+
+            // Ajoutez les jours du mois au tableau
+            let row;
+            let dayCount = 1;
+
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                if (i % 7 === 0) {
+                    row = calendarTable.insertRow();
+                    row.classList.add('calendar-row');
+                }
+                row.insertCell();
+            }
+
+            for (let day of days) {
+                if (dayCount % 7 === 0) {
+                    row = calendarTable.insertRow();
+                    row.classList.add('calendar-row');
+                }
+                const cell = row.insertCell();
+                cell.textContent = day;
+
+                dayCount++;
+            }
+
+            // Ajoutez le tableau du calendrier à la div du calendrier
+            calendarDiv.innerHTML = '';
+            calendarDiv.appendChild(calendarTable);
+
+            // Mettez à jour le mois affiché
+            document.getElementById('current-month').textContent = new Date(year, month).toLocaleDateString('default', { month: 'long', year: 'numeric' });
+        }
+
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar(currentYear, currentMonth);
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentYear, currentMonth);
+        }
+
+        function prevYear() {
+            currentYear--;
+            generateCalendar(currentYear, currentMonth);
+        }
+
+        function nextYear() {
+            currentYear++;
+            generateCalendar(currentYear, currentMonth);
+        }
+
+        // Obtenez la date actuelle
+        const currentDate = new Date();
+        currentYear = currentDate.getFullYear();
+        currentMonth = currentDate.getMonth();
+
+        // Générez le calendrier pour le mois actuel
+        generateCalendar(currentYear, currentMonth);
+    </script>
+
+th, td {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+#calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+  table {
+    border-collapse: collapse;
+    width: 100%;
+}

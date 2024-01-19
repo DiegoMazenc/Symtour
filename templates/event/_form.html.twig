@@ -1,4 +1,34 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_label(form.date, "Date*", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
+{{ form_widget(form.date, {
+        'attr': {
+            'class': 'rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5 ',
+            'placeholder': 'Nom Etablissement'
+        }
+    }) }}<br>
+
+    {# {{ form_label(form.status, "status*", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
+{{ form_widget(form.status, {
+        'attr': {
+            'class': 'rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5 ',
+            'placeholder': 'Nom Etablissement'
+        }
+    }) }}<br> #}
+
+     {{ form_label(form.hall, "hall*", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
+{{ form_widget(form.hall, {
+        'attr': {
+            'class': 'rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5 ',
+            'placeholder': 'Nom Etablissement'
+        }
+    }) }}<br>
+
+     {{ form_label(form.band, "band*", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
+{{ form_widget(form.band, {
+        'attr': {
+            'class': 'rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5 ',
+            'placeholder': 'Nom Etablissement'
+        }
+    }) }}<br>
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

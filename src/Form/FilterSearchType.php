@@ -12,9 +12,9 @@ class FilterSearchType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('type')
         ->add('musicCategory', null, [
             'required' => false,
+            
         ])
         ->add('date', DateType::class, [
             'required' => false,

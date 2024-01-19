@@ -7,13 +7,7 @@
 		<div
 			class="sidebar-filter basis-1/4 bg-sky-950 p-5 h-screen">
 			{{ form_start(filterForm) }}
-						{{ form_widget(filterForm.type, {
-			                    'attr': {
-			                        'class': 'w-full p-2 rounded-lg ',
-			                        'value': 'Une Salle'
-			                    }
-			                }) }}<br>
-
+						
 
 			<div class="btn-choice flex justify-between pb-5">
 				<button class="bg-white py-2 px-5 rounded-lg hover:bg-blue-500 duration-300">Une Salle</button>
@@ -106,12 +100,60 @@
 						<button>+ Follow</button>
 						<div class="left-btn-card text-white">
 							<a href="{{ path('app_hall_show', {'id': hall.id}) }}" class=" px-3 py-2 rounded-lg bg-blue-400">Voir détails</a>
-							<button class=" px-3 py-2 rounded-lg bg-emerald-400">Réserver</button>
+							<a href="{{ path('app_search_booking', {'id': hall.id, 'date': filterForm.date.vars.value}) }}" class=" px-3 py-2 rounded-lg bg-emerald-400">Réserver</a>
 						</div>
 					</div>
 				</div>
 			{% endfor %}
 		</div>
 	</div>
+
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const halls = {{ halls|json_encode|raw }};
+            const resultContain = document.querySelector('.result-contain');
+
+            // Fonction pour mettre à jour les salles affichées en fonction des filtres
+            function updateHalls() {
+                // Obtenez les valeurs des filtres sélectionnés
+                const musicCategory = document.getElementById('filter_musicCategory').value;
+                const date = document.getElementById('filter_date').value;
+                const city = document.getElementById('filter_city').value;
+                const searchTerm = document.getElementById('searchForm_search').value.toLowerCase();
+
+                // Filtrer les salles en fonction des valeurs sélectionnées
+                const filteredHalls = halls.filter(hall => {
+                    const isMusicCategoryMatch = !musicCategory || hall.musicCategory.includes(musicCategory);
+                    const isDateMatch = !date || (hall.events && hall.events.some(event => event.date !== date));
+                    const isCityMatch = !city || (hall.hallinfo && hall.hallinfo.city.toLowerCase().includes(city.toLowerCase()));
+                    const isSearchMatch = !searchTerm || hall.name.toLowerCase().includes(searchTerm);
+
+                    return isMusicCategoryMatch && isDateMatch && isCityMatch && isSearchMatch;
+                });
+
+                // Mettre à jour les salles affichées
+                updateResultCards(filteredHalls);
+            }
+
+            // Fonction pour mettre à jour les cartes de résultat
+            function updateResultCards(filteredHalls) {
+                // Effacer les cartes de résultat existantes
+                resultContain.innerHTML = '';
+
+                // Ajouter des cartes de résultat pour chaque salle filtrée
+                filteredHalls.forEach(hall => {
+                    // Créer et ajouter le HTML de la carte de résultat
+                    const cardHtml = `<div class="card-result w-full my-5 bg-white p-3 rounded-lg shadow-md hover:shadow-lg duration-300">...</div>`;
+                    resultContain.insertAdjacentHTML('beforeend', cardHtml);
+                });
+            }
+
+            // Attacher des écouteurs d'événements aux éléments de filtre
+            document.getElementById('filter_musicCategory').addEventListener('change', updateHalls);
+            document.getElementById('filter_date').addEventListener('change', updateHalls);
+            document.getElementById('filter_city').addEventListener('input', updateHalls);
+            document.getElementById('searchForm_search').addEventListener('input', updateHalls);
+        });
+    </script>
 
 {% endblock %}
