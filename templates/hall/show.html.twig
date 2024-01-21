@@ -105,33 +105,55 @@
 							</div>
 						</div>
 					</div>
-					<div class="event-list-db bg-white rounded-md shadow-md pt-3 ">
-							<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes prochains events
-							</h4>
-							<div class="p-3">
-								{% for event in hall.events %}
-									{% if event.status == 1 %}
-										<div class="cardAdminProfil flex justify-between ">
-											<p>{{ event.date|date('d-m-Y')  }}</p>
-											<p>{{ event.band.name }}</p>
+					<div class="event-list-db bg-white rounded-md shadow-md mt-3 ">
+						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes prochains events
+						</h4>
+						<div class="p-3">
+							{% for event in hall.events %}
+								{% if event.status == 1 %}
+									<div class="cardAdminProfil flex justify-between ">
+										<p>{{ event.date|date('d-m-Y')  }}</p>
+										<p>{{ event.band.name }}</p>
 
-											<div>
-												<form action="{{ path('app_hall_show', {'id': hall.id}) }}" method="post">
-													<input type="hidden" name="action" value="validate">
-													<input type="hidden" name="event_id" value="{{ event.id }}">
-													<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Annuler</button>
-												</form>
-											</div>
+										<div>
+											<form action="{{ path('app_hall_show', {'id': hall.id}) }}" method="post">
+												<input type="hidden" name="action" value="validate">
+												<input type="hidden" name="event_id" value="{{ event.id }}">
+												<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Annuler</button>
+											</form>
 										</div>
-										<hr class="my-3">
-									{% endif %}
-								{% endfor %}
-								<a href="{{ path('app_event_new') }}" class="text-slate-400 hover:text-blue-500 ">
-									<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Organiser un nouvel Event</a>
-							</div>
+									</div>
+									<hr class="my-3">
+								{% endif %}
+							{% endfor %}
+							<a href="{{ path('app_event_new') }}" class="text-slate-400 hover:text-blue-500 ">
+								<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Organiser un nouvel Event</a>
 						</div>
+					</div>
 				</div>
 				<div class="my-10">
+					<div class="event-list-db bg-white rounded-md shadow-md mt-3 ">
+						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Membres
+						</h4>
+						<div class="p-3">
+						
+						{% for member in hall.hallMembers %}
+							<div class="cardAdminProfil flex justify-between">
+								<div class="flex items-center">
+									<div class=" img-member-db">
+										<img src="{{ member.profile.picture }}" alt="{{ member.profile.pseudo }}">
+									</div>
+									<div>
+										<p class="text-blue-400 font-semibold">{{ member.profile.pseudo}}</p>
+										<p>{{ member.role.roleName}}</p>
+									</div>
+								</div>
+
+							</div>
+							<hr class="my-3">
+						{% endfor %}
+						</div>
+					</div>
 					<h4>Membres</h4>
 					<div class="bg-white rounded-lg shadow-md p-3">
 
