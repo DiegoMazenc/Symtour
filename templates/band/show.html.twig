@@ -91,7 +91,7 @@
 								{% for event in band.events %}
 									<div class="cardAdminProfil flex justify-between ">
 										<p>{{ event.date|date('d-m-Y')  }}</p>
-										<p>{{ event.hall.name }}</p>
+										<a href="{{ path('app_hall_show', {'id': event.hall.id}) }}">{{ event.hall.name }}</a>
 										<p>
 											{% if event.status == 1 %}
 												<span style="color: green;">✓ Validé</span>

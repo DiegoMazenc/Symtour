@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\HallMemberRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: HallMemberRepository::class)]
@@ -21,6 +22,9 @@ class HallMember
 
     #[ORM\ManyToOne(inversedBy: 'hallMembers')]
     private ?Profil $profile = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $date_create = null;
 
 
 
@@ -61,6 +65,18 @@ class HallMember
     public function setProfile(?Profil $profile): static
     {
         $this->profile = $profile;
+
+        return $this;
+    }
+
+    public function getDateCreate(): ?\DateTimeInterface
+    {
+        return $this->date_create;
+    }
+
+    public function setDateCreate(?\DateTimeInterface $date_create): static
+    {
+        $this->date_create = $date_create;
 
         return $this;
     }

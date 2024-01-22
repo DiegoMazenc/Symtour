@@ -61,7 +61,7 @@ class HallController extends AbstractController
             $entityManager->persist($hallInfo);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_hall_show', ["id"=>$hall->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_hall_info_edit', ["id"=>$hall->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('hall/new.html.twig', [

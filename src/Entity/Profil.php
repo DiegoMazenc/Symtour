@@ -46,10 +46,14 @@ class Profil
     #[ORM\OneToOne(inversedBy: 'profil', cascade: ['persist', 'remove'])]
     private ?User $IdUser = null;
 
+    #[ORM\OneToMany(mappedBy: 'profil', targetEntity: Notification::class)]
+    private Collection $notifications;
+
     public function __construct()
     {
         $this->bandMembers = new ArrayCollection();
         $this->hallMembers = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -195,6 +199,36 @@ class Profil
             // set the owning side to null (unless already changed)
             if ($hallMember->getProfile() === $this) {
                 $hallMember->setProfile(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Notification>
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): static
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications->add($notification);
+            $notification->setProfil($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): static
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getProfil() === $this) {
+                $notification->setProfil(null);
             }
         }
 
