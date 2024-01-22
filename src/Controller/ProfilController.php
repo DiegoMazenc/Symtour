@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 #[Route('/profil')]
 class ProfilController extends AbstractController
@@ -47,10 +48,10 @@ class ProfilController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_profil_show', methods: ['GET'])]
-    public function show(Profil $profil, ProfilRepository $profilRepository, BandMemberRepository $bandMemberRepository, NotificationRepository $notificationRepository): Response
+    public function show( SessionInterface $session ,Profil $profil, ProfilRepository $profilRepository, BandMemberRepository $bandMemberRepository, NotificationRepository $notificationRepository): Response
     {
         $count = $notificationRepository->count(['status' => 1, 'profil' => $profil->getId()]);
-;
+        $session->set('notificationCount', $count);
         return $this->render('profil/show.html.twig', [
             'profil' => $profil,
             'notificationCount' => $count,

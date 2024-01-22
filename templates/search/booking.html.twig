@@ -1,10 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 
-	<div class="search-contain flex bg-sky-950 ">
-
-		<div class="sidebar-filter basis-1/4 bg-sky-950 p-5 h-screen"></div>
-
 		<div class="user-contain px-28 py-5 bg bg-slate-100">
 			<div class="header-user flex justify-evenly">
 				<div class="pic_profil">
@@ -77,42 +73,5 @@
 			</div>
 
 		</div>
-		{# <div class="user-contain py-20 bg bg-slate-100">
-							<div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
-								<div class="flex ">
-									<img src="{{hall.logo}}" alt="{{hall.name}}" class=" w-52 rounded-md">
-									<p class="text-blue-400 font-semibold ml-10 text-lg">
-										{{hall.name}}
-									</p>
-								</div>
-				
-								{% if date is not empty %}
-									Date sélectionnée depuis la page de recherche :
-									{{ date }}
-									<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
-										<select name="band_id" required>
-											{% for bandMember in app.user.profil.bandMembers %}
-												<option value="{{ bandMember.band.id }}">{{ bandMember.band.name }}</option>
-											{% endfor %}
-										</select>
-										<input type="hidden" name="booking_date" value="{{ date }}">
-										<button type="submit">Réserver</button>
-									</form>
-								{% else %}
-									<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
-										<select name="band_id" required>
-											{% for bandMember in app.user.profil.bandMembers %}
-												<option value="{{ bandMember.band.id }}">{{ bandMember.band.name }}</option>
-											{% endfor %}
-										</select>
-				
-										<label for="booking_date">Sélectionnez une date :</label>
-										<input type="date" id="booking_date" name="booking_date" required>
-										<button type="submit">Réserver</button>
-									</form>
-								{% endif %}
-							</div>
-						</div> #}
-	</div>
 
 {% endblock %}

@@ -115,6 +115,8 @@ class HallController extends AbstractController
         ]);
     }
 
+    
+
     #[Route('/{id}', name: 'app_hall_delete', methods: ['POST'])]
     public function delete(Request $request, Hall $hall, EntityManagerInterface $entityManager): Response
     {
