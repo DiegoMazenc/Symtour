@@ -29,7 +29,7 @@
 			</ul>
 		</div>
 		<div class="user-contain py-5 px-20  bg bg-slate-100">
-			<div class="header-user flex justify-evenly">
+			<div class="header-user flex ">
 				<div class="pic_profil">
 					<img src="{{ profil.picture }}" alt="" class="user-img">
 				</div>
@@ -40,6 +40,7 @@
 				</div>
 
 			</div>
+			<hr class=" border-black my-5">
 			<div class="tab_project">
 				<div class="my-10">
 					<h4>Mes salles</h4>
@@ -48,7 +49,7 @@
 							<div
 								class="cardAdminProfil flex justify-between ">
 								{# <p>{{ bandMember.band.logo}}</p> #}
-								<img src="{{ hallMember.hall.logo}}" alt="" class=" w-5 rounded-s-full">
+								<img src="{{ hallMember.hall.logo}}" alt="" class=" w-8 rounded-md">
 								<p>{{ hallMember.hall.name}}</p>
 								{# <p>{{ hallMember.hall.musicCategory.category}}</p>
 																																				<p>{{ hallMember.hall.defineStyle}}</p> #}
@@ -79,7 +80,7 @@
 									<tr class="mb-10">
 										<td>
 											<div class="flex">
-												<img src="{{ bandMember.band.logo}}" alt="" class=" w-5 rounded-s-full">
+												<img src="{{ bandMember.band.logo}}" alt="" class=" w-8 rounded-md">
 												<p class="ml-3">{{ bandMember.band.name}}</p>
 											</div>
 										</td>

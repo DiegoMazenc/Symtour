@@ -54,7 +54,14 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         }
         $profil = $this->em->getRepository(Profil::class)->findBy(["IdUser" => $token->getUser()]);
         // dd($token);
-        return new RedirectResponse($this->urlGenerator->generate('app_profil_show', ["id"=>$profil[0]->getId()]));
+        $getPseudo = $profil[0]->getPseudo();
+        // dd($getPseudo);
+        if($getPseudo !== Null ){
+            return new RedirectResponse($this->urlGenerator->generate('app_profil_show', ["id"=>$profil[0]->getId()]));
+        } else {
+            return new RedirectResponse($this->urlGenerator->generate('app_profil_edit', ["id"=>$profil[0]->getId()]));
+
+        }
     }
 
     protected function getLoginUrl(Request $request): string

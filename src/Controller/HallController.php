@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Entity\Hall;
 use App\Entity\HallInfo;
 use App\Entity\HallMember;
@@ -69,9 +70,28 @@ class HallController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_hall_show', methods: ['GET'])]
-    public function show(Hall $hall): Response
+    #[Route('/{id}', name: 'app_hall_show', methods: ['GET', 'POST'])]
+    public function show(Hall $hall, Request $request, EntityManagerInterface $em): Response
     {
+        if ($request->isMethod('POST')) {
+            $action = $request->request->get('action');
+            $eventId = $request->request->get('event_id');
+    
+            if ($action === 'validate') {
+                $status = 1; 
+            } elseif ($action === 'reject') {
+                $status = 2; 
+            } else {
+                $status = 3;
+            }
+    
+            $event = $em->getRepository(Event::class)->find($eventId);
+            if ($event) {
+                $event->setStatus($status);
+                $em->flush();
+            }
+        }
+
         return $this->render('hall/show.html.twig', [
             'hall' => $hall,
         ]);

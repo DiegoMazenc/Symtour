@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
+.list-category{
+    flex-wrap: wrap;
+}
 
 .formulaire{
     display: flex;
@@ -33,6 +35,23 @@ padding: 15px;
     height: 150px;
     overflow: hidden;
     border-radius: 15px;
+    margin-right: 20px;
+}
+
+.img-member-db{
+    position: relative;
+    width: 70px;
+    height: 70px;
+    overflow: hidden;
+    border-radius: 100%;
+    margin-right: 20px;
+}
+
+.img-member-db img{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .user-img {
@@ -78,7 +97,7 @@ table {
     border-spacing: 0 15px; /* Ajustez la valeur de la deuxième propriété selon vos besoins */
 }
 
-.hover-nav{
+.hover-nav-rechercher, .hover-nav-profile, .hover-nav-deconnexion{
 width: 24px;
 height: 24px;
     overflow: hidden;
@@ -87,13 +106,21 @@ height: 24px;
 
 }
 
-.hover-nav:hover{
-    width: 140px;
+.hover-nav-deconnexion:hover{
+    width: 130px;
+}
+
+.hover-nav-profile:hover{
+    width: 86px;
+}
+
+.hover-nav-rechercher:hover{
+    width: 120px;
 }
 
 .item-content-nav{
  position: absolute;
- width: 140px;
+ right: 0;
 }
 
 .item-content-nav p{
@@ -136,6 +163,12 @@ height: 24px;
   .sous-nav {
     display: none;
   }
+
+
+
+
+
+  /* =====CALENDRIER===== */
 
   .calendar{
     width: 500px;
