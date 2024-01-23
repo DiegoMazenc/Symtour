@@ -70,10 +70,7 @@ class SearchController extends AbstractController
             $em->persist($event);
             $em->flush();
 
-            $receipt = "hall";
-            $sender = "band";
-            $type = "event";
-            $notification->addNotificationHall($receipt,$bandName, $id, $sender, $bandId, $type, $hall, $em);
+            $notification->addNotificationHall("hall",$bandName, $id, "band", $bandId, "event", $hall, $em);
         }
 
         return $this->render('search/booking.html.twig', [

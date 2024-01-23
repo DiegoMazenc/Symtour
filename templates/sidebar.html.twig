@@ -22,9 +22,16 @@
 					<g fill="none" fill-rule="evenodd"><path d="M24 0v24H0V0zM12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035c-.01-.004-.019-.001-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427c-.002-.01-.009-.017-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093c.012.004.023 0 .029-.008l.004-.014l-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014l-.034.614c0 .012.007.02.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="white" d="M15 19a2 2 0 0 1-1.85 1.995L13 21h-2a2 2 0 0 1-1.995-1.85L9 19zM12 2a7 7 0 0 1 6.996 6.76L19 9v3.764l1.822 3.644a1.1 1.1 0 0 1-.869 1.586l-.115.006H4.162a1.1 1.1 0 0 1-1.03-1.487l.046-.105L5 12.764V9a7 7 0 0 1 7-7m0 2a5 5 0 0 0-4.995 4.783L7 9v3.764a2 2 0 0 1-.136.725l-.075.17L5.619 16h12.763l-1.17-2.342a2.002 2.002 0 0 1-.203-.709L17 12.764V9a5 5 0 0 0-5-5"/></g>
 				</svg>
 				Notifications
-				{% if app.session.get('notificationCount') > 0 %}											
-					<div class="bg-red-500 text-white px-1 rounded-full absolute text-xs left-6">
-						{{app.session.get('notificationCount') }}
+				{% set counter = 0 %}
+				{% for notification in app.user.profil.notifications %}
+					{% if notification.status == 1%}
+						{% set counter = counter + 1 %}
+					{% endif %}
+				{% endfor %}
+				{% if counter > 0 %}											
+					<div class="bg-red-500 text-white px-1 rounded-full absolute text-xs left-5">
+						{# {{app.session.get('notificationCount') }} #}
+						{{ counter }}
                     </div>
 				{% endif %}
 				{% if app.request.pathInfo matches '/^\\/profil\\/[0-9]+\\/notification/' %} 
@@ -159,8 +166,12 @@
 					<a href="{{ path('app_band_info_edit', {'id': band.bandInfo.id}) }} ">
 						<li>Informations</li>
 					</a>
-					<a href="/band/{{ band.id }}/edit">
-						<li>Membres</li>
+					<a href="/band/{{ band.id }}/members">
+						<li>Membres
+						 {% if app.request.pathInfo matches '/^\\/band\\/[0-9]+\\/members/' %}
+							<div class="triangle"></div>
+						{% endif %}</li>
+						</li>
 					</a>
 					<a href="/band/{{ band.id }}/edit">
 						<li>Matériel</li>
@@ -196,7 +207,7 @@
 							<div class="triangle"></div>
 						{% endif %}</li>
 					</a>
-					<a href="/band/{{ band_info.bandId.id }}/edit">
+					<a href="/band/{{ band_info.bandId.id }}/members">
 						<li>Membres</li>
 					</a>
 					<a href="/band/{{ band_info.bandId.id }}/edit">

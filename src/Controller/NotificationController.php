@@ -4,16 +4,19 @@ namespace App\Controller;
 
 use App\Entity\Notification;
 use App\Form\NotificationType;
-use App\Repository\NotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\NotificationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/notification')]
 class NotificationController extends AbstractController
 {
+
+  
     #[Route('/', name: 'app_notification_index', methods: ['GET'])]
     public function index(NotificationRepository $notificationRepository): Response
     {
@@ -67,6 +70,20 @@ class NotificationController extends AbstractController
             'notification' => $notification,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/{id}/update', name: 'app_notification_update', methods: ['GET', 'POST'])]
+    public function update(Request $request, Notification $notification, EntityManagerInterface $entityManager): Response
+    {
+        
+
+       if(1 == 2){
+           return $this->redirectToRoute('app_hall_show', [], Response::HTTP_SEE_OTHER);
+       }
+       else {
+        return $this->redirectToRoute('app_band_show', [], Response::HTTP_SEE_OTHER);
+
+       }
     }
 
     #[Route('/{id}', name: 'app_notification_delete', methods: ['POST'])]

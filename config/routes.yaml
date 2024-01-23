@@ -3,3 +3,8 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+    
+update_notification:
+    path: /update-notification/{id}
+    controller: App\Controller\ProfilController::updateNotificationStatus
+    methods: [GET]

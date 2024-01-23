@@ -2,10 +2,20 @@
 namespace App\Service;
 
 use App\Entity\Notification;
+use App\Repository\NotificationRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 class NotificationService
 {
+    public function __construct(
+        private NotificationRepository $notificationRepository,
+        private EntityManagerInterface $em
+    )
+    {
+
+    }
+   
     public function addNotificationHall($receipt,$bandName, $idReceipt, $sender, $idSender, $type, $hall, $em){
         
         $notification = new Notification;
@@ -71,6 +81,17 @@ class NotificationService
         }
 
         $em->flush();
+    }
+
+    public function isRead(
+        ?int $notificationId
+    )
+    {
+        if ($notificationId){
+            $notification = $this->notificationRepository->find($notificationId);
+            $notification->setStatus(2);
+            $this->em->flush();
+        }
     }
     
 }

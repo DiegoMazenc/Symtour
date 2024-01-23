@@ -8,9 +8,15 @@
 	<div class="user-contain py-5 px-20 bg bg-slate-100">
 		{% for notification in profil.notifications|reverse %}
 			{% if notification.receiptPage == "hall" %}
-				<a href="{{ path('app_hall_show', {'id': notification.receiptId}) }}">
+				<a href="{{ path('app_hall_show', {
+					'id': notification.receiptId,
+					'notification_id': notification.id
+					}) }}">
 			{% elseif notification.receiptPage == "band" %}
-				<a href="{{ path('app_band_show', {'id': notification.receiptId}) }}">
+				<a href="{{ path('app_band_show', {
+					'id': notification.receiptId,
+					'notification_id': notification.id
+					}) }}">
 			{% endif %}
 				{% if notification.status == 1 %}
 					<div class="bg-slate-200 my-3 p-3 rounded-md border-2 border-slate-300 hover:bg-white hover:border-2 hover:border-slate-300 duration-300">
@@ -53,3 +59,6 @@
 		{% endfor %}
 	</div>
 {% endblock %}
+
+
+

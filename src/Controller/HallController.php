@@ -76,6 +76,7 @@ class HallController extends AbstractController
     #[Route('/{id}', name: 'app_hall_show', methods: ['GET', 'POST'])]
     public function show(Hall $hall,BandRepository $bandRepository , Request $request, EntityManagerInterface $em, NotificationService $notification): Response
     {
+        $notification->isRead((int)$request->query->get('notification_id'));
         if ($request->isMethod('POST')) {
             $action = $request->request->get('action');
             $eventId = $request->request->get('event_id');

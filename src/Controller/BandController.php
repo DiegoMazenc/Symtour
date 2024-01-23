@@ -3,18 +3,19 @@
 namespace App\Controller;
 
 use App\Entity\Band;
-use App\Entity\BandInfo;
-use App\Entity\BandMember;
 use App\Entity\Profil;
-use App\Entity\RoleBand;
 use App\Form\BandType;
+use App\Entity\BandInfo;
+use App\Entity\RoleBand;
+use App\Entity\BandMember;
 use App\Form\BandMemberType;
 use App\Repository\BandRepository;
+use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 #[Route('/band')]
@@ -69,12 +70,24 @@ class BandController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_band_show', methods: ['GET'])]
-    public function show(Band $band): Response
+    public function show(Band $band, Request $request, NotificationService $notification): Response
     {
+        $notification->isRead((int)$request->query->get('notification_id'));
         return $this->render('band/show.html.twig', [
             'band' => $band,
         ]);
     }
+
+    #[Route('/{id}/members', name: 'app_band_members', methods: ['GET'])]
+    public function bandMembers(Band $band): Response
+    {
+        
+        return $this->render('band/members.html.twig', [
+            'band' => $band,
+
+        ]);
+    }
+
 
     #[Route('/{id}/edit', name: 'app_band_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Band $band, EntityManagerInterface $entityManager): Response
@@ -93,18 +106,7 @@ class BandController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit-member', name: 'app_band_edit_member', methods: ['GET', 'POST'])]
-    public function editMember(Request $request, Band $band, EntityManagerInterface $entityManager, BandMember $bandMember): Response
-    {
-        $form = $this->createForm(BandMemberType::class, $bandMember);
-        $form->handleRequest($request);
-
-        return $this->render('band/edit_member.html.twig', [
-            'band' => $band,
-            'form' => $form,
-        ]);
-    }
-
+   
     #[Route('/{id}', name: 'app_band_delete', methods: ['POST'])]
     public function delete(Request $request, Band $band, EntityManagerInterface $entityManager): Response
     {

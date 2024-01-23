@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit BandMember
+{% endblock %}
+
+{% block body %}
+
+	<div class="form-contain basis-3/4  py-20 bg bg-slate-100">
+		<div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
+			<h1>Edit BandMember</h1>
+			<div class="w-3/5">
+				{% for member in band.bandMembers %}
+					<div class="cardAdminProfil flex justify-between">
+						<div class="flex items-center">
+							<div class="img-member-db">
+								<img src="{{ member.profil.picture }}" alt="">
+							</div>
+							<div>
+								<a href="{{ path('app_profil_show', {'id': member.profil.id}) }}" class="text-blue-400 font-semibold">{{ member.profil.pseudo}}</a>
+								<p>{{ member.role.roleName}}</p>
+							</div>
+						</div>
+					</div>
+					<hr class="my-3">
+				{% endfor %}
+			</div>
+			{# {{ include('/band_member/_form.html.twig') }} #}
+		</div>
+	</div>
+</div>
+
+
+<a href="{{ path('app_band_member_index') }}">back to list</a>
+
+{# {{ include('band_member/_delete_form.html.twig') }} #}{% endblock %}

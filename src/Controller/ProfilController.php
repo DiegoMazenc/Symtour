@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Profil;
 use App\Form\ProfilType;
+use App\Entity\Notification;
 use Doctrine\ORM\Mapping\Id;
 use App\Repository\ProfilRepository;
 use App\Repository\BandMemberRepository;
@@ -13,8 +14,9 @@ use App\Repository\NotificationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/profil')]
 class ProfilController extends AbstractController
@@ -72,6 +74,8 @@ class ProfilController extends AbstractController
 
         ]);
     }
+
+    
 
     
 
