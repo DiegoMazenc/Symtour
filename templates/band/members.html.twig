@@ -23,13 +23,87 @@
 					</div>
 					<hr class="my-3">
 				{% endfor %}
+				<a href="#" class="text-slate-400 hover:text-blue-500 " id="toggleSearch">
+					<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>
+					Ajouter un Membre
+				</a>
+				<div class="search-member">
+					{{ form_start(searchForm) }}
+					{{ form_widget(searchForm.search, {
+						'attr': {
+							'class': 'w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300',
+						}
+					}) }}
+					{{ form_widget(searchForm.submit, {
+						'attr': {
+							'class': 'hidden',  
+						}
+					}) }}
+					{{ form_end(searchForm) }}
+				</div>
+				{# {{ include('/band_member/_form.html.twig') }} #}
+				{% for profil in profil %}
+					<div class="flex items-center justify-between bg-slate-100 border-1 border-slate-300 rounded-md p-2 my-2">
+						<div class="flex items-center">
+							<div class="img-member-db">
+								<img src="{{ profil.picture }}" alt="{{ profil.pseudo }}">
+							</div>
+							<a href="{{ path('app_profil_show', {'id': profil.id}) }}" class="text-blue-400 font-semibold">{{ profil.pseudo}}</a>
+						</div>
+						<div>
+							{{ form_start(addRoleBand) }}
+								<select id="{{ addRoleBand.role.vars.id }}" name="{{ addRoleBand.role.vars.full_name }}" class="border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300"> <option value="">Choisissez son rôle</option>
+								{% for role in roles %}
+									<option value="{{ role.id }}">{{ role.roleName }}</option>
+								{% endfor %}
+							</select>
+							{{ form_widget(addRoleBand.profil, {
+								'attr': {
+									'class': 'hidden',  
+									'value': profil.id
+								}
+							}) }}
+							{{ form_widget(addRoleBand.band, {
+								'attr': {
+									'class': 'hidden',  
+									'value': band.id
+								}
+							}) }}
+							
+							{{ form_widget(addRoleBand.submit, {
+								'attr': {
+									'class': 'border-2 border-blue-200 hover:bg-white hover:border-blue-500 rounded-lg p-2 duration-300',  
+								}
+							}) }}
+							{{ form_widget(addRoleBand._token) }}
+
+							{{ form_end(addRoleBand, {render_rest: false}) }}
+
+						</div>
+					</div>
+
+				{% endfor %}
 			</div>
-			{# {{ include('/band_member/_form.html.twig') }} #}
 		</div>
 	</div>
 </div>
 
 
 <a href="{{ path('app_band_member_index') }}">back to list</a>
+
+<script>
+
+	let toggleSearchLink = document.getElementById('toggleSearch');
+toggleSearchLink.addEventListener('click', function () {
+let searchMemberDiv = document.querySelector('.search-member');
+
+if (searchMemberDiv.style.display === 'none' || searchMemberDiv.style.display === '') {
+searchMemberDiv.style.display = 'block';
+toggleSearchLink.style.display = 'none';
+} else {
+searchMemberDiv.style.display = 'none';
+}
+});
+</script>
 
 {# {{ include('band_member/_delete_form.html.twig') }} #}{% endblock %}

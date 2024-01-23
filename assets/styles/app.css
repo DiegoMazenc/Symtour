@@ -166,7 +166,9 @@ height: 24px;
     display: none;
   }
 
-
+  .search-member, .role-select {
+    display: none;
+}
 
 
 

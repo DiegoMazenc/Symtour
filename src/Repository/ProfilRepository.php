@@ -41,7 +41,20 @@ class ProfilRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-
+    public function findBySearch($searchTerm)
+    {
+        $queryBuilder = $this->createQueryBuilder('p')
+            ->leftJoin('p.IdUser', 'IdUser');
+    
+        if ($searchTerm) {
+            $queryBuilder
+                ->where('p.pseudo LIKE :searchTerm OR IdUser.email LIKE :searchTerm')
+                ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+    
+        return $queryBuilder->getQuery()->getResult();
+    }
+    
 
     //    /**
     //     * @return Profil[] Returns an array of Profil objects

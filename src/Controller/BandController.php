@@ -8,8 +8,12 @@ use App\Form\BandType;
 use App\Entity\BandInfo;
 use App\Entity\RoleBand;
 use App\Entity\BandMember;
+use App\Form\AddRoleBandType;
 use App\Form\BandMemberType;
+use App\Form\SearchFormType;
 use App\Repository\BandRepository;
+use App\Repository\ProfilRepository;
+use App\Repository\RoleBandRepository;
 use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,10 +39,10 @@ class BandController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, TokenInterface $token): Response
     {
         $band = new Band();
- 
+
         $form = $this->createForm(BandType::class, $band);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid() ) {
+        if ($form->isSubmitted() && $form->isValid()) {
             // dd($form);
             $entityManager->persist($band);
             $entityManager->flush();
@@ -46,21 +50,21 @@ class BandController extends AbstractController
             $profil = $entityManager->getRepository(Profil::class)->findBy(["IdUser" => $token->getUser()]);
             $defaultRoleId = 1;
             $defaultRole = $entityManager->getRepository(RoleBand::class)->find($defaultRoleId);
-    
+
             $bandMember->setBand($band)
-            ->setProfil($profil[0])
-            ->setRole($defaultRole);
+                ->setProfil($profil[0])
+                ->setRole($defaultRole);
             $entityManager->persist($bandMember);
             $entityManager->flush();
 
             $bandInfo = new BandInfo();
-            $bandInfo->setBandId($band); 
+            $bandInfo->setBandId($band);
             $entityManager->persist($bandInfo);
             $entityManager->flush();
 
 
 
-            return $this->redirectToRoute('app_band_show', ["id"=>$band->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('band/new.html.twig', [
@@ -78,12 +82,50 @@ class BandController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/members', name: 'app_band_members', methods: ['GET'])]
-    public function bandMembers(Band $band): Response
+    #[Route('/{id}/members', name: 'app_band_members', methods: ['GET', 'POST'])]
+    public function bandMembers(
+        Band $band, RoleBandRepository $roleBandRepository, Request $request, ProfilRepository $profilRepository, EntityManagerInterface $em, BandRepository $bandRepository): Response
     {
-        
+
+        $roles = $roleBandRepository->findAll();
+
+        $searchForm = $this->createForm(SearchFormType::class);
+        $searchForm->handleRequest($request);
+        $profil = '';
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $searchData = $searchForm->getData();
+            $profil = $profilRepository->findBySearch($searchForm->isSubmitted() && $searchForm->isValid() ? $searchData['search'] : null);
+        }
+
+        $addRoleBand = $this->createForm(AddRoleBandType::class);
+        $addRoleBand->handleRequest($request);
+
+        if ($addRoleBand->isSubmitted() && $addRoleBand->isValid()) {
+            $addRoleBandData = $addRoleBand->getData();
+            $bandEntity = $bandRepository->find($addRoleBandData['band']);
+
+            $roleEntity = $roleBandRepository->find($addRoleBandData['role']);
+            $profilEntity = $profilRepository->find($addRoleBandData['profil']);
+
+
+
+            $bandMember = new BandMember();
+
+            $bandMember
+                ->setBand($bandEntity)
+                ->setRole($roleEntity)
+                ->setProfil($profilEntity);
+
+            $em->persist($bandMember);
+            $em->flush();
+        }
+
         return $this->render('band/members.html.twig', [
             'band' => $band,
+            'searchForm' => $searchForm->createView(),
+            'addRoleBand' => $addRoleBand->createView(),
+            'profil' => $profil,
+            'roles' => $roles
 
         ]);
     }
@@ -106,11 +148,11 @@ class BandController extends AbstractController
         ]);
     }
 
-   
+
     #[Route('/{id}', name: 'app_band_delete', methods: ['POST'])]
     public function delete(Request $request, Band $band, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$band->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $band->getId(), $request->request->get('_token'))) {
             $entityManager->remove($band);
             $entityManager->flush();
         }

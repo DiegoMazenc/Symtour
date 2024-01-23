@@ -2,6 +2,7 @@
 
 namespace App\EventListener;
 
+use App\Entity\BandMember;
 use App\Entity\Event;
 use App\Entity\User;
 use Doctrine\ORM\Events;
@@ -26,5 +27,10 @@ final class InsertListener
         if($entity instanceof Event){
             $entity->setStatus(3);
         }
+
+        if($entity instanceof BandMember){
+            $entity->setStatus('guest');
+        }
+
     }
 }

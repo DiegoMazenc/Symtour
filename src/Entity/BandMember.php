@@ -22,6 +22,9 @@ class BandMember
     #[ORM\ManyToOne(inversedBy: 'bandMembers')]
     private ?Profil $profil = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $status = null;
+
    
     public function getId(): ?int
     {
@@ -60,6 +63,18 @@ class BandMember
     public function setProfil(?Profil $profil): static
     {
         $this->profil = $profil;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }
