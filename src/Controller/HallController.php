@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Band;
 use App\Entity\Event;
 use App\Entity\Hall;
 use App\Entity\HallInfo;
@@ -10,7 +11,9 @@ use App\Form\FilterSearchType;
 use App\Form\HallType;
 use App\Entity\Profil;
 use App\Entity\RoleHall;
+use App\Repository\BandRepository;
 use App\Repository\HallRepository;
+use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -71,11 +74,13 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_hall_show', methods: ['GET', 'POST'])]
-    public function show(Hall $hall, Request $request, EntityManagerInterface $em): Response
+    public function show(Hall $hall,BandRepository $bandRepository , Request $request, EntityManagerInterface $em, NotificationService $notification): Response
     {
         if ($request->isMethod('POST')) {
             $action = $request->request->get('action');
             $eventId = $request->request->get('event_id');
+            $bandId = $request->request->get('bandId');
+            $band = $bandRepository->find($bandId);
     
             if ($action === 'validate') {
                 $status = 1; 
@@ -84,12 +89,20 @@ class HallController extends AbstractController
             } else {
                 $status = 3;
             }
-    
+            
             $event = $em->getRepository(Event::class)->find($eventId);
             if ($event) {
                 $event->setStatus($status);
                 $em->flush();
             }
+
+            $hallName = $hall->getName();
+            $hallId = $hall->getId();
+            $receipt = "band";
+            $sender = "hall";
+            $type = "response";
+            $notification->addNotificationBand($receipt,$hallName, $bandId, $sender, $hallId, $type, $band, $status, $em);
+       
         }
 
         return $this->render('hall/show.html.twig', [

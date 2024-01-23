@@ -38,11 +38,13 @@
 										<div>
 											<form action="{{ path('app_hall_show', {'id': hall.id}) }}" method="post">
 												<input type="hidden" name="action" value="validate">
+												<input type="hidden" name="bandId" value="{{ event.band.id }}">
 												<input type="hidden" name="event_id" value="{{ event.id }}">
 												<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
 											</form>
 											<form action="{{ path('app_hall_show', {'id': hall.id}) }}" method="post">
 												<input type="hidden" name="action" value="reject">
+												<input type="hidden" name="bandId" value="{{ event.band.id }}">
 												<input type="hidden" name="event_id" value="{{ event.id }}">
 												<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
 											</form>

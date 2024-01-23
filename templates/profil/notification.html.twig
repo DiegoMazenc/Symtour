@@ -35,8 +35,16 @@
 					{% elseif notification.receiptPage == "band" %}
 						{% for bandMember in profil.bandMembers %}
 							{% if notification.receiptId == bandMember.band.id %}
-								<img src="{{ bandMember.band.logo }}" alt="" class=" w-5">
-								<p>{{ hallMember.band.name }}</p>
+								<div class="flex">
+									<img src="{{ bandMember.band.logo }}" alt="" class=" w-10 rounded-full mr-3">
+									<div>
+										<div class="flex justify-between">
+											<p class="mr-3 text-blue-400 font-semibold">{{ bandMember.band.name }}</p>
+											<p class="text-xs">{{ notification.date|date('d-m-Y') }}</p>
+										</div>
+										<p>{{ notification.message }}</p>
+									</div>
+								</div>
 							{% endif %}
 						{% endfor %}
 					{% endif %}

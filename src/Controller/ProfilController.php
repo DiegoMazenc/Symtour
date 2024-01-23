@@ -51,6 +51,9 @@ class ProfilController extends AbstractController
     public function show( SessionInterface $session ,Profil $profil, ProfilRepository $profilRepository, BandMemberRepository $bandMemberRepository, NotificationRepository $notificationRepository): Response
     {
         $count = $notificationRepository->count(['status' => 1, 'profil' => $profil->getId()]);
+        if($count>9){
+            $count = "9+";
+        }
         $session->set('notificationCount', $count);
         return $this->render('profil/show.html.twig', [
             'profil' => $profil,

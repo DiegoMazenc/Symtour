@@ -1,3 +1,4 @@
+{% if is_granted('IS_AUTHENTICATED_FULLY') %}
 <div
 	class="user-sidebar bg-sky-950 h-screen text-white">
 	{# <h4>Notifications</h4> #}
@@ -216,7 +217,7 @@
 
 
 </div>
-
+{% endif %}
 
 <script>
 	document.getElementById('gererBtn').addEventListener('click', function () {
