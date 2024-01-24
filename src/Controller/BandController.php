@@ -86,6 +86,7 @@ class BandController extends AbstractController
     public function bandMembers(
        NotificationService $notification, Band $band, RoleBandRepository $roleBandRepository, Request $request, ProfilRepository $profilRepository, EntityManagerInterface $em, BandRepository $bandRepository): Response
     {
+        $notification->isRead((int)$request->query->get('notification_id'));
 
         $roles = $roleBandRepository->findAll();
 

@@ -2,14 +2,15 @@
 
 namespace App\EventListener;
 
-use App\Entity\BandMember;
-use App\Entity\Event;
 use App\Entity\User;
+use App\Entity\Event;
 use Doctrine\ORM\Events;
+use App\Entity\BandMember;
+use App\Entity\HallMember;
 use Doctrine\ORM\Event\PrePersistEventArgs;
+use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\HttpFoundation\Request;
 
 #[AsDoctrineListener(event: Events::prePersist)]
 final class InsertListener
@@ -29,6 +30,10 @@ final class InsertListener
         }
 
         if($entity instanceof BandMember){
+            $entity->setStatus('guest');
+        }
+
+        if($entity instanceof HallMember){
             $entity->setStatus('guest');
         }
 

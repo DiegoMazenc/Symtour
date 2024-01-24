@@ -4,22 +4,13 @@
 {% endblock %}
 
 {% block body %}
-	<div class="edit-band  flex bg-sky-950 ">
-		<div class="nav-edit-band basis-1/4 bg-sky-950 p-5 h-screen text-white">
-			<ul>
-				<li>Identité</li>
-				<li>Informations</li>
-				<li>Membres</li>
-				<li>Matériel</li>
-				<li>Discographie</li>
-			</ul>
-		</div>
-		<div class="form-contain basis-3/4  py-20 bg bg-slate-100">
+	
+		<div class="form-contain w-full  py-20 bg bg-slate-100">
         <div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
             {{ include('band/_form.html.twig') }}
         </div>
         </div>
-	</div>
+	
 
 	{# <a href="{{ path('app_band_index') }}">back to list</a> #}
 {% endblock %}

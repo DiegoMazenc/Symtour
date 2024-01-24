@@ -26,6 +26,9 @@ class HallMember
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_create = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $status = null;
+
 
 
     public function getId(): ?int
@@ -77,6 +80,18 @@ class HallMember
     public function setDateCreate(?\DateTimeInterface $date_create): static
     {
         $this->date_create = $date_create;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }
