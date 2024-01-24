@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\BandMember;
 use App\Entity\User;
 use App\Entity\Profil;
 use App\Form\ProfilType;
@@ -11,6 +12,7 @@ use App\Repository\ProfilRepository;
 use App\Repository\BandMemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\NotificationRepository;
+use App\Service\NotificationService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -49,10 +51,36 @@ class ProfilController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_profil_show', methods: ['GET'])]
-    public function show( SessionInterface $session ,Profil $profil, ProfilRepository $profilRepository, BandMemberRepository $bandMemberRepository, NotificationRepository $notificationRepository): Response
+    #[Route('/{id}', name: 'app_profil_show', methods: ['GET', 'POST'])]
+    public function show(
+        Request $request ,
+        Profil $profil,
+        NotificationService $notification,
+        EntityManagerInterface $em 
+        ): Response
     {
-        
+        $notification->isRead((int)$request->query->get('notification_id'));
+
+        if ($request->isMethod('POST')) {
+            $action = $request->request->get('action');
+            $bandMmemberId = $request->request->get('bandMmemberId');
+            // $bandMmember = $bandMemberRepository->find($bandMmemberId);
+    
+            if ($action === 'validate') {
+                $status = "member"; 
+            } elseif ($action === 'reject') {
+                $status = "reject"; 
+            } else {
+                $status = "guest";
+            }
+
+            $bandMember = $em->getRepository(BandMember::class)->find($bandMmemberId);
+            if ($bandMember) {
+                $bandMember->setStatus($status);
+                $em->flush();
+            }
+
+        }
         return $this->render('profil/show.html.twig', [
             'profil' => $profil,
 

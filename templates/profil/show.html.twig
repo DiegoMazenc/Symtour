@@ -66,7 +66,22 @@
 								<td>{{ bandMember.band.defineStyle}}</td>
 								<td>{{ bandMember.role.roleName}}</td>
 								<td>
+								{% if bandMember.status == "guest" %}
+								<div>
+											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+												<input type="hidden" name="action" value="validate">
+												<input type="hidden" name="bandMmemberId" value="{{ bandMember.id }}">
+												<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
+											</form>
+											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+												<input type="hidden" name="action" value="reject">
+												<input type="hidden" name="bandMmemberId" value="{{ bandMember.id }}">
+												<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
+											</form>
+										</div>
+									{% else %}
 									<a href="/band/{{ bandMember.band.id }}" class="btn-gerer">Gérer</a>
+								{% endif %}
 								</td>
 							</tr>
 						{% endfor %}

@@ -1,9 +1,10 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Profil;
 use App\Entity\Notification;
-use App\Repository\NotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\NotificationRepository;
 use Symfony\Component\Routing\RouterInterface;
 
 class NotificationService
@@ -83,6 +84,30 @@ class NotificationService
         $em->flush();
     }
 
+    public function addNotificationProfil($receipt, $SenderName, $idReceipt, $sender, $idSender, $type, $em)
+    {
+        $notification = new Notification;
+    
+        $message = "$SenderName Vous invite à les rejoindres";
+    
+        $profil = $em->getRepository(Profil::class)->find($idReceipt);
+    
+        $notification
+            ->setMessage($message)
+            ->setStatus(1)
+            ->setDate(new \DateTime())
+            ->setReceiptPage($receipt)
+            ->setReceiptId($idReceipt)
+            ->setSenderPage($sender)
+            ->setSenderId($idSender)
+            ->setType($type)
+            ->setProfil($profil);
+    
+        $em->persist($notification);
+        $em->flush();
+    }
+
+    
     public function isRead(
         ?int $notificationId
     )

@@ -17,6 +17,11 @@
 					'id': notification.receiptId,
 					'notification_id': notification.id
 					}) }}">
+					{% elseif notification.receiptPage == "profil" %}
+				<a href="{{ path('app_profil_show', {
+					'id': notification.receiptId,
+					'notification_id': notification.id
+					}) }}">
 			{% endif %}
 				{% if notification.status == 1 %}
 					<div class="bg-slate-200 my-3 p-3 rounded-md border-2 border-slate-300 hover:bg-white hover:border-2 hover:border-slate-300 duration-300">
@@ -53,6 +58,17 @@
 								</div>
 							{% endif %}
 						{% endfor %}
+						{% elseif notification.receiptPage == "profil" %}
+								<div class="flex">
+									<img src="{{ profil.picture }}" alt="{{ profil.pseudo }}" class=" w-10 rounded-full mr-3">
+									<div>
+										<div class="flex justify-between">
+											<p class="mr-3 text-blue-400 font-semibold">{{ profil.pseudo }}</p>
+											<p class="text-xs">{{ notification.date|date('d-m-Y') }}</p>
+										</div>
+										<p>{{ notification.message }}</p>
+									</div>
+								</div>
 					{% endif %}
 				</a>
 			</div>

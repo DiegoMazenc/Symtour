@@ -84,7 +84,7 @@ class BandController extends AbstractController
 
     #[Route('/{id}/members', name: 'app_band_members', methods: ['GET', 'POST'])]
     public function bandMembers(
-        Band $band, RoleBandRepository $roleBandRepository, Request $request, ProfilRepository $profilRepository, EntityManagerInterface $em, BandRepository $bandRepository): Response
+       NotificationService $notification, Band $band, RoleBandRepository $roleBandRepository, Request $request, ProfilRepository $profilRepository, EntityManagerInterface $em, BandRepository $bandRepository): Response
     {
 
         $roles = $roleBandRepository->findAll();
@@ -99,13 +99,16 @@ class BandController extends AbstractController
 
         $addRoleBand = $this->createForm(AddRoleBandType::class);
         $addRoleBand->handleRequest($request);
+        $bandName = $band->getName();
 
         if ($addRoleBand->isSubmitted() && $addRoleBand->isValid()) {
             $addRoleBandData = $addRoleBand->getData();
             $bandEntity = $bandRepository->find($addRoleBandData['band']);
-
+            $bandId = $bandEntity->getId();
             $roleEntity = $roleBandRepository->find($addRoleBandData['role']);
             $profilEntity = $profilRepository->find($addRoleBandData['profil']);
+            $profilId = $profilEntity->getId();
+
 
 
 
@@ -118,6 +121,9 @@ class BandController extends AbstractController
 
             $em->persist($bandMember);
             $em->flush();
+
+
+            $notification->addNotificationProfil("profil",$bandName, $profilId, "band", $bandId, "add", $em);
         }
 
         return $this->render('band/members.html.twig', [
