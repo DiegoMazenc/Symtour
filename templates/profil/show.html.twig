@@ -55,6 +55,7 @@
 					</thead>
 					<tbody>
 						{% for bandMember in profil.bandMembers %}
+						{% if bandMember.status != "reject" %}
 							<tr class="mb-10">
 								<td>
 									<div class="flex">
@@ -84,6 +85,7 @@
 								{% endif %}
 								</td>
 							</tr>
+							{% endif %}
 						{% endfor %}
 					</tbody>
 				</table>

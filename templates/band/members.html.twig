@@ -7,9 +7,12 @@
 
 	<div class="form-contain basis-3/4  py-20 bg bg-slate-100">
 		<div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
-			<h1>Edit BandMember</h1>
 			<div class="w-3/5">
+			<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5">Membres Actifs</h4>
 				{% for member in band.bandMembers %}
+				{% if member.status != "guest" and member.status != "reject" %}
+					
+				
 					<div class="cardAdminProfil flex justify-between">
 						<div class="flex items-center">
 							<div class="img-member-db">
@@ -22,6 +25,7 @@
 						</div>
 					</div>
 					<hr class="my-3">
+					{% endif %}
 				{% endfor %}
 				<a href="#" class="text-slate-400 hover:text-blue-500 " id="toggleSearch">
 					<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>
@@ -82,6 +86,31 @@
 						</div>
 					</div>
 
+				{% endfor %}
+				<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5" style="margin-top: 50px;">Mes demandes d'hadhésion</h4>
+				{% for member in band.bandMembers|reverse %}
+				{% if member.status == "guest" or member.status == "reject" %}
+					
+				
+					<div class="cardAdminProfil flex justify-between items-center">
+						<div class="flex items-center">
+							<div class="img-member-db">
+								<img src="{{ member.profil.picture }}" alt="">
+							</div>
+							<div>
+								<a href="{{ path('app_profil_show', {'id': member.profil.id}) }}" class="text-blue-400 font-semibold">{{ member.profil.pseudo}}</a>
+								<p>{{ member.role.roleName}}</p>
+							</div>
+						</div>
+						{% if member.status == "reject" %}
+							<p style="color: red;">x Refusé</p>
+							{% else %}
+							<p style="color: gray;">... En cours</p>
+
+						{% endif %}
+					</div>
+					<hr class="my-3">
+					{% endif %}
 				{% endfor %}
 			</div>
 		</div>
