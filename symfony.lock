@@ -301,6 +301,9 @@
             "./webpack.config.js"
         ]
     },
+    "symfonycasts/verify-email-bundle": {
+        "version": "v1.16.1"
+    },
     "tattali/calendar-bundle": {
         "version": "1.2",
         "recipe": {
