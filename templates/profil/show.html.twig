@@ -5,7 +5,21 @@
 {% endblock %}
 
 {% block body %}
+{% if app.user.profil.id == app.request.attributes.get('id') and app.user.isVerified == 0 %}
+			<div class="user-contain py-5 px-20  bg bg-slate-100"> 
+	
+<p>veuillez valider votre compte via l'eamil de confirmation</p>
+</div>
+{% elseif app.user.profil.id == app.request.attributes.get('id') and app.user.isVerified == 1 and app.user.profil.pseudo == ''  %}
+			<div class="user-contain py-5 px-20  bg bg-slate-100"> 
 
+<p>Félicitation vous êtes bien inscrit, pour accéder aux services, merci de remplir vos informations</p>
+<a href="/profil/{{ app.user.profil.id}}/edit">Je remplis mes informations</a>
+</div>
+
+		
+
+	{% else %}
 			<div class="user-contain py-5 px-20  bg bg-slate-100"> 
 	<div class="header-user flex ">
 		<div class="pic_profil">
@@ -96,5 +110,5 @@
 
 	</div>
 	</div>
-
+{% endif %}
 {% endblock %}
