@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    {% for flash_error in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+
+    <div class="form-login-container  bg-slate-100 w-full">
+		<div class="intro-login">
+			<h1>Symtour</h1>
+			<h4>Tu as un groupe ou un projet musical ?</h4>
+			<p>Inscrit toi et enregistre ton groupe pour organiser des dates
+			</p>
+			<br><br>
+			<h4>Tu as une salle ?</h4>
+			<p>Inscrit toi et enregistre ta salle pour booker facilement les groupes
+			</p>
+		</div>
+
+		<div class="form-login bg-white rounded-lg shadow-md">
+			<h4>Inscription</h4>
+ {{ form_errors(registrationForm) }}
+
+    {{ form_start(registrationForm) }}
+<div class="relative">
+
+        {{ form_widget(registrationForm.email, {
+                        'attr': {
+                            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full my-3',
+                            'placeholder': 'Votre Email'
+                        }
+                    })  }}
+                    <i class="absolute text-white bottom-5 right-5">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24">
+							<path fill="#F25F4B" d="M12 12q-1.65 0-2.825-1.175T8 8q0-1.65 1.175-2.825T12 4q1.65 0 2.825 1.175T16 8q0 1.65-1.175 2.825T12 12Zm-8 8v-2.8q0-.85.438-1.563T5.6 14.55q1.55-.775 3.15-1.163T12 13q1.65 0 3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20H4Z"/>
+						</svg>
+					</i>
+				</div>
+        {{ form_widget(registrationForm.plainPassword, {
+            label: 'Password',
+            'attr': {
+                        'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mt-3 ',
+                        'placeholder': 'Mot de Passe'
+                    }
+        }) }}
+        {{ form_row(registrationForm.agreeTerms) }}
+
+        <button type="submit" class="rounded-lg p-2 bg-blue-700 w-full mt-3 text-white">Register</button>
+    {{ form_end(registrationForm) }}
+			
+		</div>
+	</div>
+
+
+   
+{% endblock %}
