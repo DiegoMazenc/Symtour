@@ -14,6 +14,7 @@ use App\Form\SearchFormType;
 use App\Form\AddRoleHallType;
 use App\Form\FilterSearchType;
 use App\Repository\BandRepository;
+use App\Repository\EventRepository;
 use App\Repository\HallRepository;
 use App\Repository\ProfilRepository;
 use App\Service\NotificationService;
@@ -170,6 +171,30 @@ class HallController extends AbstractController
             'profil' => $profil,
             'roles' => $roles
 
+        ]);
+    }
+
+    #[Route('/{id}/event', name: 'app_hall_event', methods: ['GET', 'POST'])]
+    public function event(Hall $hall,Request $request,BandRepository $bandRepository, EventRepository $eventRepository): Response
+    {
+        $eventCome = $eventRepository->getComeEventsByHall($hall);
+        $eventPast = $eventRepository->getPastEventsByHall($hall);
+        // dd($eventCome);
+
+        $searchForm = $this->createForm(SearchFormType::class);
+        $searchForm->handleRequest($request);
+        $band = '';
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $searchData = $searchForm->getData();
+            $band = $bandRepository->findBySearch($searchForm->isSubmitted() && $searchForm->isValid() ? $searchData['search'] : null);
+        }
+
+        return $this->render('hall/event.html.twig', [
+            'hall' => $hall,
+            'eventCome' => $eventCome,
+            'eventPast' => $eventPast,
+            'searchForm' => $searchForm->createView(),
+            'band' => $band,
         ]);
     }
 

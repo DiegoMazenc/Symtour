@@ -52,14 +52,68 @@ padding: 15px;
     overflow: hidden;
     border-radius: 100%;
     margin-right: 20px;
+
+
 }
 
-.img-member-db img{
+.list-member-event{
+
+    margin: 10px 15px 10px 70px;
+}
+
+.img-project-db{
+    position: relative;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 100%;
+    margin-right: 20px;
+}
+
+.open {
+    display: none;
+}
+
+.clic:hover {
+    cursor: pointer;
+}
+
+.img-profil-event{
+    position: relative;
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    border-radius: 100%;
+    margin-right: 20px;
+}
+
+.img-member-db img, .img-project-db img, .img-profil-event img{
     position: absolute;
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
+
+.card-event-list{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.card-event{
+    width: 49.5%;
+    margin: 15px 0;
+}
+
+@media screen and (max-width: 1200px) {
+    .card-event {
+        width: 100%;
+        margin: 15px 0;
+    }
+    
+}
+
 
 
 .nav-edit-profil{

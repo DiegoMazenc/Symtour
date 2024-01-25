@@ -5,135 +5,182 @@
 {% endblock %}
 
 {% block body %}
-{% if app.user.profil.id == app.request.attributes.get('id') and app.user.isVerified == 0 %}
-			<div class="user-contain py-5 px-20  bg bg-slate-100"> 
-	
-<p>veuillez valider votre compte via l'eamil de confirmation</p>
-</div>
-{% elseif app.user.profil.id == app.request.attributes.get('id') and app.user.isVerified == 1 and app.user.profil.pseudo == ''  %}
-			<div class="user-contain py-5 px-20  bg bg-slate-100"> 
+	{% if app.user.profil.id == app.request.attributes.get('id') and app.user.isVerified == 0 %}
+		<div class="user-contain py-5 px-20  bg bg-slate-100">
+			{% for message in app.flashes('warning') %}
+				<div class="">
+					<p>{{ message }}</p>
+				</div>
+			{% endfor %}
+			<p>veuillez valider votre compte via l'email de confirmation</p>
+			<a href="{{ path("app_resend_confirmation_mail", {id: profil.id}) }}">cliquez ici pour renvoyer le mail de confirmation</a>
+		</div>
+	{% elseif app.user.profil.id == app.request.attributes.get('id') and app.user.isVerified == 1 and app.user.profil.pseudo == ''  %}
+		<div class="user-contain py-5 px-20  bg bg-slate-100">
 
-<p>Félicitation vous êtes bien inscrit, pour accéder aux services, merci de remplir vos informations</p>
-<a href="/profil/{{ app.user.profil.id}}/edit">Je remplis mes informations</a>
-</div>
+			<p>Félicitation vous êtes bien inscrit, pour accéder aux services, merci de remplir vos informations</p>
+			<a href="/profil/{{ app.user.profil.id}}/edit">Je remplis mes informations</a>
+		</div>
 
-		
 
 	{% else %}
-			<div class="user-contain py-5 px-20  bg bg-slate-100"> 
-	<div class="header-user flex ">
-		<div class="pic_profil">
-			<img src="{{ profil.picture }}" alt="" class="user-img">
-		</div>
-		<div class="user-infos">
-			<h3 class="font-bold ">{{ profil.pseudo }}</h3>
-			<h3 class="mb-8">{{ profil.description }}</h3>
+		<div class="user-contain py-5 px-20  bg bg-slate-100">
+			<div class="header-user flex ">
+				<div class="pic_profil">
+					<img src="{{ profil.picture }}" alt="" class="user-img">
+				</div>
+				<div class="user-infos">
+					<h3 class="font-bold ">{{ profil.pseudo }}</h3>
+					<h3 class="mb-8">{{ profil.description }}</h3>
 
-		</div>
+				</div>
 
-	</div>
-	<hr class=" border-black my-5">
-	<div class="tab_project">
-		<div class="my-10">
-			<h4>Mes salles</h4>
-			<div class="bg-white rounded-md shadow-md p-3">
-				{% for hallMember in profil.hallMembers %}
-						{% if hallMember.status != "reject" %}
-
-					<div
-						class="cardAdminProfil flex justify-between ">
-						{# <p>{{ bandMember.band.logo}}</p> #}
-						<img src="{{ hallMember.hall.logo}}" alt="" class=" w-8 rounded-md">
-						<p>{{ hallMember.hall.name}}</p>
-						{# <p>{{ hallMember.hall.musicCategory.category}}</p>
-																																										<p>{{ hallMember.hall.defineStyle}}</p> #}
-						<p>{{ hallMember.role.roleName}}</p>
-						{% if hallMember.status == "guest" %}
-								<div>
-											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
-												<input type="hidden" name="action" value="validate">
-												<input type="hidden" name="page" value="hall">
-												<input type="hidden" name="hallMemberId" value="{{ hallMember.id }}">
-												<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
-											</form>
-											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
-												<input type="hidden" name="action" value="reject">
-												<input type="hidden" name="page" value="hall">
-												<input type="hidden" name="hallMemberId" value="{{ hallMember.id }}">
-												<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
-											</form>
-										</div>
-									{% else %}
-						<a href="/hall/{{ hallMember.hall.id }}" class="btn-gerer">Gérer</a>
-						{% endif %}
-					</div>
-					<hr class="my-3">
-						{% endif %}
-
-				{% endfor %}
-				<a href="{{ path('app_hall_new') }}" class="text-slate-400 hover:text-blue-500 ">
-					<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Créer une nouvelle salle</a>
 			</div>
-		</div>
-		<div class="my-10">
-			<h4>Mes Groupes</h4>
-			<div class="bg-white rounded-lg shadow-md p-3">
-				<table class="tab-band w-full">
-					<thead>
-						<tr>
-							<th class="text-left">Band</th>
-							<th class="text-left">Catégorie</th>
-							<th class="text-left">Genre</th>
-							<th class="text-left">Role</th>
-							<th class="text-left">Gérer</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for bandMember in profil.bandMembers %}
-						{% if bandMember.status != "reject" %}
-							<tr class="mb-10">
-								<td>
-									<div class="flex">
-										<img src="{{ bandMember.band.logo}}" alt="" class=" w-8 rounded-md">
-										<p class="ml-3">{{ bandMember.band.name}}</p>
-									</div>
-								</td>
-								<td>{{ bandMember.band.musicCategory.category}}</td>
-								<td>{{ bandMember.band.defineStyle}}</td>
-								<td>{{ bandMember.role.roleName}}</td>
-								<td>
-								{% if bandMember.status == "guest" %}
-								<div>
-											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
-												<input type="hidden" name="action" value="validate">
-												<input type="hidden" name="page" value="band">
-												<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
-												<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
-											</form>
-											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
-												<input type="hidden" name="action" value="reject">
-												<input type="hidden" name="page" value="band">
-												<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
-												<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
-											</form>
+			<hr class=" border-black my-5">
+			<div>
+				<div class="bg-white rounded-md shadow-md w-full">
+					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Pages suivies</h4>
+				</div>
+			</div>
+			<div class="tab_project flex w-full justify-between">
+				<div class="my-10 w-full mr-3">
+					<div class="bg-white rounded-md shadow-md w-full">
+						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes salles</h4>
+						{% set processedHalls = [] %}
+
+						{% for hallMember in profil.hallMembers %}
+
+
+							{% if hallMember.status != "reject" and hallMember.hall.id not in processedHalls %}
+								{% set processedHalls = processedHalls|merge([hallMember.hall.id]) %}
+								<a href="/hall/{{ hallMember.hall.id }}">
+
+									<div class="flex justify-between p-3 hover:bg-slate-100 items-center">
+
+										<div class="flex relative">
+
+											<div class="img-project-db">
+												<img src="{{ hallMember.hall.logo}}" alt="">
+											</div>
+											{% set counter = 0 %}
+											{% for notification in app.user.profil.notifications %}
+												{% if notification.status == 1 and notification.receiptId == hallMember.hall.id %}
+													{% set counter = counter + 1 %}
+												{% endif %}
+											{% endfor %}
+											{% if counter > 0 %}
+												<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-0 left-9">
+													{{ counter }}
+												</div>
+											{% endif %}
+											<div class="ml-3">
+												<p class="text-blue-400 font-semibold">{{ hallMember.hall.name}}</p>
+												<p>{{ hallMember.role.roleName}}</p>
+											</div>
 										</div>
-									{% else %}
-									<a href="/band/{{ bandMember.band.id }}" class="btn-gerer">Gérer</a>
-								{% endif %}
-								</td>
-							</tr>
+
+
+										{% if hallMember.status == "guest" %}
+											<div>
+												<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+													<input type="hidden" name="action" value="validate">
+													<input type="hidden" name="page" value="hall">
+													<input type="hidden" name="hallMemberId" value="{{ hallMember.id }}">
+													<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
+												</form>
+												<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+													<input type="hidden" name="action" value="reject">
+													<input type="hidden" name="page" value="hall">
+													<input type="hidden" name="hallMemberId" value="{{ hallMember.id }}">
+													<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
+												</form>
+											</div>
+										{% else %}
+											<p>60 Followers</p>
+											<p>1 message</p>
+										{% endif %}
+
+									</div>
+								</a>
+								<hr>
+
+							{% endif %}
+
+						{% endfor %}
+						<div class="p-3">
+							<a href="{{ path('app_hall_new') }}" class="text-slate-400 hover:text-blue-500 ">
+								<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Créer une nouvelle salle</a>
+						</div>
+					</div>
+				</div>
+				<div class="my-10 w-full ml-3">
+					<div class="bg-white rounded-lg shadow-md  w-full  ">
+						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes projets</h4>
+
+						{% set processedBands = [] %}
+
+						{% for bandMember in profil.bandMembers %}
+							{% if bandMember.status != "reject" and bandMember.band.id not in processedBands %}
+								{% set processedBands = processedBands|merge([bandMember.band.id]) %}
+								<a href="/band/{{ bandMember.band.id }}">
+									<div class="flex justify-between p-3 hover:bg-slate-100 items-center">
+										<div class="flex relative">
+											<div class="img-project-db">
+												<img src="{{ bandMember.band.logo}}" alt="">
+											</div>
+											{% set counter = 0 %}
+											{% for notification in app.user.profil.notifications %}
+												{% if notification.status == 1 and notification.receiptId == bandMember.band.id %}
+													{% set counter = counter + 1 %}
+												{% endif %}
+											{% endfor %}
+											{% if counter > 0 %}
+												<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-0 left-9">
+													{{ counter }}
+												</div>
+											{% endif %}
+											<div class="ml-3">
+												<p class="text-blue-400 font-semibold">{{ bandMember.band.name}}</p>
+												<p>{{ bandMember.role.roleName}}</p>
+											</div>
+										</div>
+
+										{% if bandMember.status == "guest" %}
+											<div>
+												<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+													<input type="hidden" name="action" value="validate">
+													<input type="hidden" name="page" value="band">
+													<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
+													<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
+												</form>
+												<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+													<input type="hidden" name="action" value="reject">
+													<input type="hidden" name="page" value="band">
+													<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
+													<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
+												</form>
+											</div>
+										{% else %}
+											<p>60 Followers</p>
+											<p>1 message</p>
+
+										{% endif %}
+
+									</div>
+								</a>
+								<hr>
+
 							{% endif %}
 						{% endfor %}
-					</tbody>
-				</table>
 
-				<hr class="my-5">
-				<a href="{{ path('app_band_new') }}" class="text-slate-400 hover:text-blue-500 ">
-					<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Créer un nouveau groupe</a>
+						<div class="p-3">
+							<a href="{{ path('app_band_new') }}" class="text-slate-400 hover:text-blue-500 p-3">
+								<span class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</span>Créer un nouveau groupe
+							</a>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-
-	</div>
-	</div>
-{% endif %}
+	{% endif %}
 {% endblock %}

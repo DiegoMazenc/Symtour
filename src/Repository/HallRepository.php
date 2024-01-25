@@ -56,6 +56,8 @@ class HallRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    
 //    /**
 //     * @return Hall[] Returns an array of Hall objects
 //     */

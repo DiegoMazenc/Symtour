@@ -18,7 +18,7 @@
 			{{ form_start(filterForm) }}
 			<div class="flex w-full justify-between py-5">
 				<div class="select-gender w-3/12 ">
-					<select id="{{ filterForm.musicCategory.vars.id }}" name="{{ filterForm.musicCategory.vars.full_name }}" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-3 duration-300">
+					<select id="{{ filterForm.musicCategory.vars.id }}" name="{{ filterForm.musicCategory.vars.full_name }}" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
 						<option value="">Genre Musical</option>
 
 						{% for music_category in music_categories %}
@@ -47,7 +47,7 @@
 
 				</div>
 				{{ form_widget(filterForm._token) }}
-				<button type="submit">Rechercher</button>
+				<button type="submit" class= " border-2 border-blue-200 hover:border-blue-500 hover:bg-white rounded-lg p-2 duration-300 ">Appliquer</button>
 			</div>
 			{{ form_end(filterForm, {render_rest: false}) }}
 

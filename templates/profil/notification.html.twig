@@ -1,76 +1,51 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Profil
-	{{ profil.pseudo }}
+{% block title %}
+    Profil {{ profil.pseudo }}
 {% endblock %}
 
 {% block body %}
-	<div class="user-contain py-5 px-20 bg bg-slate-100">
-		{% for notification in profil.notifications|reverse %}
-			{% if notification.receiptPage == "hall" and notification.type == "add"  %}
-				<a href="{{ path('app_hall_members', { 'id': notification.receiptId, 'notification_id': notification.id }) }}">
-				{% elseif notification.receiptPage == "hall" %}
-					<a href="{{ path('app_hall_show', { 'id': notification.receiptId, 'notification_id': notification.id }) }}">
-					{% elseif notification.receiptPage == "band" and notification.type == "add" %}
-						<a href="{{ path('app_band_members', { 'id': notification.receiptId, 'notification_id': notification.id }) }}">
-						{% elseif notification.receiptPage == "band" %}
-							<a href="{{ path('app_band_show', { 'id': notification.receiptId, 'notification_id': notification.id }) }}">
+    <div class="user-contain py-5 px-20 bg bg-slate-100">
+        {% for notification in profil.notifications|reverse %}
+            {% set pageLink = '' %}
+            {% set memberType = '' %}
 
-							{% elseif notification.receiptPage == "profil" %}
-								<a href="{{ path('app_profil_show', { 'id': notification.receiptId, 'notification_id': notification.id }) }}">
-								{% endif %}
-								{% if notification.status == 1 %}
-									<div class="bg-slate-200 my-3 p-3 rounded-md border-2 border-slate-300 hover:bg-white hover:border-2 hover:border-slate-300 duration-300">
-									{% else %}
-										<div class="bg-white my-3 p-3 rounded-md border-2 border-white hover:border-2 hover:border-slate-300 duration-300">
-										{% endif %}
-										{% if notification.receiptPage == "hall" %}
-											{% if profil.hallMembers|length > 0 %}
-												{% set hallMember = profil.hallMembers|filter(member => member.hall.id == notification.receiptId)|first %}
-												{% if hallMember is not null %}
-													<div class="flex">
-														<img src="{{ hallMember.hall.logo }}" alt="" class="w-10 rounded-full mr-3">
-														<div>
-															<div class="flex justify-between">
-																<p class="mr-3 text-blue-400 font-semibold">{{ hallMember.hall.name }}</p>
-																<p class="text-xs">{{ notification.date|date('d-m-Y') }}</p>
-															</div>
-															<p>{{ notification.message }}</p>
-														</div>
-													</div>
-												{% endif %}
-											{% endif %}
-										{% elseif notification.receiptPage == "band" %}
-											{% if profil.bandMembers|length > 0 %}
-												{% set bandMember = profil.bandMembers|filter(member => member.band.id == notification.receiptId)|first %}
-												{% if bandMember is not null %}
-													<div class="flex">
-														<img src="{{ bandMember.band.logo }}" alt="" class="w-10 rounded-full mr-3">
-														<div>
-															<div class="flex justify-between">
-																<p class="mr-3 text-blue-400 font-semibold">{{ bandMember.band.name }}</p>
-																<p class="text-xs">{{ notification.date|date('d-m-Y') }}</p>
-															</div>
-															<p>{{ notification.message }}</p>
-														</div>
-													</div>
-												{% endif %}
-											{% endif %}
-											
-										{% elseif notification.receiptPage == "profil" %}
-											<div class="flex">
-												<img src="{{ profil.picture }}" alt="{{ profil.pseudo }}" class=" w-10 rounded-full mr-3">
-												<div>
-													<div class="flex justify-between">
-														<p class="mr-3 text-blue-400 font-semibold">{{ profil.pseudo }}</p>
-														<p class="text-xs">{{ notification.date|date('d-m-Y') }}</p>
-													</div>
-													<p>{{ notification.message }}</p>
-												</div>
-											</div>
-										{% endif %}
-									</a>
-								</div>
-							{% endfor %}
-						</div>
-					{% endblock %}
+            {% if notification.receiptPage == "hall" %}
+                {% set pageLink = path(notification.type == "add" ? 'app_hall_members' : 'app_hall_show', {'id': notification.receiptId, 'notification_id': notification.id}) %}
+                {% set memberType = profil.hallMembers|filter(member => member.hall.id == notification.receiptId)|first %}
+            {% elseif notification.receiptPage == "band" %}
+                {% set pageLink = path(notification.type == "add" ? 'app_band_members' : 'app_band_show', {'id': notification.receiptId, 'notification_id': notification.id}) %}
+                {% set memberType = profil.bandMembers|filter(member => member.band.id == notification.receiptId)|first %}
+            {% elseif notification.receiptPage == "profil" %}
+                {% set pageLink = path('app_profil_show', {'id': notification.receiptId, 'notification_id': notification.id}) %}
+            {% endif %}
+
+            {% if notification.status == 1 %}
+                <div class="bg-slate-200 my-3 p-3 w-1/2 rounded-md border-2 border-slate-300 hover:bg-white hover:border-2 hover:border-slate-300 duration-300">
+            {% else %}
+                <div class="bg-white my-3 w-1/2 p-3 rounded-md border-2 border-white hover:border-2 hover:border-slate-300 duration-300">
+            {% endif %}
+
+            <a href="{{ pageLink }}">
+                <div class="flex justify-between items-center">
+                    <div class="flex">
+                        <img src="{{ memberType.band.logo ?? memberType.hall.logo ?? profil.picture }}" alt="" class="w-10 rounded-full mr-3">
+                        <div>
+                            <div class="flex item-center">
+                                <p class="mr-3 text-blue-400 font-semibold">
+                                    {{ memberType.band.name ?? memberType.hall.name ?? profil.pseudo }}
+                                </p>
+                                <p class="text-xs mt-1">{{ notification.date|date('d-m-Y') }}</p>
+                            </div>
+                            <p>{{ notification.message }}</p>
+                        </div>
+                    </div>
+                    <form action="">
+                        <button class="bg-slate-200 px-3 pb-1 rounded-full text-white font-bold  hover:bg-slate-500 "> x </button>
+                    </form>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

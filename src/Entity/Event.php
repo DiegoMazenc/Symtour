@@ -26,6 +26,9 @@ class Event
     #[ORM\Column(nullable: true)]
     private ?int $status = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $band_status = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class Event
     public function setStatus(?int $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getBandStatus(): ?string
+    {
+        return $this->band_status;
+    }
+
+    public function setBandStatus(?string $band_status): static
+    {
+        $this->band_status = $band_status;
 
         return $this;
     }

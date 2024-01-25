@@ -2,19 +2,22 @@
 
 namespace App\Controller;
 
-use App\Entity\BandMember;
-use App\Entity\HallMember;
 use App\Entity\User;
 use App\Entity\Profil;
 use App\Form\ProfilType;
+use App\Entity\BandMember;
+use App\Entity\HallMember;
 use App\Entity\Notification;
 use Doctrine\ORM\Mapping\Id;
-use App\Repository\ProfilRepository;
-use App\Repository\BandMemberRepository;
+use App\Security\EmailVerifier;
 use App\Repository\BandRepository;
+use Symfony\Component\Mime\Address;
+use App\Repository\ProfilRepository;
+use App\Service\NotificationService;
+use App\Repository\BandMemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\NotificationRepository;
-use App\Service\NotificationService;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -152,5 +155,21 @@ class ProfilController extends AbstractController
         }
 
         return $this->redirectToRoute('app_profil_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/resend-mail-confirmation', name: 'app_resend_confirmation_mail', methods: ['GET'])]
+    public function resendMailConfirmation($id, EmailVerifier $emailVerifier): Response
+    {
+        $emailVerifier->sendEmailConfirmation(
+            'app_verify_email',
+            $this->getUser(),
+            (new TemplatedEmail())
+                ->from(new Address('diego.mazenc@gmail.com', 'Symtour'))
+                ->to($this->getUser()->getEmail())
+                ->subject('Please Confirm your Email')
+                ->htmlTemplate('registration/confirmation_email.html.twig')
+        );
+        $this->addFlash('warning', 'Email a bien été envoyé!');
+        return $this->redirectToRoute('app_profil_show', ["id" => (int)$id], Response::HTTP_SEE_OTHER);
     }
 }

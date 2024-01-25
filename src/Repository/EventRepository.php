@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Hall;
 use App\Entity\Event;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Event>
@@ -19,6 +20,34 @@ class EventRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Event::class);
+    }
+    
+    public function getComeEventsByHall(Hall $hall)
+    {
+        return $this->createQueryBuilder('e')
+        ->addSelect('hall', 'band')
+        ->leftJoin('e.hall', 'hall')    
+        ->leftJoin('e.band', 'band')    
+        ->andWhere('hall.id = :id')
+        ->andWhere('e.date >= CURRENT_DATE()')
+        ->setParameter('id', $hall->getId())
+        ->orderBy('e.date', 'DESC')    
+        ->getQuery()
+        ->getResult();
+    }
+
+    public function getPastEventsByHall(Hall $hall)
+    {
+        return $this->createQueryBuilder('e')
+        ->addSelect('hall', 'band')
+        ->leftJoin('e.hall', 'hall')    
+        ->leftJoin('e.band', 'band')    
+        ->andWhere('hall.id = :id')
+        ->andWhere('e.date < CURRENT_DATE()')
+        ->setParameter('id', $hall->getId())
+        ->orderBy('e.date', 'DESC')    
+        ->getQuery()
+        ->getResult();
     }
 
 //    /**
