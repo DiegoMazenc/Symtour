@@ -32,11 +32,11 @@
 							<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Historique de mes évènements
 							</h4>
 							<div class="p-3">
-								<label for="booking_date" class='text-blue-400 font-semibold'>Date Sélectionné :</label><br>
-								<input type="date" id="booking_date" name="booking_date" value="{{ date }}" class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5" required>
 
 
 								<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
+								<label for="booking_date" class='text-blue-400 font-semibold'>Date Sélectionné :</label><br>
+								<input type="date" id="booking_date" name="booking_date" value="{{ date }}" class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5" required> <br>
 									<label for="band_id" class='text-blue-400 font-semibold'>Pour quel projet souhaitez-vous réserver ?</label><br>
 									<select name="band_id" required class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5">
 										{% for bandMember in app.user.profil.bandMembers %}

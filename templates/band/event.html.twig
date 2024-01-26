@@ -6,108 +6,91 @@
 
 {% block body %}
 	<div class="user-contain py-5 px-20 bg bg-slate-100">
+		{% for events in eventsComeValidate %}
+
+			<p>{{ events[0].date|format_datetime(locale='fr', pattern="EEEE dd MMMM YYYY") }}</p>
+
+		{% endfor %}
+
 		<h2>Mes prochains événements</h2>
 
-		{% set groupedEvents = {} %}
-		<div class="card-event-list ">
-			{% for event in eventCome %}				
-				{% if event.status == 1  and event.bandStatus == "validate" %}
-					{% set eventDate = event.date|date() %}
-					{% set groupedEvents = groupedEvents|merge({(eventDate): {id: event.id, groups: (groupedEvents[eventDate].groups|default([]))|merge([event.band])}}) %}
-				{% endif %}
-			{% endfor %}
-			{% for date, eventInfo  in groupedEvents %}
-				{% set groups = eventInfo.groups %}
 
+		<div class="card-event-list ">
+
+			{% for event  in eventsComeValidate %}
 
 				<div class="card-event bg-white ">
 					<div class="flex bg-slate-700 text-white p-2 rounded-t-md items-center">
 
 						<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
-						<p>{{ date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+						<p>{{ event[0].date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+						<p>{{ event[0].hall.name }}</p>
 					</div>
 					<div class="plateau">
-						{% for group in groups %}
-							<div class="clic">
-								<div class=" flex justify-between items-center">
-									<div class="flex p-2 items-center relative">
-										<div class="img-project-db border-2 border-green-500 ">
-											<img src="{{ group.logo }}" alt="">
-										</div>
-										<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
-											✓
-										</div>
-										<div>
-											<p class="text-blue-400 font-semibold">{{ group.name }}</p>
-											<p>{{ group.musicCategory.category }}
-												/
-												{{ group.defineStyle }}</p>
-										</div>
-									</div>
-									<p class="px-5">Détails ▽</p>
-								</div>
-								<div class="open">
-									{% for member in group.bandMembers %}
-										<div class="flex justify-between list-member-event">
-											<div class="flex">
-												<div class="img-profil-event border-2 border-slate-500">
-													<img src="{{ member.profil.picture }}" alt="" class="w-5">
-
-												</div>
-												<p>{{ member.profil.pseudo }}
-												</p>
+						{% for group in event[1] %}
+							{% if event[0].status == 1  and event[0].bandStatus == "validate" %}
+								<div class="clic">
+									<div class=" flex justify-between items-center">
+										<div class="flex p-2 items-center relative">
+											<div class="img-project-db border-2 border-green-500 ">
+												<img src="{{ group.logo }}" alt="">
 											</div>
-											<p>{{ member.role.roleName }}</p>
+											<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+												✓
+											</div>
+											<div>
+												<p class="text-blue-400 font-semibold">{{ group.name }}</p>
+												<p>{{ group.musicCategory.category }}
+													/
+													{{ group.defineStyle }}</p>
+											</div>
 										</div>
-									{% endfor %}
+										<p class="px-5">Détails ▽</p>
+									</div>
+									<div class="open">
+										{% for member in group.bandMembers %}
+											<div class="flex justify-between list-member-event">
+												<div class="flex">
+													<div class="img-profil-event border-2 border-slate-500">
+														<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
+													</div>
+													<p>{{ member.profil.pseudo }}
+													</p>
+												</div>
+												<p>{{ member.role.roleName }}</p>
+											</div>
+										{% endfor %}
+									</div>
 								</div>
-							</div>
-							<hr>
+								<hr>
+							{% endif %}
 						{% endfor %}
 						<p class="bg-slate-300 w-full pl-3 text-white">Goupes invités</p>
 						<div class="p-2">
-							{% for event in eventCome %}
-								{% if event.bandStatus != "validate" and event.date|date() == date %}
+							{% for event in eventsComeGuest %}
+								{% for group in event[1] %}
 									<div class="clic">
 										<div class=" flex justify-between items-center">
 											<div class="flex p-2 items-center relative">
-												{% if event.bandStatus == "guest" %}
-													<div class="img-project-db border-2 bg-slate-300 ">
-														<img src="{{ event.band.logo }}" alt="">
-													</div>
-													<div class="bg-slate-300 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
-														⧖
-													</div>
-												{% elseif event.bandStatus == "reject"%}
-													<div class="img-project-db border-2 bg-red-500 ">
-														<img src="{{ event.band.logo }}" alt="">
-													</div>
-													<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
-														X
-													</div>
-												{% endif %}
+												<div class="img-project-db border-2 bg-slate-300 ">
+													<img src="{{ group.logo }}" alt="">
+												</div>
+												<div class="bg-slate-300 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+													⧖
+												</div>
 												<div>
-													<p class="text-blue-400 font-semibold">{{ event.band.name }}</p>
-													<p>{{ event.band.musicCategory.category }}
+													<p class="text-blue-400 font-semibold">{{ group.name }}</p>
+													<p>{{ group.musicCategory.category }}
 														/
-														{{ event.band.defineStyle }}</p>
+														{{ group.defineStyle }}</p>
 												</div>
 											</div>
-											{% if event.bandStatus == "reject"%}
-
-												<form action="{{ path('app_band_event_delete', {'id': hall.id }) }}" method="post">
-													<input type="hidden" name="idEvent" value="{{ event.id }}">
-
-													<button type="submit">
-														<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="#8c8c8c" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-													</button>
-												</form>
-											{% else %}
-												<p class="px-5">Détails ▽</p>
-											{% endif %}
+									
+											<p class="px-5">Détails ▽</p>
 										</div>
 										<div class="open">
-											{% for member in event.band.bandMembers %}
+											{% for member in group.bandMembers %}
 												<div class="flex justify-between list-member-event">
 													<div class="flex">
 														<div class="img-profil-event border-2 border-slate-500">
@@ -123,26 +106,79 @@
 										</div>
 									</div>
 									<hr>
-								{% endif %}
+								{% endfor %}
 							{% endfor %}
+							{% for event in eventsComeReject %}
+								
+									{% for group in event[1] %}
+
+										<div class="clic"> <div class=" flex justify-between items-center">
+											<div class="flex p-2 items-center relative">
+												<div class="img-project-db border-2 bg-red-500 ">
+													<img src="{{ group.logo }}" alt="">
+												</div>
+												<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+													X
+												</div>
+												<div>
+													<p class="text-blue-400 font-semibold">{{ group.name }}</p>
+													<p>{{ group.musicCategory.category }}
+														/
+														{{ group.defineStyle }}</p>
+												</div>
+											</div>
+
+
+											<form
+												action="{{ path('app_band_event_delete', {'id': band.id }) }}" method="post">
+												<input type="hidden" name="idEvent" value="{{ event.id }}">
+
+												<button type="submit">
+													<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="#8c8c8c" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+												</button>
+											</form>
+
+										</div>
+										<div class="open">
+											{% for member in group.bandMembers %}
+												<div class="flex justify-between list-member-event">
+													<div class="flex">
+														<div class="img-profil-event border-2 border-slate-500">
+															<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
+														</div>
+														<p>{{ member.profil.pseudo }}
+														</p>
+													</div>
+													<p>{{ member.role.roleName }}</p>
+												</div>
+											{% endfor %}
+										</div>
+									</div>
+									<hr>
+								{% endfor %}
+							{% endfor %} 
+
+
 							<div class="p-3">
 								<a href="#" class="text-slate-400 hover:text-blue-500 toggleSearchLink">
 									<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>
 									Inviter un groupe
 								</a>
 							</div>
+
 							<div class="search-member">
-								<form action="{{ path('app_hall_event', {'id': hall.id}) }}" method="post" name="addBandForm">
+								<form action="{{ path('app_band_event', {'id': bandConnect }) }}" method="post" name="addBandForm">
 									<input type="text" name="addBand" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
 									<input type="hidden" name="formName" value="addBandForm">
-									<input type="hidden" name="date" value="{{ date }}">
+									<input type="hidden" name="date" value="{{ event[0].date|date() }}">
 								</form>
 
 							</div>
 
 
-							{% for band in band %}
-								{% if dateAdd == date %}
+							{% for band in bandSearch %}
+								{% if dateAdd == event[0].date|date() %}
 
 
 									<div class="clic">
@@ -160,11 +196,11 @@
 												</div>
 											</div>
 											<div class="px-2">
-												<form action="{{ path('app_hall_event', {'id': hall.id}) }}" method="post" name="inviteBandForm">
+												<form action="{{ path('app_band_event', {'id': bandConnect}) }}" method="post" name="inviteBandForm">
 													<input type="hidden" name="action" value="guest">
 													<input type="hidden" name="bandId" value="{{ band.id }}">
-													<input type="hidden" name="date" value="{{ date }}">
-													<input type="hidden" name="hall_id" value="{{ hall.id }}">
+													<input type="hidden" name="date" value="{{ event[0].date|date() }}">
+													<input type="hidden" name="hall_id" value="{{ event[0].hall.id }}">
 													<input type="hidden" name="formName" value="inviteBandForm">
 
 													<button type="submit" class="validate-button px-1  rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Inviter</button>
@@ -277,4 +313,4 @@ searchMemberDiv.hide();
 });
 });
 	</script>
-{% endblock %}
+{% endblock %} 

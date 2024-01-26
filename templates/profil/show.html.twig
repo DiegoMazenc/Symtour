@@ -21,8 +21,6 @@
 			<p>Félicitation vous êtes bien inscrit, pour accéder aux services, merci de remplir vos informations</p>
 			<a href="/profil/{{ app.user.profil.id}}/edit">Je remplis mes informations</a>
 		</div>
-
-
 	{% else %}
 		<div class="user-contain py-5 px-20  bg bg-slate-100">
 			<div class="header-user flex ">
@@ -172,7 +170,49 @@
 
 							{% endif %}
 						{% endfor %}
-
+						{% for bandMember in profil.bandMembers %}
+							{% if bandMember.status == "guest" %}
+								<a href="/band/{{ bandMember.band.id }}">
+									<div class="flex justify-between p-3 hover:bg-slate-100 items-center">
+										<div class="flex relative">
+											<div class="img-project-db">
+												<img src="{{ bandMember.band.logo}}" alt="">
+											</div>
+											{% set counter = 0 %}
+											{% for notification in app.user.profil.notifications %}
+												{% if notification.status == 1 and notification.receiptId == bandMember.band.id %}
+													{% set counter = counter + 1 %}
+												{% endif %}
+											{% endfor %}
+											{% if counter > 0 %}
+												<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-0 left-9">
+													{{ counter }}
+												</div>
+											{% endif %}
+											<div class="ml-3">
+												<p class="text-blue-400 font-semibold">{{ bandMember.band.name}}</p>
+												<p>{{ bandMember.role.roleName}}</p>
+											</div>
+										</div>
+										<div>
+											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+												<input type="hidden" name="action" value="validate">
+												<input type="hidden" name="page" value="band">
+												<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
+												<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
+											</form>
+											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+												<input type="hidden" name="action" value="reject">
+												<input type="hidden" name="page" value="band">
+												<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
+												<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
+											</form>
+										</div>
+									</div>
+								</a>
+								<hr>
+							{% endif %}
+						{% endfor %}
 						<div class="p-3">
 							<a href="{{ path('app_band_new') }}" class="text-slate-400 hover:text-blue-500 p-3">
 								<span class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</span>Créer un nouveau groupe

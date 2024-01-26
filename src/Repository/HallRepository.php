@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Band;
 use App\Entity\Hall;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -56,6 +57,9 @@ class HallRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    
+
 
     
 //    /**

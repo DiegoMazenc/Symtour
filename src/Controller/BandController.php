@@ -3,18 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\Band;
+use App\Entity\Event;
 use App\Entity\Profil;
 use App\Form\BandType;
 use App\Entity\BandInfo;
 use App\Entity\RoleBand;
 use App\Entity\BandMember;
-use App\Form\AddRoleBandType;
 use App\Form\BandMemberType;
 use App\Form\SearchFormType;
+use App\Form\AddRoleBandType;
 use App\Repository\BandRepository;
+use App\Repository\EventRepository;
+use App\Repository\HallRepository;
 use App\Repository\ProfilRepository;
-use App\Repository\RoleBandRepository;
 use App\Service\NotificationService;
+use App\Repository\RoleBandRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -73,10 +76,30 @@ class BandController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_band_show', methods: ['GET'])]
-    public function show(Band $band, Request $request, NotificationService $notification): Response
+    #[Route('/{id}', name: 'app_band_show', methods: ['GET','POST'])]
+    public function show(Band $band,EntityManagerInterface $em, Request $request, NotificationService $notification): Response
     {
         $notification->isRead((int)$request->query->get('notification_id'));
+
+        if ($request->isMethod('POST')) {
+            $action = $request->request->get('action');
+            $eventId = $request->request->get('event_id');
+
+            if ($action === 'validate') {
+                $bandStatus = "validate";
+                $status = 1;
+            } else  {
+                $bandStatus = "reject";
+                $status = 2;
+            } 
+
+            $event = $em->getRepository(Event::class)->find($eventId);
+            if ($event) {
+                $event->setBandStatus($bandStatus)
+                ->setStatus($status);
+                $em->flush();
+            }
+        }
         return $this->render('band/show.html.twig', [
             'band' => $band,
         ]);
@@ -134,6 +157,80 @@ class BandController extends AbstractController
             'profil' => $profil,
             'roles' => $roles
 
+        ]);
+    }
+
+    
+    #[Route('/{id}/event', name: 'app_band_event', methods: ['GET', 'POST'])]
+    public function event(Band $band, Request $request, BandRepository $bandRepository,HallRepository $hallRepository, EventRepository $eventRepository, EntityManagerInterface $em): Response
+    {
+      
+        $eventCome = $eventRepository->getComeEventsByBand($band);
+        $eventsComeValidate = [];
+        $eventsComeGuest = [];
+        $eventsComeReject = [];
+        foreach ($eventCome as $event) {
+            $eventsComeValidate[$event->getId()] = [$event];
+            $bands = $bandRepository->getBandsByHallAndDate($event);
+            $eventsComeValidate[$event->getId()][] = $bands;
+        }
+
+        foreach ($eventCome as $event) {
+            $eventsComeGuest[$event->getId()] = [$event];
+            $bands = $bandRepository->getBandsByHallAndDateGuest($event);
+            $eventsComeGuest[$event->getId()][] = $bands;
+        }
+
+        foreach ($eventCome as $event) {
+            $eventsComeReject[$event->getId()] = [$event];
+            $bands = $bandRepository->getBandsByHallAndDateReject($event);
+            $eventsComeReject[$event->getId()][] = $bands;
+        }
+        $eventPast = $eventRepository->getPastEventsByBand($band);
+        $dateAdd = null;
+        $bandSearch = null;
+        $bandConnect = $band->getId();
+        if ($request->isMethod('POST')) {
+            $formName = $request->request->get('formName');
+
+            if ($formName === 'addBandForm') {
+                $addBand = $request->request->get('addBand');
+                $dateAdd = $request->request->get('date');
+                $bandSearch = $bandRepository->findBySearch($addBand);
+            } elseif ($formName === 'inviteBandForm') {
+                $bandId = $request->request->get('bandId');
+                $bandSearch = $bandRepository->find($bandId);
+                $hallId = $request->request->get('hall_id');
+                $hallSearch = $hallRepository->find($hallId);
+
+                $date = $request->request->get('date');
+                $event = new Event();
+
+                $event
+                    ->setHall($hallSearch)
+                    ->setBand($bandSearch)
+                    ->setDate(new \DateTime($date)) // Assurez-vous de convertir la chaîne en objet DateTime
+                    ->setStatus(1)
+                    ->setBandStatus("guest");
+
+                $em->persist($event);
+                $em->flush();
+                
+        return $this->redirectToRoute('app_band_event', ["id" => $bandConnect], Response::HTTP_SEE_OTHER);
+
+           
+        }
+    }
+
+        return $this->render('band/event.html.twig', [
+            'band' => $band,
+            'eventsComeValidate' => $eventsComeValidate,
+            'eventsComeGuest' => $eventsComeGuest,
+            'eventsComeReject' => $eventsComeReject,
+            'eventPast' => $eventPast,
+            'bandSearch' => $bandSearch,
+            'dateAdd' => $dateAdd,
+            'bandConnect' => $bandConnect,
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Band;
+use App\Entity\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -33,6 +34,58 @@ class BandRepository extends ServiceEntityRepository
     
         return $queryBuilder->getQuery()->getResult();
     }
+
+    public function getBandsByHallAndDate(Event $event)
+    {
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.events', 'event')
+            ->leftJoin('event.hall', 'hall')
+           ->andWhere('event.date = :date')
+           ->andWhere('event.band_status = :status')
+           ->andWhere('hall.id = :id')
+           ->setParameter('date', $event->getDate())
+           ->setParameter('status', "validate")
+           ->setParameter('id', $event->getHall()->getId())
+           ->orderBy('b.id', 'ASC')
+           ->getQuery()
+           ->getResult();
+
+    }
+
+    public function getBandsByHallAndDateGuest(Event $event)
+    {
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.events', 'event')
+            ->leftJoin('event.hall', 'hall')
+           ->andWhere('event.date = :date')
+           ->andWhere('event.band_status = :status')
+           ->andWhere('hall.id = :id')
+           ->setParameter('date', $event->getDate())
+           ->setParameter('status', "guest")
+           ->setParameter('id', $event->getHall()->getId())
+           ->orderBy('b.id', 'ASC')
+           ->getQuery()
+           ->getResult();
+
+    }
+    public function getBandsByHallAndDateReject(Event $event)
+    {
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.events', 'event')
+            ->leftJoin('event.hall', 'hall')
+           ->andWhere('event.date = :date')
+           ->andWhere('event.band_status = :status')
+           ->andWhere('hall.id = :id')
+           ->setParameter('date', $event->getDate())
+           ->setParameter('status', "reject")
+           ->setParameter('id', $event->getHall()->getId())
+           ->orderBy('b.id', 'ASC')
+           ->getQuery()
+           ->getResult();
+
+    }
+
+    
 
 //    /**
 //     * @return Band[] Returns an array of Band objects

@@ -1,0 +1,12 @@
+{{ form_start(searchFormBandEvent) }}
+{{ form_widget(searchFormBandEvent.searchBand, {
+	'attr': {
+		'class': 'w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300',
+	}
+}) }}
+{{ form_widget(searchFormBandEvent.submit, {
+	'attr': {
+		'class': 'hidden',  
+	}
+}) }}
+{{ form_end(searchFormBandEvent) }}

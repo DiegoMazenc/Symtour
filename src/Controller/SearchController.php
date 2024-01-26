@@ -57,7 +57,9 @@ class SearchController extends AbstractController
         $dateBooking = $request->request->get('booking_date');
         $bandId = $request->request->get('band_id');
 
+
         if ($request->isMethod('POST')) {
+
             // Vous devez remplacer 'Your\Entity\Namespace\Band' par la classe réelle de votre entité Band
             $band = $em->getRepository(Band::class)->find($bandId);
             $bandName = $band->getName();
