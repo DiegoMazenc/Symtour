@@ -68,7 +68,8 @@
 						{% endfor %}
 						<p class="bg-slate-300 w-full pl-3 text-white">Goupes invités</p>
 						<div class="p-2">
-							{% for event in eventsComeGuest %}
+							{% for eventguest in eventsComeGuest %}
+								{% if eventguest[0].id == event[0].id %}
 								{% for group in event[1] %}
 									<div class="clic">
 										<div class=" flex justify-between items-center">
@@ -86,7 +87,7 @@
 														{{ group.defineStyle }}</p>
 												</div>
 											</div>
-									
+
 											<p class="px-5">Détails ▽</p>
 										</div>
 										<div class="open">
@@ -107,12 +108,15 @@
 									</div>
 									<hr>
 								{% endfor %}
+								{% endif %}
 							{% endfor %}
-							{% for event in eventsComeReject %}
-								
-									{% for group in event[1] %}
+							{% for eventreject in eventsComeReject %}
+								{% if eventreject[0].id == event[0].id %}
 
-										<div class="clic"> <div class=" flex justify-between items-center">
+								{% for group in event[1] %}
+
+									<div class="clic">
+										<div class=" flex justify-between items-center">
 											<div class="flex p-2 items-center relative">
 												<div class="img-project-db border-2 bg-red-500 ">
 													<img src="{{ group.logo }}" alt="">
@@ -129,9 +133,8 @@
 											</div>
 
 
-											<form
-												action="{{ path('app_band_event_delete', {'id': band.id }) }}" method="post">
-												<input type="hidden" name="idEvent" value="{{ event.id }}">
+											<form action="{{ path('app_band_event_delete', {'id': band.id }) }}" method="post">
+												{# <input type="hidden" name="idEvent" value="{{ event.id }}"> #}
 
 												<button type="submit">
 													<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="#8c8c8c" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
@@ -157,7 +160,8 @@
 									</div>
 									<hr>
 								{% endfor %}
-							{% endfor %} 
+								{% endif %}
+							{% endfor %}
 
 
 							<div class="p-3">
@@ -313,4 +317,4 @@ searchMemberDiv.hide();
 });
 });
 	</script>
-{% endblock %} 
+{% endblock %}
