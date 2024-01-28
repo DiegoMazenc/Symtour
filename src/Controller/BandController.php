@@ -79,8 +79,11 @@ class BandController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_band_show', methods: ['GET','POST'])]
-    public function show(Band $band,EntityManagerInterface $em, Request $request,HallRepository $hallRepository, NotificationService $notification): Response
+    public function show(Band $band,EntityManagerInterface $em,EventRepository $eventRepository
+     , Request $request,HallRepository $hallRepository, NotificationService $notification): Response
     {
+        $eventCome = $eventRepository->getComeEventsByBand($band);
+        $eventPast = $eventRepository->getPastEventsByBand($band);
         $notification->isRead((int)$request->query->get('notification_id'));
 
         if ($request->isMethod('POST')) {
@@ -105,6 +108,8 @@ class BandController extends AbstractController
         }
         return $this->render('band/show.html.twig', [
             'band' => $band,
+            'eventCome' => $eventCome,
+            'eventPast' => $eventPast
         ]);
     }
 

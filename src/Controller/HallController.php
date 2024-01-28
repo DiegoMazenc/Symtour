@@ -3,29 +3,30 @@
 namespace App\Controller;
 
 use App\Entity\Band;
-use App\Entity\BandEvent;
 use App\Entity\Hall;
 use App\Entity\Event;
 use App\Entity\Profil;
 use App\Form\HallType;
+use App\Entity\ChatRoom;
 use App\Entity\HallInfo;
 use App\Entity\RoleHall;
+use App\Entity\BandEvent;
 use App\Entity\HallMember;
 use App\Form\SearchFormType;
 use App\Form\AddRoleHallType;
 use App\Form\FilterSearchType;
-use App\Repository\BandEventRepository;
 use App\Repository\BandRepository;
-use App\Repository\EventRepository;
 use App\Repository\HallRepository;
+use App\Repository\EventRepository;
 use App\Repository\ProfilRepository;
 use App\Service\NotificationService;
 use App\Repository\RoleHallRepository;
+use App\Repository\BandEventRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Types\This;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
@@ -96,6 +97,14 @@ class HallController extends AbstractController
 
             if ($action === 'validate') {
                 $status = 1;
+
+                $chatRoom = new ChatRoom();
+
+                $chatRoom->setEvent($em->getRepository(Event::class)->find($eventId))
+                ->setDateCreate(new \DateTime());
+                $em->persist($chatRoom);
+                $em->flush();
+
             } elseif ($action === 'reject') {
                 $status = 2;
             } else {

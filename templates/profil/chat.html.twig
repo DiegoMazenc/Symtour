@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Profil
+{% endblock %}
+
+{% block body %}
+	<div class="user-contain py-5 px-20 bg bg-slate-100">
+	{% for chat in chat %}
+			<p>{{ chat.message }}</p>
+	{% endfor %}
+	</div>
+{% endblock %}

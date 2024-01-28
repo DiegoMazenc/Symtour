@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BandMemberRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BandMemberRepository::class)]
@@ -24,6 +26,9 @@ class BandMember
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
+
+
+   
 
    
     public function getId(): ?int
@@ -79,5 +84,7 @@ class BandMember
         return $this;
     }
 
+
+   
  
 }
