@@ -1,0 +1,52 @@
+{#<h2>Mes événements passés</h2>
+<div class="card-event-list ">
+	{% for event in eventPast %}
+		{% if event.status == 1  %}
+			{% set eventDate = event.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") %}
+			{% set groupedEventsPast = groupedEventsPast|merge({(eventDate): (groupedEventsPast[eventDate]|default([]))|merge([event.band])}) %}
+		{% endif %}
+	{% endfor %}
+	{% for date, groups in groupedEventsPast %}
+		<div class="card-event bg-slate-200 ">
+			<div class="flex bg-slate-300 text-white p-2 rounded-t-md items-center">
+					<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+					<p>{{ date }}</p>
+			</div>
+			<div class="plateau">
+					<div class="">
+						{% for group in groups %}
+							<div class="clic">
+								<div class=" flex justify-between items-center">
+									<div class="flex p-2 items-center">
+										<div class="img-project-db border-2 border-slate-500">
+											<img src="{{ group.logo }}" alt="">
+										</div>
+										<div>
+											<p class="text-blue-400 font-semibold">{{ group.name }}</p>
+											<p>{{ group.musicCategory.category }}/{{ group.defineStyle }}</p>
+										</div>
+									</div>
+									<p class="px-5">Détails ▽</p>
+								</div>
+								<div class="open">
+									{% for member in group.bandMembers %}
+										<div class="flex justify-between list-member-event">
+											<div class="flex">
+												<div class="img-profil-event border-2 border-slate-500">
+													<img src="{{ member.profil.picture }}" alt="" class="w-5">
+												</div>
+												<p>{{ member.profil.pseudo }}</p>
+											</div>
+											<p>{{ member.role.roleName }}</p>
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							<hr>
+						{% endfor %}
+					</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>#}
+

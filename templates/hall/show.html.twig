@@ -30,25 +30,28 @@
 								{% if event.status == 3 %}
 									<div class="cardAdminProfil flex justify-between ">
 										<p>{{ event.date|date('d-m-Y')  }}</p>
-										<a href="{{ path('app_band_show', {'id': event.band.id}) }}">{{ event.band.name }}</a>
-										<p>{{ event.band.musicCategory.category }}
-											/
-											{{ event.band.defineStyle }}</p>
+										{% for bandEvent in event.bandEvents %}
 
-										<div>
-											<form action="{{ path('app_hall_show', {'id': hall.id}) }}" method="post">
-												<input type="hidden" name="action" value="validate">
-												<input type="hidden" name="bandId" value="{{ event.band.id }}">
-												<input type="hidden" name="event_id" value="{{ event.id }}">
-												<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
-											</form>
-											<form action="{{ path('app_hall_show', {'id': hall.id}) }}" method="post">
-												<input type="hidden" name="action" value="reject">
-												<input type="hidden" name="bandId" value="{{ event.band.id }}">
-												<input type="hidden" name="event_id" value="{{ event.id }}">
-												<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
-											</form>
-										</div>
+											<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}">{{ bandEvent.band.name }}</a>
+											<p>{{ bandEvent.band.musicCategory.category }}
+												/
+												{{ bandEvent.band.defineStyle }}</p>
+
+											<div>
+												<form action="{{ path('app_hall_show', {'id': hall.id}) }}" method="post">
+													<input type="hidden" name="action" value="validate">
+													<input type="hidden" name="bandId" value="{{ bandEvent.band.id }}">
+													<input type="hidden" name="event_id" value="{{ event.id }}">
+													<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
+												</form>
+												<form action="{{ path('app_hall_show', {'id': hall.id}) }}" method="post">
+													<input type="hidden" name="action" value="reject">
+													<input type="hidden" name="bandId" value="{{ bandEvent.band.id }}">
+													<input type="hidden" name="event_id" value="{{ event.id }}">
+													<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
+												</form>
+											</div>
+										{% endfor %}
 									</div>
 									<hr class="my-3">
 								{% endif %}
@@ -58,29 +61,137 @@
 						</div>
 					</div>
 				</div>
-				<div class="event-list-db bg-white rounded-md shadow-md mt-3 ">
-					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes prochains events
-					</h4>
-					<div class="p-3">
-						{% for event in hall.events %}
-							{% if event.status == 1 %}
-								<div class="cardAdminProfil flex justify-between ">
-									<p>{{ event.date|date('d-m-Y')  }}</p>
-									<p>{{ event.band.name }}</p>
-
-									<div>
-										<form action="{{ path('app_hall_show', {'id': hall.id}) }}" method="post">
-											<input type="hidden" name="action" value="validate">
-											<input type="hidden" name="event_id" value="{{ event.id }}">
-											<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Annuler</button>
-										</form>
-									</div>
-								</div>
-								<hr class="my-3">
+				<div class="flex justify-between">
+					<div class="event-confirm-db bg-white rounded-md shadow-md mt-3 ">
+						<div class="flex justify-between item-align bg-slate-700 relative rounded-t-md">
+							<h4 class=" text-white p-2 ">Mes prochains events</h4>
+							<div class="flex absolute right-2 top-2">
+								<div id="arrow-left" class="arrow-left text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10094;</div>
+								<div id="arrow-right" class="arrow-right text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10095;</div>
+							</div>
+						</div>
+						{% set count = 0 %}
+						{% for events in eventCome %}
+							{% if events.status == 1 %}
+								{% set count = count + 1 %}
 							{% endif %}
 						{% endfor %}
-						<a href="{{ path('app_event_new') }}" class="text-slate-400 hover:text-blue-500 ">
-							<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Organiser un nouvel Event</a>
+						{% set widthPercentage = count * 100 %}
+
+
+						<div class="event-confirm-db-container">
+							<div class=" event-confirm-db-content" style="width: {{ widthPercentage }}%">
+								{% for events in eventCome %}
+									{% if events.status == 1 %}
+
+										<div class="card-event-db bg-white ">
+											<div class="flex bg-slate-500 text-white p-2  items-center">
+												<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 	24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.	05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.	825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.	588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+												<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+											</div>
+											<div class="plateau">
+												{% for bandEvent in events.bandEvents|slice(0, 3) %}
+													{% if bandEvent.status == "validate" %}
+
+														<div class="clic">
+															<div class=" flex justify-between items-center">
+																<div class="flex p-2 items-center relative">
+																	<div class="img-project-db border-2 border-green-500 ">
+																		<img src="{{ bandEvent.band.logo }}" alt="">
+																	</div>
+																	<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+																		✓
+																	</div>
+																	<div>
+																		<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+																		<p>{{ bandEvent.band.musicCategory.category }}
+																			/
+																			{{ bandEvent.band.defineStyle }}</p>
+																	</div>
+																</div>
+															</div>
+															<div class="open">
+																{% for member in bandEvent.band.bandMembers %}
+																	<div class="flex justify-between list-member-event">
+																		<div class="flex">
+																			<div class="img-profil-event border-2 border-slate-500">
+																				<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
+																			</div>
+																			<p>{{ member.profil.pseudo }}
+																			</p>
+																		</div>
+																		<p>{{ member.role.roleName }}</p>
+																	</div>
+																{% endfor %}
+															</div>
+														</div>
+														<hr>
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+					<div class="event-confirm-db bg-white rounded-md shadow-md mt-3 ">
+						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mon dernier events
+						</h4>
+						<div class=" flex justify-between">
+							{% for events in eventPast %}
+								{% if events.status == 1 %}
+									<div class="card-event-db bg-white ">
+										<div class="flex bg-slate-500 text-white p-2  items-center">
+											<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 	24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.	05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.	825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.	588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+											<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+										</div>
+										<div class="plateau">
+											{% for bandEvent in events.bandEvents|slice(0, 1) %}
+												{% if bandEvent.status == "validate" %}
+
+													<div class="clic">
+														<div class=" flex justify-between items-center">
+															<div class="flex p-2 items-center relative">
+																<div class="img-project-db border-2 border-green-500 ">
+																	<img src="{{ bandEvent.band.logo }}" alt="">
+																</div>
+																<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+																	✓
+																</div>
+																<div>
+																	<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+																	<p>{{ bandEvent.band.musicCategory.category }}
+																		/
+																		{{ bandEvent.band.defineStyle }}</p>
+																</div>
+															</div>
+														</div>
+														<div class="open">
+															{% for member in bandEvent.band.bandMembers %}
+																<div class="flex justify-between list-member-event">
+																	<div class="flex">
+																		<div class="img-profil-event border-2 border-slate-500">
+																			<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
+																		</div>
+																		<p>{{ member.profil.pseudo }}
+																		</p>
+																	</div>
+																	<p>{{ member.role.roleName }}</p>
+																</div>
+															{% endfor %}
+														</div>
+													</div>
+													<hr>
+												{% endif %}
+											{% endfor %}
+										</div>
+									</div>
+								{% endif %}
+							{% endfor %}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -89,7 +200,6 @@
 					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Membres
 					</h4>
 					<div class="p-3">
-
 						{% for member in hall.hallMembers %}
 							<div class="cardAdminProfil flex justify-between items-center">
 								<div class="flex items-center">
@@ -107,21 +217,59 @@
 						{% endfor %}
 						<a href="{{ path('app_hall_member_new') }}" class="text-slate-400 hover:text-blue-500 ">
 							<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Ajouter un nouveau membre</a>
-
 					</div>
 				</div>
-
 			</div>
 		</div>
-
 	</div>
 
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const container = document.querySelector('.event-confirm-db-container');
+const content = document.querySelector('.event-confirm-db-content');
+const arrowLeft = document.getElementById('arrow-left');
+const arrowRight = document.getElementById('arrow-right');
 
+// Initialisation de la position à 0
+let currentPosition = 0;
+
+arrowLeft.addEventListener('click', function () { // Décrémente la position
+currentPosition -= 100;
+updatePosition();
+});
+
+arrowRight.addEventListener('click', function () { // Incrémente la position
+currentPosition += 100;
+updatePosition();
+});
+
+function updatePosition() { // Limite la position pour éviter de dépasser le contenu
+currentPosition = Math.max(0, Math.min(currentPosition, content.scrollWidth - container.clientWidth));
+
+// Ajout d'une transition pour une animation fluide
+content.style.transition = 'left 0.5s ease-in-out';
+content.style.left = `-${currentPosition}%`;
+
+// Affiche/masque les flèches en conséquence
+arrowLeft.style.display = currentPosition === 0 ? 'none' : 'block';
+
+// Vérifie s'il y a des articles suivants en utilisant le compteur
+const count = {{ count }};
+arrowRight.style.display = currentPosition >= (count - 1) * 100 ? 'none' : 'block';
+
+// Réinitialise la transition après l'animation
+setTimeout(() => {
+content.style.transition = '';
+}, 500);
+}
+});
+	</script>
 {% endblock %}
 
 
 {% block javascripts %}
 	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/index.global.min.js" integrity="sha256-dHUNnePy81fXq4D/wfu7cPsEIP7zl6MvLb84jtZf+UY=" crossorigin="anonymous"></script>
+
 
 	<script>
 		document.addEventListener('DOMContentLoaded', () => {
@@ -193,8 +341,7 @@ console.error('Erreur lors de la mise à jour du statut de l\'événement :', er
 });
 }
 });
-
-
 	</script>
+
 
 {% endblock %}

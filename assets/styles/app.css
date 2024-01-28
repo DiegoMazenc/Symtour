@@ -94,7 +94,7 @@ padding: 15px;
     object-fit: cover;
 }
 
-.card-event-list{
+/* .card-event-list{
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -104,7 +104,43 @@ padding: 15px;
 .card-event{
     width: 49.5%;
     margin: 15px 0;
+} */
+
+.event-confirm-db{
+    width: 48%;
+
 }
+
+.event-confirm-db-container{
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+
+.event-confirm-db-content{
+    display: flex;
+    position: relative;
+    /* width: 200%; */
+left: 0%;}
+
+.card-event-list{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.card-event-db{
+    width: 100%;
+}
+
+.card-event{
+    width: 40%;
+    margin: 15px 0;
+}
+
+
 
 @media screen and (max-width: 1200px) {
     .card-event {
@@ -275,3 +311,7 @@ height: 24px;
 .fc-header-toolbar{
     margin-bottom: 15px !important;
 }
+
+/* =====SLIDER=====
+*/
+

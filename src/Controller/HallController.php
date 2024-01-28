@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Band;
+use App\Entity\BandEvent;
 use App\Entity\Hall;
 use App\Entity\Event;
 use App\Entity\Profil;
@@ -13,6 +14,7 @@ use App\Entity\HallMember;
 use App\Form\SearchFormType;
 use App\Form\AddRoleHallType;
 use App\Form\FilterSearchType;
+use App\Repository\BandEventRepository;
 use App\Repository\BandRepository;
 use App\Repository\EventRepository;
 use App\Repository\HallRepository;
@@ -79,8 +81,12 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_hall_show', methods: ['GET', 'POST'])]
-    public function show(Hall $hall, BandRepository $bandRepository, Request $request, EntityManagerInterface $em, NotificationService $notification): Response
+    public function show(Hall $hall, BandRepository $bandRepository,EventRepository $eventRepository, Request $request, EntityManagerInterface $em, NotificationService $notification): Response
     {
+        $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
+        $eventPast = $eventRepository->getPastEventsByHall($hall);
+
+
         $notification->isRead((int)$request->query->get('notification_id'));
         if ($request->isMethod('POST')) {
             $action = $request->request->get('action');
@@ -112,6 +118,8 @@ class HallController extends AbstractController
 
         return $this->render('hall/show.html.twig', [
             'hall' => $hall,
+            'eventCome' => $eventCome,
+            'eventPast' => $eventPast
         ]);
     }
 
@@ -175,47 +183,48 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}/event', name: 'app_hall_event', methods: ['GET', 'POST'])]
-    public function event(Hall $hall, Request $request, BandRepository $bandRepository, EventRepository $eventRepository, EntityManagerInterface $em): Response
+    public function event(Hall $hall, Request $request,NotificationService $notification, BandRepository $bandRepository, EventRepository $eventRepository, EntityManagerInterface $em): Response
     {
         $eventCome = $eventRepository->getComeEventsByHall($hall);
         $eventPast = $eventRepository->getPastEventsByHall($hall);
         $dateAdd = null;
-        $band = null;
+        $bandFind = null;
         if ($request->isMethod('POST')) {
             $formName = $request->request->get('formName');
 
             if ($formName === 'addBandForm') {
                 $addBand = $request->request->get('addBand');
                 $dateAdd = $request->request->get('date');
-                $band = $bandRepository->findBySearch($addBand);
+                $bandFind = $bandRepository->findBySearch($addBand);
             } elseif ($formName === 'inviteBandForm') {
 
                 $bandId = $request->request->get('bandId');
                 $band = $bandRepository->find($bandId);
-                $date = $request->request->get('date');
+                $eventId = $request->request->get('eventId');
+                $event = $eventRepository->find($eventId);
 
-                $event = new Event();
+                $bandEvent = new BandEvent();
 
-                $event
-                    ->setHall($hall)
+                $bandEvent
+                    ->setEvent($event)
                     ->setBand($band)
-                    ->setDate(new \DateTime($date)) // Assurez-vous de convertir la chaîne en objet DateTime
-                    ->setStatus(1)
-                    ->setBandStatus("guest");
+                    ->setStatus("guest");
 
-                $em->persist($event);
+                $em->persist($bandEvent);
                 $em->flush();
+
+                $notification->addNotificationHallToBand("band", $hall->getName(), $band->getId(), "hall", $hall->getId(), "guest", $band, $em);
                 
         return $this->redirectToRoute('app_hall_event', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
 
-            }elseif ($formName === 'inviteBandForm') {
+            
         }}
 
         return $this->render('hall/event.html.twig', [
             'hall' => $hall,
             'eventCome' => $eventCome,
             'eventPast' => $eventPast,
-            'band' => $band,
+            'band' => $bandFind,
             'dateAdd' => $dateAdd
         ]);
     }
@@ -238,16 +247,16 @@ class HallController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/band-event-delete', name: 'app_band_event_delete', methods: ['POST'])]
-    public function deleteEvent(Request $request, Event $event,Hall $hall, EventRepository $eventRepository, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/event-delete', name: 'app_hall_event_delete', methods: ['POST'])]
+    public function deleteEvent(Request $request,Hall $hall, BandEventRepository $bandEventRepository, EntityManagerInterface $entityManager): Response
     {
         if ($request->isMethod('POST')) {
             $eventId = $request->request->get('idEvent');
             
-            $event = $eventRepository->find((int)$eventId);
+            $bandEvent = $bandEventRepository->find($eventId);
     
-            if ($event) {
-                $entityManager->remove($event);
+            if ($bandEvent) {
+                $entityManager->remove($bandEvent);
                 $entityManager->flush();
             }
     

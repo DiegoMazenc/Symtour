@@ -41,11 +41,16 @@ class Band
     #[ORM\OneToOne(mappedBy: 'bandId', cascade: ['persist', 'remove'])]
     private ?BandInfo $bandInfo = null;
 
+    #[ORM\OneToMany(mappedBy: 'band', targetEntity: BandEvent::class)]
+    private Collection $bandEvents;
+
+
     public function __construct()
     {
         $this->bandMembers = new ArrayCollection();
         $this->events = new ArrayCollection();
         // $this->bandInfos = new ArrayCollection();
+        $this->bandEvents = new ArrayCollection();
     }
 
 
@@ -134,35 +139,7 @@ class Band
         return $this;
     }
 
-    /**
-     * @return Collection<int, Event>
-     */
-    public function getEvents(): Collection
-    {
-        return $this->events;
-    }
 
-    public function addEvent(Event $event): static
-    {
-        if (!$this->events->contains($event)) {
-            $this->events->add($event);
-            $event->setBand($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEvent(Event $event): static
-    {
-        if ($this->events->removeElement($event)) {
-            // set the owning side to null (unless already changed)
-            if ($event->getBand() === $this) {
-                $event->setBand(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, BandInfo>
@@ -193,6 +170,37 @@ class Band
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, BandEvent>
+     */
+    public function getBandEvents(): Collection
+    {
+        return $this->bandEvents;
+    }
+
+    public function addBandEvent(BandEvent $bandEvent): static
+    {
+        if (!$this->bandEvents->contains($bandEvent)) {
+            $this->bandEvents->add($bandEvent);
+            $bandEvent->setBand($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBandEvent(BandEvent $bandEvent): static
+    {
+        if ($this->bandEvents->removeElement($bandEvent)) {
+            // set the owning side to null (unless already changed)
+            if ($bandEvent->getBand() === $this) {
+                $bandEvent->setBand(null);
+            }
+        }
+
+        return $this;
+    }
+
 
    
 }

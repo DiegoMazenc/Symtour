@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Form\SearchFormType;
 use App\Entity\Band;
+use App\Entity\BandEvent;
 use App\Entity\Notification;
 use App\Form\FilterSearchType;
 use App\Repository\MusicCategoryRepository;
@@ -65,12 +66,19 @@ class SearchController extends AbstractController
             $bandName = $band->getName();
             $event = new Event();
             $event->setHall($hall)
-                ->setBand($band)
                 ->setDate(new \DateTime($dateBooking))
                 ->setStatus(3);
 
             $em->persist($event);
             $em->flush();
+            $bandEvent = new BandEvent();
+            $bandEvent->setBand($band)
+            ->setEvent($event)
+            ->setStatus("validate");
+            $em->persist($bandEvent);
+            $em->flush();
+
+
 
             $notification->addNotificationHall("hall",$bandName, $id, "band", $bandId, "event", $hall, $em);
         }

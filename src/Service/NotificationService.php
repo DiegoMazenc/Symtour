@@ -122,6 +122,81 @@ class NotificationService
         $em->flush();
     }
 
+    public function addNotificationHallToBand($receipt, $ProfilName, $idReceipt, $sender, $idSender, $type, $band, $em)
+    {
+
+        $uniqueProfiles = [];
+    
+        foreach ($band->getBandMembers() as $bandMember) {
+            $profil = $bandMember->getProfil();
+            $uniqueProfiles[$profil->getId()] = $profil;
+        }
+    
+        foreach ($uniqueProfiles as $profil) {
+            $notification = new Notification;
+       
+
+       
+            $message = "$ProfilName vous invite à un évènement";
+        
+
+        $notification
+            ->setMessage($message)
+            ->setStatus(1)
+            ->setDate(new \DateTime())
+            ->setReceiptPage($receipt)
+            ->setReceiptId($idReceipt)
+            ->setSenderPage($sender)
+            ->setSenderId($idSender)
+            ->setType($type)
+            ->setProfil($profil);
+    
+            $em->persist($notification);
+        }
+    
+        $em->flush();
+    }
+
+    public function addNotificationBandToHall($receipt, $ProfilName, $idReceipt, $sender, $idSender, $type, $hall, $em)
+    {
+
+        $uniqueProfiles = [];
+    
+        foreach ($hall->getHallMembers() as $hallMember) {
+            $profil = $hallMember->getProfile();
+            $uniqueProfiles[$profil->getId()] = $profil;
+        }
+    
+        foreach ($uniqueProfiles as $profil) {
+            $notification = new Notification;
+       
+
+       if($type == "reject"){
+            $message = "$ProfilName a rejeté votre proposition";
+       }elseif($type == "validate"){
+        $message = "$ProfilName a accepté votre proposition";
+   }
+        
+
+        $notification
+            ->setMessage($message)
+            ->setStatus(1)
+            ->setDate(new \DateTime())
+            ->setReceiptPage($receipt)
+            ->setReceiptId($idReceipt)
+            ->setSenderPage($sender)
+            ->setSenderId($idSender)
+            ->setType($type)
+            ->setProfil($profil);
+    
+            $em->persist($notification);
+        }
+    
+        $em->flush();
+    }
+
+ 
+
     public function addNotificationProfilToHall($receipt, $ProfilName, $idReceipt, $sender, $idSender, $type, $hall, $status, $em)
     {
         $uniqueProfiles = [];
@@ -158,6 +233,8 @@ class NotificationService
     
         $em->flush();
     }
+
+    
 
     public function addNotificationProfil($receipt, $SenderName, $idReceipt, $sender, $idSender, $type, $em)
     {

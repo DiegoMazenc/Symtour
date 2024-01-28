@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EventRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -17,17 +19,21 @@ class Event
     #[ORM\ManyToOne(inversedBy: 'events')]
     private ?Hall $hall = null;
 
-    #[ORM\ManyToOne(inversedBy: 'events')]
-    private ?Band $band = null;
-
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $status = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $band_status = null;
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: BandEvent::class)]
+    private Collection $bandEvents;
+
+    public function __construct()
+    {
+        $this->bandEvents = new ArrayCollection();
+    }
+
+
 
     public function getId(): ?int
     {
@@ -42,18 +48,6 @@ class Event
     public function setHall(?Hall $hall): static
     {
         $this->hall = $hall;
-
-        return $this;
-    }
-
-    public function getBand(): ?Band
-    {
-        return $this->band;
-    }
-
-    public function setBand(?Band $band): static
-    {
-        $this->band = $band;
 
         return $this;
     }
@@ -82,15 +76,38 @@ class Event
         return $this;
     }
 
-    public function getBandStatus(): ?string
+    /**
+     * @return Collection<int, BandEvent>
+     */
+
+    /**
+     * @return Collection<int, BandEvent>
+     */
+    public function getBandEvents(): Collection
     {
-        return $this->band_status;
+        return $this->bandEvents;
     }
 
-    public function setBandStatus(?string $band_status): static
+    public function addBandEvent(BandEvent $bandEvent): static
     {
-        $this->band_status = $band_status;
+        if (!$this->bandEvents->contains($bandEvent)) {
+            $this->bandEvents->add($bandEvent);
+            $bandEvent->setEvent($this);
+        }
 
         return $this;
     }
+
+    public function removeBandEvent(BandEvent $bandEvent): static
+    {
+        if ($this->bandEvents->removeElement($bandEvent)) {
+            // set the owning side to null (unless already changed)
+            if ($bandEvent->getEvent() === $this) {
+                $bandEvent->setEvent(null);
+            }
+        }
+
+        return $this;
+    }
+
 }
