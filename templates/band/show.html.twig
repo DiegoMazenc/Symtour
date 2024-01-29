@@ -26,7 +26,7 @@
 			<div class="my-10">
 				<div class="flex ">
 					<div class=" calendar bg-slate-700  text-white p-5 rounded-md">
-						<div id="calendar-holder"></div>
+						{# <div id="calendar-holder"></div> #}
 					</div>
 
 					<div class="event-list-db bg-white rounded-md shadow-md ">
@@ -75,6 +75,153 @@
 					</div>
 				</div>
 			</div>
+			
+				<div class="flex justify-between">
+					<div class="event-confirm-db bg-white rounded-md shadow-md mt-3 ">
+						<div class="flex justify-between item-align bg-slate-700 relative rounded-t-md">
+							<h4 class=" text-white p-2 ">Mes prochains events</h4>
+							<div class="flex absolute right-2 top-2">
+								<div id="arrow-left" class="arrow-left text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10094;</div>
+								<div id="arrow-right" class="arrow-right text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10095;</div>
+							</div>
+						</div>
+						{% set count = 0 %}
+						{% for events in eventCome %}
+							{% if events.status == 1 %}
+								{% set count = count + 1 %}
+							{% endif %}
+						{% endfor %}
+						{% set widthPercentage = count * 100 %}
+
+
+						<div class="event-confirm-db-container">
+								{% if count == 0 %}
+									<div class="card-event-db bg-white ">
+										<p class="text-center p-3">Aucun évènement prévus </p>
+									</div>
+								{% endif %}
+							<div class=" event-confirm-db-content" style="width: {{ widthPercentage }}%">
+								{% for events in eventCome %}
+									{% if events.status == 1 %}
+
+										<div class="card-event-db bg-white ">
+
+											<div class=" bg-slate-500 text-white p-2  items-center flex relative">
+												<div class="img-project-db border-2 border-green-500 ">
+													<img src="{{ events.hall.logo }}" alt="">
+												</div>
+												<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+													✓
+												</div>
+												<div>
+													<p>{{ events.hall.name }} ({{ events.hall.hallInfo.city }})</p>
+													<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+												</div>
+											</div>
+											<div class="plateau">
+												{% for bandEvent in events.bandEvents|slice(0, 3) %}
+													{% if bandEvent.status == "validate" %}
+
+														<div class="clic">
+															<div class=" flex justify-between items-center">
+																<div class="flex p-2 items-center relative">
+																	<div class="img-project-db border-2 border-green-500 ">
+																		<img src="{{ bandEvent.band.logo }}" alt="">
+																	</div>
+																
+																	<div>
+																		<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}" class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</a>
+																		<p>{{ bandEvent.band.musicCategory.category }}
+																			/
+																			{{ bandEvent.band.defineStyle }}</p>
+																	</div>
+																</div>
+															</div>
+															<div class="open">
+																{% for member in bandEvent.band.bandMembers %}
+																	<div class="flex justify-between list-member-event">
+																		<div class="flex">
+																			<div class="img-profil-event border-2 border-slate-500">
+																				<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
+																			</div>
+																			<p>{{ member.profil.pseudo }}
+																			</p>
+																		</div>
+																		<p>{{ member.role.roleName }}</p>
+																	</div>
+																{% endfor %}
+															</div>
+														</div>
+														<hr>
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+					<div class="event-confirm-db bg-white rounded-md shadow-md mt-3 ">
+						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mon dernier events
+						</h4>
+						<div class=" flex justify-between">
+							{% for events in eventPast %}
+								{% if events.status == 1 %}
+									<div class="card-event-db bg-white ">
+										<div class="flex bg-slate-500 text-white p-2  items-center">
+											<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 	24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.	05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.	825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.	588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+											<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+										</div>
+										<div class="plateau">
+											{% for bandEvent in events.bandEvents|slice(0, 1) %}
+												{% if bandEvent.status == "validate" %}
+
+													<div class="clic">
+														<div class=" flex justify-between items-center">
+															<div class="flex p-2 items-center relative">
+																<div class="img-project-db border-2 border-green-500 ">
+																	<img src="{{ bandEvent.band.logo }}" alt="">
+																</div>
+																<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+																	✓
+																</div>
+																<div>
+																	<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+																	<p>{{ bandEvent.band.musicCategory.category }}
+																		/
+																		{{ bandEvent.band.defineStyle }}</p>
+																</div>
+															</div>
+														</div>
+														<div class="open">
+															{% for member in bandEvent.band.bandMembers %}
+																<div class="flex justify-between list-member-event">
+																	<div class="flex">
+																		<div class="img-profil-event border-2 border-slate-500">
+																			<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
+																		</div>
+																		<p>{{ member.profil.pseudo }}
+																		</p>
+																	</div>
+																	<p>{{ member.role.roleName }}</p>
+																</div>
+															{% endfor %}
+														</div>
+													</div>
+													<hr>
+												{% endif %}
+											{% endfor %}
+										</div>
+									</div>
+								{% endif %}
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="my-10">
 
 				<h4>Membres</h4>
@@ -100,6 +247,74 @@
 		</div>
 
 	</div>
+	
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.querySelector('.event-confirm-db-container');
+            const content = document.querySelector('.event-confirm-db-content');
+            const arrowLeft = document.getElementById('arrow-left');
+            const arrowRight = document.getElementById('arrow-right');
+
+            // Initialisation de la position à 0
+            let currentPosition = 0;
+
+            arrowLeft.addEventListener('click', function () {
+                // Décrémente la position
+                currentPosition -= 100;
+                updatePosition();
+            });
+
+            arrowRight.addEventListener('click', function () {
+                // Incrémente la position
+                currentPosition += 100;
+                updatePosition();
+            });
+
+            arrowLeft.addEventListener('mouseover', function () {
+                // Change le curseur au survol
+                arrowLeft.style.cursor = 'pointer';
+            });
+
+            arrowRight.addEventListener('mouseover', function () {
+                // Change le curseur au survol
+                arrowRight.style.cursor = 'pointer';
+            });
+
+            arrowLeft.addEventListener('mouseout', function () {
+                // Rétablit le curseur par défaut
+                arrowLeft.style.cursor = 'default';
+            });
+
+            arrowRight.addEventListener('mouseout', function () {
+                // Rétablit le curseur par défaut
+                arrowRight.style.cursor = 'default';
+            });
+
+            function updatePosition() {
+                // Limite la position pour éviter de dépasser le contenu
+                currentPosition = Math.max(0, Math.min(currentPosition, content.scrollWidth - container.clientWidth));
+                
+                // Ajout d'une transition pour une animation fluide
+                content.style.transition = 'left 0.5s ease-in-out';
+                content.style.left = `-${currentPosition}%`;
+
+                // Rend la flèche gauche transparente et non cliquable si à la limite gauche
+                arrowLeft.style.opacity = currentPosition === 0 ? 0.5 : 1;
+                arrowLeft.style.pointerEvents = currentPosition === 0 ? 'none' : 'auto';
+
+                // Rend la flèche droite transparente et non cliquable si à la limite droite
+                const count = {{ count }};
+                arrowRight.style.opacity = currentPosition >= (count - 1) * 100 ? 0.5 : 1;
+                arrowRight.style.pointerEvents = currentPosition >= (count - 1) * 100 ? 'none' : 'auto';
+
+                // Réinitialise la transition après l'animation
+                setTimeout(() => {
+                    content.style.transition = '';
+                }, 500);
+            }
+        });
+    </script>
+
 
 {% endblock %}
 

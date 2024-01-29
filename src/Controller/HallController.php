@@ -98,12 +98,12 @@ class HallController extends AbstractController
             if ($action === 'validate') {
                 $status = 1;
 
-                $chatRoom = new ChatRoom();
+                // $chatRoom = new ChatRoom();
 
-                $chatRoom->setEvent($em->getRepository(Event::class)->find($eventId))
-                ->setDateCreate(new \DateTime());
-                $em->persist($chatRoom);
-                $em->flush();
+                // $chatRoom->setEvent($em->getRepository(Event::class)->find($eventId))
+                // ->setDateCreate(new \DateTime());
+                // $em->persist($chatRoom);
+                // $em->flush();
 
             } elseif ($action === 'reject') {
                 $status = 2;
@@ -117,12 +117,7 @@ class HallController extends AbstractController
                 $em->flush();
             }
 
-            $hallName = $hall->getName();
-            $hallId = $hall->getId();
-            $receipt = "band";
-            $sender = "hall";
-            $type = "response";
-            $notification->addNotificationBand($receipt, $hallName, $bandId, $sender, $hallId, $type, $band, $status, $em);
+            $notification->addNotificationBand("band", $hall->getName(), $bandId, "hall", $hall->getId(), "response", $band, $status, $em);
         }
 
         return $this->render('hall/show.html.twig', [

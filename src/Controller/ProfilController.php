@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Chat;
 use App\Entity\User;
+use Aws\S3\S3Client;
 use App\Entity\Profil;
 use App\Entity\ChatRoom;
 use App\Form\ProfilType;
@@ -12,6 +13,8 @@ use App\Entity\HallMember;
 use App\Entity\Notification;
 use Doctrine\ORM\Mapping\Id;
 use App\Security\EmailVerifier;
+use Aws\Credentials\Credentials;
+use Aws\S3\Exception\S3Exception;
 use App\Repository\BandRepository;
 use App\Repository\ChatRepository;
 use Symfony\Component\Mime\Address;
@@ -26,6 +29,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -142,32 +146,60 @@ class ProfilController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/chat-room/{chatRoom}/chat', name: 'app_profil_chat', methods: ['GET', 'POST'])]
-    public function chat(Profil $profil,Chat $chat, ChatRoom $chatRoom, ChatRoomRepository $chatRoomRepository, ChatRepository $chatRepository): Response
-    {
-        $chat = $chatRepository->addChat($chatRoom);
-        dd($chat);
+    // #[Route('/{id}/chat-room/{chatRoom}/chat', name: 'app_profil_chat', methods: ['GET', 'POST'])]
+    // public function chat(Profil $profil,Chat $chat, ChatRoom $chatRoom, ChatRoomRepository $chatRoomRepository, ChatRepository $chatRepository): Response
+    // {
+    //     $chat = $chatRepository->addChat($chatRoom);
+    //     dd($chat);
 
-        return $this->render('profil/chat.html.twig', [
-            'chat' => $chat,
+    //     return $this->render('profil/chat.html.twig', [
+    //         'chat' => $chat,
 
-        ]);
-    }
-
-
-
-
-
+    //     ]);
+    // }
 
 
     #[Route('/{id}/edit', name: 'app_profil_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Profil $profil, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Profil $profil, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(ProfilType::class, $profil);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+        $img = $form->get('picture')->getData();
+        if ($img){
+            $originalName = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
+            $nameSlug = $slugger->slug($originalName);
+            $fileName = $nameSlug . '-' . uniqid().'.'.$img->guessExtension();
+            try{
+                $sha256 = hash_file('sha256', $img->getRealPath());
+                $credentials = new Credentials('AKIAZQ3DNS574T63MPNV','2yTo3/9lJ7YFOCb5gAbQ7yGE2m08iy5XyyKy6Ur4');
 
+                $s3 = new S3Client([
+                    'version' => 'latest',
+                    'region'  => 'eu-west-3',
+                    'credentials'  => $credentials
+                ]);
+
+                $s3->putObject([
+                    'Bucket' => 'symtour',
+                    'Key'    => $fileName,
+                    'Body'   => $img,
+                    'SourceFile' => $img->getRealPath(),
+                    'ContentType' => $img->getMimeType(),
+                    'ContentSHA256' => $sha256
+
+                    
+                    // 'ACL'    => 'public-read',
+                ]);
+                // dd($s3->getObjectUrl('symtour', $fileName));
+            } catch (S3Exception $e){
+                dd($e->getMessage());
+
+            }
+            $profil->setPicture($s3->getObjectUrl('symtour', $fileName));
+
+        }
             $entityManager->flush();
 
             return $this->redirectToRoute('app_profil_show', ["id" => $profil->getId()], Response::HTTP_SEE_OTHER);

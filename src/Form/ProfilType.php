@@ -6,8 +6,10 @@ use App\Entity\Profil;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class ProfilType extends AbstractType
 {
@@ -18,7 +20,21 @@ class ProfilType extends AbstractType
             ->add('city')
             ->add('zip_code')
             ->add('description')
-            ->add('picture')
+            ->add('picture', FileType::class, [
+                'label' =>'Photo',
+                'mapped' => false,
+                'required' =>false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2500k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                        ],
+                        'mimeTypesMessage' => 'veuillez sélectione une image jpg, jpeg ou png'
+                    ])
+                ]
+            ])
             ->add('pseudo')
             
         ;
