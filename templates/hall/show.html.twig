@@ -80,11 +80,17 @@
 
 
 						<div class="event-confirm-db-container">
+								{% if count == 0 %}
+									<div class="card-event-db bg-white ">
+										<p class="text-center p-3">Aucun évènement prévus </p>
+									</div>
+								{% endif %}
 							<div class=" event-confirm-db-content" style="width: {{ widthPercentage }}%">
 								{% for events in eventCome %}
 									{% if events.status == 1 %}
 
 										<div class="card-event-db bg-white ">
+
 											<div class="flex bg-slate-500 text-white p-2  items-center">
 												<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 	24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.	05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.	825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.	588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
 												<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
