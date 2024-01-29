@@ -28,12 +28,6 @@ class Event
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: BandEvent::class)]
     private Collection $bandEvents;
 
-    public function __construct()
-    {
-        $this->bandEvents = new ArrayCollection();
-    }
-
-
 
     public function getId(): ?int
     {
@@ -109,5 +103,7 @@ class Event
 
         return $this;
     }
+
+ 
 
 }

@@ -1,3 +1,36 @@
+chatRoomRepository
+
+ public function chatRoomByProfilHall(Profil $profil)
+    {
+        return $this->createQueryBuilder('c')
+        ->leftJoin('c.event', 'event')
+        ->leftJoin('event.hall', 'hall')
+        ->leftJoin('hall.hallMembers', 'hallMembers')
+        ->leftJoin('hallMembers.profile', 'profile')
+                   ->andWhere('profile = :id')
+                   ->setParameter('id', $profil->getId())
+                   ->orderBy('c.id', 'ASC')
+                   ->getQuery()
+                   ->getResult()
+               ;
+    }
+
+    public function chatRoomByProfilBand(Profil $profil)
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.event', 'event')
+            ->leftJoin('event.bandEvents', 'bandEvents')
+            ->leftJoin('bandEvents.band', 'band')
+            ->leftJoin('band.bandMembers', 'bandMembers')
+            ->leftJoin('bandMembers.profil', 'bandProfil')
+            ->andWhere('bandProfil = :id')
+            ->setParameter('id', $profil->getId())
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+               ;
+    }
+
 {#<h2>Mes événements passés</h2>
 <div class="card-event-list ">
 	{% for event in eventPast %}

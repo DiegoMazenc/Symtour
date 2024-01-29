@@ -49,6 +49,8 @@ class Profil
     #[ORM\OneToMany(mappedBy: 'profil', targetEntity: Notification::class)]
     private Collection $notifications;
 
+
+
     public function __construct()
     {
         $this->bandMembers = new ArrayCollection();
@@ -234,4 +236,8 @@ class Profil
 
         return $this;
     }
+
+
+
+
 }

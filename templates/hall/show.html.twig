@@ -229,47 +229,75 @@
 		</div>
 	</div>
 
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-const container = document.querySelector('.event-confirm-db-container');
-const content = document.querySelector('.event-confirm-db-content');
-const arrowLeft = document.getElementById('arrow-left');
-const arrowRight = document.getElementById('arrow-right');
 
-// Initialisation de la position à 0
-let currentPosition = 0;
 
-arrowLeft.addEventListener('click', function () { // Décrémente la position
-currentPosition -= 100;
-updatePosition();
-});
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.querySelector('.event-confirm-db-container');
+            const content = document.querySelector('.event-confirm-db-content');
+            const arrowLeft = document.getElementById('arrow-left');
+            const arrowRight = document.getElementById('arrow-right');
 
-arrowRight.addEventListener('click', function () { // Incrémente la position
-currentPosition += 100;
-updatePosition();
-});
+            // Initialisation de la position à 0
+            let currentPosition = 0;
 
-function updatePosition() { // Limite la position pour éviter de dépasser le contenu
-currentPosition = Math.max(0, Math.min(currentPosition, content.scrollWidth - container.clientWidth));
+            arrowLeft.addEventListener('click', function () {
+                // Décrémente la position
+                currentPosition -= 100;
+                updatePosition();
+            });
 
-// Ajout d'une transition pour une animation fluide
-content.style.transition = 'left 0.5s ease-in-out';
-content.style.left = `-${currentPosition}%`;
+            arrowRight.addEventListener('click', function () {
+                // Incrémente la position
+                currentPosition += 100;
+                updatePosition();
+            });
 
-// Affiche/masque les flèches en conséquence
-arrowLeft.style.display = currentPosition === 0 ? 'none' : 'block';
+            arrowLeft.addEventListener('mouseover', function () {
+                // Change le curseur au survol
+                arrowLeft.style.cursor = 'pointer';
+            });
 
-// Vérifie s'il y a des articles suivants en utilisant le compteur
-const count = {{ count }};
-arrowRight.style.display = currentPosition >= (count - 1) * 100 ? 'none' : 'block';
+            arrowRight.addEventListener('mouseover', function () {
+                // Change le curseur au survol
+                arrowRight.style.cursor = 'pointer';
+            });
 
-// Réinitialise la transition après l'animation
-setTimeout(() => {
-content.style.transition = '';
-}, 500);
-}
-});
-	</script>
+            arrowLeft.addEventListener('mouseout', function () {
+                // Rétablit le curseur par défaut
+                arrowLeft.style.cursor = 'default';
+            });
+
+            arrowRight.addEventListener('mouseout', function () {
+                // Rétablit le curseur par défaut
+                arrowRight.style.cursor = 'default';
+            });
+
+            function updatePosition() {
+                // Limite la position pour éviter de dépasser le contenu
+                currentPosition = Math.max(0, Math.min(currentPosition, content.scrollWidth - container.clientWidth));
+                
+                // Ajout d'une transition pour une animation fluide
+                content.style.transition = 'left 0.5s ease-in-out';
+                content.style.left = `-${currentPosition}%`;
+
+                // Rend la flèche gauche transparente et non cliquable si à la limite gauche
+                arrowLeft.style.opacity = currentPosition === 0 ? 0.5 : 1;
+                arrowLeft.style.pointerEvents = currentPosition === 0 ? 'none' : 'auto';
+
+                // Rend la flèche droite transparente et non cliquable si à la limite droite
+                const count = {{ count }};
+                arrowRight.style.opacity = currentPosition >= (count - 1) * 100 ? 0.5 : 1;
+                arrowRight.style.pointerEvents = currentPosition >= (count - 1) * 100 ? 'none' : 'auto';
+
+                // Réinitialise la transition après l'animation
+                setTimeout(() => {
+                    content.style.transition = '';
+                }, 500);
+            }
+        });
+    </script>
+
 {% endblock %}
 
 

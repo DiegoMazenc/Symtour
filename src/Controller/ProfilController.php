@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Chat;
 use App\Entity\User;
 use App\Entity\Profil;
+use App\Entity\ChatRoom;
 use App\Form\ProfilType;
 use App\Entity\BandMember;
 use App\Entity\HallMember;
@@ -11,9 +13,11 @@ use App\Entity\Notification;
 use Doctrine\ORM\Mapping\Id;
 use App\Security\EmailVerifier;
 use App\Repository\BandRepository;
+use App\Repository\ChatRepository;
 use Symfony\Component\Mime\Address;
 use App\Repository\ProfilRepository;
 use App\Service\NotificationService;
+use App\Repository\ChatRoomRepository;
 use App\Repository\BandMemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\NotificationRepository;
@@ -122,6 +126,35 @@ class ProfilController extends AbstractController
 
         ]);
     }
+
+    #[Route('/{id}/chat-room', name: 'app_profil_chat-room', methods: ['GET'])]
+    public function chatRoom(Profil $profil,ChatRoomRepository $chatRoomRepository): Response
+    {
+        $chatBand = $chatRoomRepository->chatRoomByProfilBand($profil);
+
+        $chatHall = $chatRoomRepository->chatRoomByProfilHall($profil);
+        // dd($chatHall, $chatBand);
+
+        return $this->render('profil/chatroom.html.twig', [
+            'chatHall' => $chatHall,
+            'chatBand' => $chatBand,
+
+        ]);
+    }
+
+    #[Route('/{id}/chat-room/{chatRoom}/chat', name: 'app_profil_chat', methods: ['GET', 'POST'])]
+    public function chat(Profil $profil,Chat $chat, ChatRoom $chatRoom, ChatRoomRepository $chatRoomRepository, ChatRepository $chatRepository): Response
+    {
+        $chat = $chatRepository->addChat($chatRoom);
+        dd($chat);
+
+        return $this->render('profil/chat.html.twig', [
+            'chat' => $chat,
+
+        ]);
+    }
+
+
 
 
 

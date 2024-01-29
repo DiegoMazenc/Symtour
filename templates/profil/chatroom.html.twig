@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Profil
+{% endblock %}
+
+{% block body %}
+	<div class="user-contain py-5 px-20 bg bg-slate-100">
+		Mes salles :
+		{% for chatRoom in chatHall %}
+			{% if chatRoom.event is not null %}
+				{% for hallMember in chatRoom.event.hall.hallMembers %}
+					{% if app.user.profil.id == hallMember.profile.id %}
+						<p>{{ hallMember.hall.name }}</p>
+					{% endif %}
+				{% endfor %}
+			{% endif %}
+		{% endfor %}
+
+        mes groupes :
+
+        {% for chatRoom in chatBand %}
+			{% if chatRoom.event is not null %}
+				{% for bandEvent in chatRoom.event.bandEvents %}
+                {% for bandMember in bandEvent.band.bandMembers %}
+                    
+					{% if app.user.profil.id == bandMember.profil.id %}
+                    <a href="{{ path('app_profil_chat', {'id': app.user.profil.id, 'chatRoom': chatRoom.id }) }}">
+                    <div>
+						<p>{{ bandMember.band.name }}</p>
+                        <p>{{ chatRoom.event.date|date() }}</p>
+                    </div>
+                    </a>
+					{% endif %}
+                {% endfor %}
+				{% endfor %}
+			{% endif %}
+		{% endfor %}
+	</div>
+{% endblock %}
