@@ -23,13 +23,19 @@
 
 		{# dashboard #}
 		<div class="tab_project">
-			<div class="my-10">
-				<div class="flex ">
-					<div class=" calendar bg-slate-700  text-white p-5 rounded-md">
+			<div class="my-3">
+				<div class="lg:flex ">
+					<div class=" calendar bg-slate-700  text-white p-5 rounded-md lg:mr-3 mb-3 lg:mb-0">
+						<div class="flex justify-between">
+							<button id="prevMonth" class="arrow-left text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10094;</button>
+							<div id="monthYearHeader"></div>
+							<button id="nextMonth" class="arrow-right text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10095;</button>
+						</div>
+						<div id="calendrier"></div>
 						{# <div id="calendar-holder"></div> #}
 					</div>
 
-					<div class="event-list-db bg-white rounded-md shadow-md ">
+					<div class="event-list-db bg-white rounded-md shadow-md w-full">
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes dernières demandes
 						</h4>
 						<div class="p-3">
@@ -76,8 +82,8 @@
 				</div>
 			</div>
 			
-				<div class="flex justify-between">
-					<div class="event-confirm-db bg-white rounded-md shadow-md mt-3 ">
+				<div class="lg:flex lg:justify-between">
+					<div class="md:w-full lg:w-1/2 lg:mr-3 bg-white rounded-md shadow-md mt-3 ">
 						<div class="flex justify-between item-align bg-slate-700 relative rounded-t-md">
 							<h4 class=" text-white p-2 ">Mes prochains events</h4>
 							<div class="flex absolute right-2 top-2">
@@ -163,7 +169,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="event-confirm-db bg-white rounded-md shadow-md mt-3 ">
+					<div class="md:w-full lg:w-1/2 lg:mr-3 bg-white rounded-md shadow-md mt-3 ">
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mon dernier events
 						</h4>
 						<div class=" flex justify-between">
@@ -247,6 +253,138 @@
 		</div>
 
 	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const calendar = document.getElementById('calendrier');
+const prevMonthButton = document.getElementById('prevMonth');
+const nextMonthButton = document.getElementById('nextMonth');
+const monthYearHeader = document.getElementById('monthYearHeader');
+
+let currentDate = new Date();
+
+// Replace this with logic to fetch events from your Symfony backend
+const events = [
+{% for event in eventCome %}
+{
+date: '{{ event.date|date('Y-m-d') }}'
+},{% endfor %}
+// Add more events as needed
+];
+
+// Function to render the calendar
+function renderCalendar() {
+const currentMonth = currentDate.getMonth();
+const currentYear = currentDate.getFullYear();
+const daysInCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+
+// Update month and year header
+monthYearHeader.textContent = `${
+getMonthName(currentMonth)
+} ${currentYear}`;
+
+// Clear previous content
+calendar.innerHTML = '';
+
+// Create header row with day names
+const dayNames = [
+'Lun',
+'Mar',
+'Mer',
+'Jeu',
+'Ven',
+'Sam',
+'Dim'
+]; // L'ordre commence par le lundi
+dayNames.forEach(day => {
+const dayHeader = document.createElement('div');
+dayHeader.className = 'day';
+dayHeader.textContent = day;
+calendar.appendChild(dayHeader);
+});
+
+// Create days of the month
+const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+const daysInPreviousMonth = new Date(currentYear, currentMonth, 0).getDate();
+const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+// Calculate the position of the first day in the grid
+let startPosition = (firstDayOfMonth - 1 + 7) % 7;
+
+// Fill in the days of the previous month
+for (let day = daysInPreviousMonth - startPosition + 1; day <= daysInPreviousMonth; day++) {
+const dayElement = document.createElement('div');
+dayElement.className = 'day previous-month-day'; // Add a class to style differently
+dayElement.textContent = day;
+calendar.appendChild(dayElement);
+}
+
+// Reset startPosition for the days of the current month
+startPosition = 0;
+
+// Fill in the days of the current month
+for (let day = 1; day <= daysInMonth; day++) {
+const dayElement = document.createElement('div');
+dayElement.className = 'day current-month-day'; // Add a class to style differently
+dayElement.textContent = day;
+
+// Check if there are events on this day
+const eventsOnDay = events.filter(event => {
+const eventDate = new Date(event.date);
+return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
+});
+
+// Add event styling if there are events
+if (eventsOnDay.length > 0) {
+dayElement.classList.add('event-day'); // Add class for event styling
+}calendar.appendChild(dayElement);
+}
+
+// Fill in the remaining days of the grid with the next month
+const remainingDays = 35 - startPosition - daysInMonth; // 42 is the maximum number of days in a grid
+for (let day = 1; day <= remainingDays; day++) {
+const dayElement = document.createElement('div');
+dayElement.className = 'day next-month-day'; // Add a class to style differently
+dayElement.textContent = day;
+calendar.appendChild(dayElement);
+}
+}
+
+// Helper function to get month name
+function getMonthName(month) {
+const monthNames = [
+'Janvier',
+'Février',
+'Mars',
+'Avril',
+'Mai',
+'Juin',
+'Juillet',
+'Août',
+'Septembre',
+'Octobre',
+'Novembre',
+'Décembre'
+];
+return monthNames[month];
+}
+
+// Event listeners for navigation buttons
+prevMonthButton.addEventListener('click', function () {
+currentDate.setMonth(currentDate.getMonth() - 1);
+renderCalendar();
+});
+
+nextMonthButton.addEventListener('click', function () {
+currentDate.setMonth(currentDate.getMonth() + 1);
+renderCalendar();
+});
+
+// Initial render
+renderCalendar();
+});
+	</script>
 	
     <script>
         document.addEventListener('DOMContentLoaded', function () {
