@@ -1,0 +1,276 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Event
+{% endblock %}
+
+{% block body %}
+	<div class="user-contain py-5 px-20 bg bg-slate-100">
+		<h2>Mes prochains événements</h2>
+		{% for events in eventCome %}
+			{% if events.status == 1 %}
+				<div class="card-event bg-white ">
+					<div class="flex bg-slate-700 text-white p-2 rounded-t-md items-center">
+						<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 	24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.	05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.	825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.	588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+						<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+					</div>
+					<div class="plateau">
+						{% for bandEvent in events.bandEvents %}
+							{% if bandEvent.status == "validate" %}
+
+								<div class="clic">
+									<div class=" flex justify-between items-center">
+										<div class="flex p-2 items-center relative">
+											<div class="img-project-db border-2 border-green-500 ">
+												<img src="{{ bandEvent.band.logo }}" alt="">
+											</div>
+											<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+												✓
+											</div>
+											<div>
+												<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+												<p>{{ bandEvent.band.musicCategory.category }}
+													/
+													{{ bandEvent.band.defineStyle }}</p>
+											</div>
+										</div>
+										<p class="px-5">Détails ▽</p>
+									</div>
+									<div class="open">
+										{% for member in bandEvent.band.bandMembers %}
+											<div class="flex justify-between list-member-event">
+												<div class="flex">
+													<div class="img-profil-event border-2 border-slate-500">
+														<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
+													</div>
+													<p>{{ member.profil.pseudo }}
+													</p>
+												</div>
+												<p>{{ member.role.roleName }}</p>
+											</div>
+										{% endfor %}
+									</div>
+								</div>
+								<hr>
+							{% endif %}
+
+						 {% endfor %}
+						<p class="bg-slate-300 w-full pl-3 text-white">Goupes invités</p>
+						<div class="p-2">
+							{% for bandEvent in events.bandEvents %}
+								{% if bandEvent.status != "validate" %}
+									<div class="clic">
+										<div class=" flex justify-between items-center">
+											<div class="flex p-2 items-center relative">
+												{% if bandEvent.status == "guest" %}
+													<div class="img-project-db border-2 bg-slate-300 ">
+														<img src="{{ bandEvent.band.logo }}" alt="">
+													</div>
+													<div class="bg-slate-300 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+														⧖
+													</div>
+												{% elseif bandEvent.status == "reject"%}
+													<div class="img-project-db border-2 bg-red-500 ">
+														<img src="{{ bandEvent.band.logo }}" alt="">
+													</div>
+													<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+														X
+													</div>
+												{% endif %}
+												<div>
+													<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+													<p>{{ bandEvent.band.musicCategory.category }}
+														/
+														{{ bandEvent.band.defineStyle }}</p>
+												</div>
+											</div>
+											{% if bandEvent.status == "reject"%}
+												<form action="{{ path('app_band_event_delete', {'id': band.id }) }}" method="post">
+													<input type="hidden" name="idEvent" value="{{ bandEvent.id }}">
+													<button type="submit">
+														<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="#8c8c8c" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+													</button>
+												</form>
+											{% else %}
+												<p class="px-5">Détails ▽</p>
+											{% endif %}
+										</div>
+										<div class="open">
+											{% for member in bandEvent.band.bandMembers %}
+												<div class="flex justify-between list-member-event">
+													<div class="flex">
+														<div class="img-profil-event border-2 border-slate-500">
+															<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
+														</div>
+														<p>{{ member.profil.pseudo }}
+														</p>
+													</div>
+													<p>{{ member.role.roleName }}</p>
+												</div>
+											{% endfor %}
+										</div>
+									</div>
+									<hr>
+								{% endif %}
+							{% endfor %}
+							<div class="p-3">
+								<a href="#" class="text-slate-400 hover:text-blue-500 toggleSearchLink">
+									<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>
+									Inviter un groupe
+								</a>
+							</div>
+							<div class="search-member">
+								<form action="{{ path('app_band_event', {'id': band.id}) }}" method="post" name="addBandForm">
+									<input type="text" name="addBand" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
+									<input type="hidden" name="formName" value="addBandForm">
+									<input type="hidden" name="date" value="{{ events.date|date() }}">
+								</form>
+							</div>
+							{% for band in bandFind %}
+								{% if dateAdd == events.date|date() %}
+									<div class="clic">
+										<div class=" flex justify-between items-center">
+											<div class="flex p-2 items-center relative">
+												<div class="img-project-db border-2 border-slate-500 ">
+													<img src="{{ band.logo }}" alt="">
+												</div>
+												<div>
+													<p class="text-blue-400 font-semibold">{{ band.name }}</p>
+													<p>{{ band.musicCategory.category }}
+														/
+														{{ band.defineStyle }}</p>
+												</div>
+											</div>
+											<div class="px-2">
+												<form action="{{ path('app_band_event', {'id': idBandConnect }) }}" method="post" name="inviteBandForm">
+													<input type="hidden" name="action" value="guest">
+													<input type="hidden" name="bandId" value="{{ band.id }}">
+													<input type="hidden" name="date" value="{{ events.date|date() }}">
+													<input type="hidden" name="eventId" value="{{ events.id }}">
+													<input type="hidden" name="formName" value="inviteBandForm">
+
+													<button type="submit" class="validate-button px-1  rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Inviter</button>
+												</form>
+												<p>Détails ▽</p>
+											</div>
+										</div>
+										<div class="open">
+											{% for member in band.bandMembers %}
+												<div class="flex justify-between list-member-event">
+													<div class="flex">
+														<div class="img-profil-event border-2 border-slate-500">
+															<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
+														</div>
+														<p>{{ member.profil.pseudo }}
+														</p>
+													</div>
+													<p>{{ member.role.roleName }}</p>
+												</div>
+											{% endfor %}
+										</div>
+									</div>
+									<hr>
+								{% endif %}
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			{% endif %}
+		{% endfor %}
+		<h2>Mes événements passés</h2>
+		<div class="card-event-list ">
+			{% for events in eventPast %}
+				{% if events.status == 1 %}
+				<div class="card-event bg-slate-200 ">
+					<div class="flex bg-slate-400 text-white p-2 rounded-t-md items-center">
+						<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+						<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+					</div>
+					<div class="plateau">
+						<div class="">
+							{% for bandEvent in events.bandEvents %}
+								<div class="clic">
+									<div class=" flex justify-between items-center">
+										<div class="flex p-2 items-center">
+											<div class="img-project-db border-2 border-slate-500">
+												<img src="{{ bandEvent.band.logo }}" alt="">
+											</div>
+											<div>
+												<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+												<p>{{ bandEvent.band.musicCategory.category }}/{{ bandEvent.band.defineStyle }}</p>
+											</div>
+										</div>
+										<p class="px-5">Détails ▽</p>
+									</div>
+									<div class="open">
+										{% for member in bandEvent.band.bandMembers %}
+											<div class="flex justify-between list-member-event">
+												<div class="flex">
+													<div class="img-profil-event border-2 border-slate-500">
+														<img src="{{ member.profil.picture }}" alt="" class="w-5">
+													</div>
+													<p>{{ member.profil.pseudo }}</p>
+												</div>
+												<p>{{ member.role.roleName }}</p>
+											</div>
+										{% endfor %}
+									</div>
+								</div>
+								<hr>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function () {
+$(".clic").click(function () {
+$(this).find(".open").toggle();
+});
+
+$(document).on('click', '.toggleSearchLink', function () {
+let searchMemberDiv = $(this).closest('.card-event').find('.search-member');
+
+if (searchMemberDiv.is(':hidden')) {
+searchMemberDiv.show();
+$(this).hide();
+} else {
+searchMemberDiv.hide();
+}
+});
+});
+	</script>
+{% endblock %}
+
+
+{# {% block scripts %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	$(document).ready(function () {
+$(".clic").click(function () {
+$(this).find(".open").toggle();
+});
+
+$(document).on('click', '.toggleSearchLink', function () {
+let searchMemberDiv = $(this).closest('.card-event').find('.search-member');
+
+if (searchMemberDiv.is(':hidden')) {
+searchMemberDiv.show();
+$(this).hide();
+} else {
+searchMemberDiv.hide();
+}
+});
+});
+</script>
+{% endblock %} #}

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Band
+{% endblock %}
+
+{% block body %}
+
+		<div class="user-contain py-20 bg bg-slate-100">
+			<div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
+				{{ include('band/_form.html.twig', {'button_label': 'Update'}) }}
+			</div>
+		</div>
+	</div>
+	<h1>Edit Band</h1>
+	<a href="{{ path('app_band_index') }}">back to list</a>
+	{{ include('band/_delete_form.html.twig') }}
+{% endblock %}
