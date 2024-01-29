@@ -87,7 +87,7 @@ class HallController extends AbstractController
         $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
         $eventPast = $eventRepository->getPastEventsByHall($hall);
 
-
+// dd($eventCome);
         $notification->isRead((int)$request->query->get('notification_id'));
         if ($request->isMethod('POST')) {
             $action = $request->request->get('action');

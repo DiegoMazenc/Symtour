@@ -1,3 +1,20 @@
+	const events = [
+{% for event in eventCome %}
+{
+date: '{{ event.date|date('Y-m-d') }}',
+bands:{
+	{% for bandEvent in event.bandEvents %}
+	name : {{ bandEvent.band.name }},
+	logo : {{ bandEvent.band.logo }},
+	music : {{ bandEvent.band.musicCategory.category }},
+	style : {{ bandEvent.band.defineStyle }},
+	{% endfor %}
+}
+},{% endfor %}
+// Add more events as needed
+];
+
+
 chatRoomRepository
 
  public function chatRoomByProfilHall(Profil $profil)

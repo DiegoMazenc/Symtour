@@ -16,6 +16,13 @@
 			</div>
 
 		</div>
+		<div id="eventModal" class="modal">
+			<div class="modal-content">
+				<!-- Contenu de la modale -->
+				<span class="close" onclick="closeModal()">&times;</span>
+				<!-- Ajoutez ici les éléments pour afficher les détails de l'événement -->
+			</div>
+		</div>
 		<div class="tab_project">
 			<div class="my-3">
 				<div class="lg:flex ">
@@ -245,7 +252,24 @@
 	</div>
 
 	<script>
-		document.addEventListener('DOMContentLoaded', function () {
+			const events = [
+{% for event in eventCome %}
+{
+date: '{{ event.date|date('Y-m-d') }}',
+bands:{
+	{% for bandEvent in event.bandEvents %}
+	name : '{{ bandEvent.band.name }}',
+	logo : '{{ bandEvent.band.logo }}',
+	music : '{{ bandEvent.band.musicCategory.category }}',
+	style : '{{ bandEvent.band.defineStyle }}',
+	{% endfor %}
+}
+},{% endfor %}
+// Add more events as needed
+];
+
+console.log(events)
+document.addEventListener('DOMContentLoaded', function () {
 const calendar = document.getElementById('calendrier');
 const prevMonthButton = document.getElementById('prevMonth');
 const nextMonthButton = document.getElementById('nextMonth');
@@ -254,13 +278,7 @@ const monthYearHeader = document.getElementById('monthYearHeader');
 let currentDate = new Date();
 
 // Replace this with logic to fetch events from your Symfony backend
-const events = [
-{% for event in eventCome %}
-{
-date: '{{ event.date|date('Y-m-d') }}'
-},{% endfor %}
-// Add more events as needed
-];
+
 
 // Function to render the calendar
 function renderCalendar() {
@@ -328,7 +346,11 @@ return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && e
 // Add event styling if there are events
 if (eventsOnDay.length > 0) {
 dayElement.classList.add('event-day'); // Add class for event styling
-}calendar.appendChild(dayElement);
+dayElement.addEventListener('click', () => openEventModal(`${currentYear}-${
+currentMonth + 1
+}-${day}`));
+}
+calendar.appendChild(dayElement);
 }
 
 // Fill in the remaining days of the grid with the next month
@@ -374,6 +396,62 @@ renderCalendar();
 // Initial render
 renderCalendar();
 });
+
+function openEventModal(date) {
+    const formattedDate = date.replace(/-(\d)-/g, '-0$1-').replace(/-(\d{1})$/g, '-0$1');
+    const eventsOnSelectedDate = events.filter(event => event.date === formattedDate);
+
+    if (eventsOnSelectedDate.length > 0) {
+        const modalContent = document.querySelector('#eventModal .modal-content');
+        modalContent.innerHTML = '<span class="close" onclick="closeModal()">&times;</span>';
+        
+        // Utilisez un objet pour regrouper les groupes par date
+        const groupedEvents = {};
+
+        // Bouclez sur les événements pour les regrouper par date
+        eventsOnSelectedDate.forEach(eventDetails => {
+            if (!groupedEvents[eventDetails.date]) {
+                groupedEvents[eventDetails.date] = [];
+            }
+            groupedEvents[eventDetails.date].push({
+                name: eventDetails.bands.name,
+                logo: eventDetails.bands.logo,
+                music: eventDetails.bands.music,
+                style: eventDetails.bands.style
+            });
+        });
+
+        // Bouclez sur les groupes regroupés et ajoutez-les à la modale
+        for (const [date, bands] of Object.entries(groupedEvents)) {
+            modalContent.innerHTML += `<p>Date: ${date}</p>`;
+            bands.forEach(band => {
+                modalContent.innerHTML += `
+				<div class="flex item-align">
+					<div class="img-project-db border-2 border-green-500 ">
+						<img src="${band.logo}" alt="">
+					</div>
+					<div>
+						<p>${band.name}</p>
+						<p>${band.music}/${band.style}</p>
+					</div>
+				</div>
+				
+
+				`;
+            });
+        }
+
+        // Affichez la modale
+        document.getElementById('eventModal').style.display = 'block';
+    } else {
+        // Aucun événement trouvé pour la date sélectionnée
+        console.error(`Aucun détail d'événement trouvé pour la date : ${date}`);
+    }
+}
+
+function closeModal() {
+document.getElementById('eventModal').style.display = 'none';
+}
 	</script>
 
 
