@@ -40,13 +40,17 @@ class HallRepository extends ServiceEntityRepository
         }
 
         if (!empty($data['date'])) {
-            $formattedDate = $data['date']->format('Y-m-d');
-
+            // Utilisez une sous-requête pour vérifier l'absence d'événements à la date spécifiée
             $qb
-                ->leftJoin('h.events', 'event')
-                ->andWhere('event.date != :date')
-                ->setParameter('date', $formattedDate);
+                ->andWhere('(NOT EXISTS (
+                    SELECT 1
+                    FROM App\Entity\Event e
+                    WHERE e.hall = h
+                    AND e.date = :date
+                ))')
+                ->setParameter('date', $data['date']);
         }
+        
         return $qb->getQuery()->getResult();
     }
 
