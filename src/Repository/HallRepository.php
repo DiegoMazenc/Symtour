@@ -40,10 +40,12 @@ class HallRepository extends ServiceEntityRepository
         }
 
         if (!empty($data['date'])) {
+            $formattedDate = $data['date']->format('Y-m-d');
+
             $qb
                 ->leftJoin('h.events', 'event')
                 ->andWhere('event.date != :date')
-                ->setParameter('date', $data['date']);
+                ->setParameter('date', $formattedDate);
         }
         return $qb->getQuery()->getResult();
     }

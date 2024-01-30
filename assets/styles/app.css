@@ -277,13 +277,52 @@ height: 24px;
 
 
 
-.previous-month-day,
-.next-month-day {
+.other-month-day{
     opacity:0.5;
 }
 
 .event-day {
-    background-color: rgb(132, 176, 241); 
+    background-color: rgb(147, 165, 192); 
     cursor:pointer;
     color: white; 
 }
+
+.event-day-valid {
+    background-color: rgb(101, 224, 121); 
+    cursor:pointer;
+    color: white; 
+}
+
+.valide-day{
+    cursor:pointer;
+
+}
+
+.valide-day:hover{
+    background-color: #98a5ec;
+}
+
+.event-reserved{
+    color: rgb(151, 154, 165);
+    background-color: #626980;
+}
+.close{
+    cursor:pointer;
+
+}
+
+.modal{
+left: 272px;
+}
+
+/* @media screen and (max-width:1024px){
+    .modal{
+        left: 0;
+        position: fixed;
+        z-index: 1;
+
+        top: 0;
+        width: 100%;
+        }
+        
+} */

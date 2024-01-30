@@ -18,9 +18,9 @@
 					{% endfor %}
 					
 					</div>
-					{% for event in hall.events %}
+					{# {% for event in hall.events %}
 						<p>{{event.date|date('l j F Y')}}</p>
-					{% endfor %}
+					{% endfor %} #}
 				</div>
 
 			</div>
@@ -28,7 +28,17 @@
 				<div class="my-10">
 					<div class="flex ">
 
-						<div class="event-list-db bg-white rounded-md shadow-md ">
+					<div class=" calendar bg-slate-700  text-white p-5 rounded-md lg:mr-3 mb-3 lg:mb-0">
+						<div class="flex justify-between">
+							<button id="prevMonth" class="arrow-left text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10094;</button>
+							<div id="monthYearHeader"></div>
+							<button id="nextMonth" class="arrow-right text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10095;</button>
+						</div>
+						<div id="calendrier"></div>
+						{# <div id="calendar-holder"></div> #}
+					</div>
+
+						<div class="event-list-db bg-white rounded-md shadow-md w-full ">
 							<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Historique de mes évènements
 							</h4>
 							<div class="p-3">
@@ -36,7 +46,7 @@
 
 								<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
 								<label for="booking_date" class='text-blue-400 font-semibold'>Date Sélectionné :</label><br>
-								<input type="date" id="booking_date" name="booking_date" value="{{ date }}" class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5" required> <br>
+<input type="text" id="booking_date" name="booking_date" value="{{ date }}" class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5" required readonly> <br>
 									<label for="band_id" class='text-blue-400 font-semibold'>Pour quel projet souhaitez-vous réserver ?</label><br>
 									<select name="band_id" required class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5">
 										{% for bandMember in app.user.profil.bandMembers %}
@@ -74,4 +84,160 @@
 
 		</div>
 
+
+<script>
+		const events = [
+{% for event in eventCome %}
+{date: '{{ event.date|date('Y-m-d') }}',},
+{% endfor %}
+// Ajoutez d'autres événements au besoin
+];
+
+console.log(events)
+document.addEventListener('DOMContentLoaded', function () {
+const calendar = document.getElementById('calendrier');
+const prevMonthButton = document.getElementById('prevMonth');
+const nextMonthButton = document.getElementById('nextMonth');
+const bookingDateInput = document.getElementById('booking_date');
+
+let currentDate = new Date();
+
+// Replace this with logic to fetch events from your Symfony backend
+
+
+// Function to render the calendar
+function renderCalendar() {
+const currentMonth = currentDate.getMonth();
+const currentYear = currentDate.getFullYear();
+const daysInCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+
+// Update month and year header
+monthYearHeader.textContent = `${
+getMonthName(currentMonth)
+} ${currentYear}`;
+
+// Clear previous content
+calendar.innerHTML = '';
+
+// Create header row with day names
+const dayNames = [
+'Lun',
+'Mar',
+'Mer',
+'Jeu',
+'Ven',
+'Sam',
+'Dim'
+]; // L'ordre commence par le lundi
+dayNames.forEach(day => {
+const dayHeader = document.createElement('div');
+dayHeader.className = 'day';
+dayHeader.textContent = day;
+calendar.appendChild(dayHeader);
+});
+
+// Create days of the month
+const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+const daysInPreviousMonth = new Date(currentYear, currentMonth, 0).getDate();
+const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+// Calculate the position of the first day in the grid
+let startPosition = (firstDayOfMonth - 1 + 7) % 7;
+
+// Fill in the days of the previous month
+for (let day = daysInPreviousMonth - startPosition + 1; day <= daysInPreviousMonth; day++) {
+const dayElement = document.createElement('div');
+dayElement.className = 'day other-month-day'; // Add a class to style differently
+dayElement.textContent = day;
+calendar.appendChild(dayElement);
+}
+
+// Reset startPosition for the days of the current month
+startPosition = 0;
+
+// Fill in the days of the current month
+ for (let day = 1; day <= daysInMonth; day++) {
+    const dayElement = document.createElement('div');
+    dayElement.className = 'day current-month-day';
+    dayElement.classList.add('valide-day');
+    dayElement.textContent = day;
+
+    // Check if there are events on this day
+    const eventsOnDay = events.filter(event => {
+        const eventDate = new Date(event.date);
+        return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
+    });
+
+    // Add event styling if there are events
+    if (eventsOnDay.length > 0) {
+        dayElement.classList.remove('valide-day');
+        dayElement.classList.add('event-reserved');
+    }
+
+    // Add click event listener
+    dayElement.addEventListener('click', () => {
+        if (!dayElement.classList.contains('event-reserved')) {
+		const formattedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        document.getElementById('booking_date').value = formattedDate;
+    }
+    });
+
+    calendar.appendChild(dayElement);
+}
+
+// Fill in the remaining days of the grid with the next month
+const remainingDays = 35 - startPosition - daysInMonth; // 42 is the maximum number of days in a grid
+for (let day = 1; day <= remainingDays; day++) {
+const dayElement = document.createElement('div');
+dayElement.className = 'day other-month-day'; // Add a class to style differently
+dayElement.textContent = day;
+calendar.appendChild(dayElement);
+}
+}
+
+// Helper function to get month name
+function getMonthName(month) {
+const monthNames = [
+'Janvier',
+'Février',
+'Mars',
+'Avril',
+'Mai',
+'Juin',
+'Juillet',
+'Août',
+'Septembre',
+'Octobre',
+'Novembre',
+'Décembre'
+];
+return monthNames[month];
+}
+
+// Event listeners for navigation buttons
+prevMonthButton.addEventListener('click', function () {
+currentDate.setMonth(currentDate.getMonth() - 1);
+renderCalendar();
+});
+
+nextMonthButton.addEventListener('click', function () {
+currentDate.setMonth(currentDate.getMonth() + 1);
+renderCalendar();
+});
+
+// Initial render
+renderCalendar();
+});
+
+
+
+
+function formatDate(date) {
+    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    const formattedDate = new Date(date).toLocaleDateString('fr-FR', options);
+    return formattedDate;
+}
+
+	</script>
 {% endblock %}

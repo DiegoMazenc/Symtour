@@ -24,7 +24,7 @@
 		{# dashboard #}
 		<div class="tab_project">
 			<div class="my-3">
-				<div class="lg:flex ">
+				<div class="lg:flex lg:relative">
 					<div class=" calendar bg-slate-700  text-white p-5 rounded-md lg:mr-3 mb-3 lg:mb-0">
 						<div class="flex justify-between">
 							<button id="prevMonth" class="arrow-left text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10094;</button>
@@ -33,6 +33,15 @@
 						</div>
 						<div id="calendrier"></div>
 						{# <div id="calendar-holder"></div> #}
+					</div>
+					
+
+					
+					<div id="eventModal" class="modal  bg-white rounded-md shadow-md lg:absolute" >
+						<div class="modal-content">
+							<!-- Contenu de la modale -->
+							<!-- Ajoutez ici les éléments pour afficher les détails de l'événement -->
+						</div>
 					</div>
 
 					<div class="event-list-db bg-white rounded-md shadow-md w-full">
@@ -177,8 +186,14 @@
 								{% if events.status == 1 %}
 									<div class="card-event-db bg-white ">
 										<div class="flex bg-slate-500 text-white p-2  items-center">
-											<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 	24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.	05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.	825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.	588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
-											<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+												<div class="img-project-db  ">
+													<img src="{{ events.hall.logo }}" alt="">
+												</div>
+												
+												<div>
+													<p>{{ events.hall.name }} ({{ events.hall.hallInfo.city }})</p>
+													<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+												</div>
 										</div>
 										<div class="plateau">
 											{% for bandEvent in events.bandEvents|slice(0, 1) %}
@@ -187,12 +202,10 @@
 													<div class="clic">
 														<div class=" flex justify-between items-center">
 															<div class="flex p-2 items-center relative">
-																<div class="img-project-db border-2 border-green-500 ">
+																<div class="img-project-db border-2 border-slate-500 ">
 																	<img src="{{ bandEvent.band.logo }}" alt="">
 																</div>
-																<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
-																	✓
-																</div>
+																
 																<div>
 																	<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
 																	<p>{{ bandEvent.band.musicCategory.category }}
@@ -255,7 +268,24 @@
 	</div>
 
 	<script>
-		document.addEventListener('DOMContentLoaded', function () {
+		const events = [
+{% for event in eventCome %}
+{
+date: '{{ event.date|date('Y-m-d') }}',
+halls: [
+{
+name: '{{ event.hall.name }}',
+logo: '{{ event.hall.logo }}',
+city: '{{event.hall.hallInfo.city }}',
+status: '{{ event.status }}',
+// Ajoutez d'autres propriétés de la bande ici si nécessaire
+}]
+},{% endfor %}
+// Ajoutez d'autres événements au besoin
+];
+
+console.log(events)
+document.addEventListener('DOMContentLoaded', function () {
 const calendar = document.getElementById('calendrier');
 const prevMonthButton = document.getElementById('prevMonth');
 const nextMonthButton = document.getElementById('nextMonth');
@@ -264,13 +294,7 @@ const monthYearHeader = document.getElementById('monthYearHeader');
 let currentDate = new Date();
 
 // Replace this with logic to fetch events from your Symfony backend
-const events = [
-{% for event in eventCome %}
-{
-date: '{{ event.date|date('Y-m-d') }}'
-},{% endfor %}
-// Add more events as needed
-];
+
 
 // Function to render the calendar
 function renderCalendar() {
@@ -336,9 +360,15 @@ return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && e
 });
 
 // Add event styling if there are events
-if (eventsOnDay.length > 0) {
-dayElement.classList.add('event-day'); // Add class for event styling
-}calendar.appendChild(dayElement);
+if (eventsOnDay.length > 0 && eventsOnDay.every(event => event.halls.every(hall => hall.status !== "2"))) {
+    if(eventsOnDay.every(event => event.halls.every(hall => hall.status == "1"))){
+        dayElement.classList.add('event-day-valid');
+    } else {
+        dayElement.classList.add('event-day');
+    }
+    dayElement.addEventListener('click', () => openEventModal(`${currentYear}-${currentMonth + 1}-${day}`));
+}
+calendar.appendChild(dayElement);
 }
 
 // Fill in the remaining days of the grid with the next month
@@ -384,6 +414,100 @@ renderCalendar();
 // Initial render
 renderCalendar();
 });
+
+function openEventModal(date) {
+const formattedDate = date.replace(/-(\d)-/g, '-0$1-').replace(/-(\d{1})$/g, '-0$1');
+const eventsOnSelectedDate = events.filter(event => event.date === formattedDate);
+
+if (eventsOnSelectedDate.length > 0) {
+const modalContent = document.querySelector('#eventModal .modal-content');
+modalContent.innerHTML = '<div class="close hidden" onclick="closeModal()">&times;</div>';
+
+// Utilisez un objet pour regrouper les groupes par date
+const groupedEvents = {};
+
+// Bouclez sur les événements pour les regrouper par date
+eventsOnSelectedDate.forEach(eventDetails => {
+if (! groupedEvents[eventDetails.date]) {
+groupedEvents[eventDetails.date] = [];
+}
+// Utilisez eventDetails.bands comme un tableau d'objets pour chaque groupe
+eventDetails.halls.forEach(hall => {
+groupedEvents[eventDetails.date].push({
+name: hall.name,
+logo: hall.logo,
+city: hall.city,
+status: hall.status,
+// Ajoutez d'autres détails de groupe ici si nécessaire
+});
+});
+});
+
+// Bouclez sur les groupes regroupés et ajoutez-les à la modale
+for (const [date, halls] of Object.entries(groupedEvents)) {
+modalContent.innerHTML += `
+<div class="flex justify-between item-align bg-slate-500 relative rounded-t-md text-white p-2 ">
+<p> ${formatDate(date)}</p>
+<div class="close ml-3 px-1 font-bold bg-slate-700 rounded-full " onclick="closeModal()">&times;</div>
+</div>
+`
+;
+halls.forEach(hall => {
+if (hall.status == "1") {
+modalContent.innerHTML += `
+    <div class="flex justify-between items-center">
+        <div class="flex p-2 items-center relative">
+            <div class="img-project-db border-2 border-green-500 ">
+				<img src="${hall.logo}" alt="">
+			</div>
+			<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+				✓
+			</div>
+            <div>
+                <p class="text-blue-400 font-semibold">${hall.name}</p>
+                <p>${hall.city}</p>
+            </div>
+        </div>
+    </div>
+`;
+} else if (hall.status == "3") {
+modalContent.innerHTML += `
+    <div class="flex justify-between items-center">
+        <div class="flex p-2 items-center relative">
+            <div class="img-project-db border-2 bg-slate-300">
+                <img src="${hall.logo}" alt="">
+            </div>
+            <div class="bg-slate-300 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+                ⧖
+            </div>
+            <div>
+                <p class="text-blue-400 font-semibold">${hall.name}</p>
+                <p>${hall.city}</p>
+            </div>
+        </div>
+    </div>
+`;
+}
+});
+}
+
+// Affichez la modale
+document.getElementById('eventModal').style.display = 'block';
+} else { // Aucun événement trouvé pour la date sélectionnée
+console.error (`Aucun détail d'événement trouvé pour la date : ${date}`);
+}
+}
+
+function formatDate(date) {
+    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    const formattedDate = new Date(date).toLocaleDateString('fr-FR', options);
+    return formattedDate;
+}
+
+
+function closeModal() {
+document.getElementById('eventModal').style.display = 'none';
+}
 	</script>
 	
     <script>
@@ -456,36 +580,3 @@ renderCalendar();
 
 {% endblock %}
 
-{% block javascripts %}
-	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/index.global.min.js" integrity="sha256-dHUNnePy81fXq4D/wfu7cPsEIP7zl6MvLb84jtZf+UY=" crossorigin="anonymous"></script>
-
-	<script>
-		document.addEventListener('DOMContentLoaded', () => {
-var calendarEl = document.getElementById('calendar-holder');
-
-var calendar = new FullCalendar.Calendar(calendarEl, {
-defaultView: 'dayGridMonth',
-editable: true,
-eventSources: [
-{
-url: "/fc-load-events",
-method: "POST",
-extraParams: {
-filters: JSON.stringify({})
-},
-failure: () => { // alert("There was an error while fetching FullCalendar!");
-}
-},
-],
-headerToolbar: {
-start: 'prev,next today',
-center: 'title',
-end: 'dayGridMonth,timeGridWeek,timeGridDay'
-},
-timeZone: 'UTC'
-});
-calendar.render();
-});
-	</script>
-
-{% endblock %}

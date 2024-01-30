@@ -16,16 +16,10 @@
 			</div>
 
 		</div>
-		<div id="eventModal" class="modal">
-			<div class="modal-content">
-				<!-- Contenu de la modale -->
-				<span class="close" onclick="closeModal()">&times;</span>
-				<!-- Ajoutez ici les éléments pour afficher les détails de l'événement -->
-			</div>
-		</div>
+
 		<div class="tab_project">
 			<div class="my-3">
-				<div class="lg:flex ">
+				<div class="lg:flex lg:relative">
 					<div class=" calendar bg-slate-700  text-white p-5 rounded-md lg:mr-3 mb-3 lg:mb-0">
 						<div class="flex justify-between">
 							<button id="prevMonth" class="arrow-left text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10094;</button>
@@ -35,8 +29,16 @@
 						<div id="calendrier"></div>
 						{# <div id="calendar-holder"></div> #}
 					</div>
+					
 
-					<div class="event-list-db bg-white rounded-md shadow-md w-full">
+					
+					<div id="eventModal" class="modal  bg-white rounded-md shadow-md lg:absolute" >
+						<div class="modal-content">
+							<!-- Contenu de la modale -->
+							<!-- Ajoutez ici les éléments pour afficher les détails de l'événement -->
+						</div>
+					</div>
+					<div class="event-list-db bg-white rounded-md shadow-md w-full mt-3 lg:mt-0">
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes demandes de date</h4>
 						<div class="p-3">
 							{% for event in hall.events %}
@@ -133,7 +135,7 @@
 															</div>
 															<div class="open">
 																{% for member in bandEvent.band.bandMembers %}
-																	<div class="flex justify-between list-member-event">
+																	<div class=" flex justify-between list-member-event">
 																		<div class="flex">
 																			<div class="img-profil-event border-2 border-slate-500">
 																				<img src="{{ member.profil.picture }}" alt="" class="w-5">
@@ -242,30 +244,25 @@
 				</div>
 			</div>
 		</div>
-		<div>
-			<div id="calendrier"></div>
-			<button id="prevMonth">Previous Month</button>
-			<button id="nextMonth">Next Month</button>
-			<div id="monthYearHeader"></div>
 
-		</div>
 	</div>
 
 	<script>
-			const events = [
+		const events = [
 {% for event in eventCome %}
 {
 date: '{{ event.date|date('Y-m-d') }}',
-bands:{
-	{% for bandEvent in event.bandEvents %}
-	name : '{{ bandEvent.band.name }}',
-	logo : '{{ bandEvent.band.logo }}',
-	music : '{{ bandEvent.band.musicCategory.category }}',
-	style : '{{ bandEvent.band.defineStyle }}',
-	{% endfor %}
-}
+bands: [{% for bandEvent in event.bandEvents %}
+{
+name: '{{ bandEvent.band.name }}',
+logo: '{{ bandEvent.band.logo }}',
+music: '{{ bandEvent.band.musicCategory.category }}',
+style: '{{ bandEvent.band.defineStyle }}',
+status: '{{ bandEvent.status }}',
+// Ajoutez d'autres propriétés de la bande ici si nécessaire
+},{% endfor %}]
 },{% endfor %}
-// Add more events as needed
+// Ajoutez d'autres événements au besoin
 ];
 
 console.log(events)
@@ -398,56 +395,95 @@ renderCalendar();
 });
 
 function openEventModal(date) {
-    const formattedDate = date.replace(/-(\d)-/g, '-0$1-').replace(/-(\d{1})$/g, '-0$1');
-    const eventsOnSelectedDate = events.filter(event => event.date === formattedDate);
+const formattedDate = date.replace(/-(\d)-/g, '-0$1-').replace(/-(\d{1})$/g, '-0$1');
+const eventsOnSelectedDate = events.filter(event => event.date === formattedDate);
 
-    if (eventsOnSelectedDate.length > 0) {
-        const modalContent = document.querySelector('#eventModal .modal-content');
-        modalContent.innerHTML = '<span class="close" onclick="closeModal()">&times;</span>';
-        
-        // Utilisez un objet pour regrouper les groupes par date
-        const groupedEvents = {};
+if (eventsOnSelectedDate.length > 0) {
+const modalContent = document.querySelector('#eventModal .modal-content');
+modalContent.innerHTML = '<div class="close hidden" onclick="closeModal()">&times;</div>';
 
-        // Bouclez sur les événements pour les regrouper par date
-        eventsOnSelectedDate.forEach(eventDetails => {
-            if (!groupedEvents[eventDetails.date]) {
-                groupedEvents[eventDetails.date] = [];
-            }
-            groupedEvents[eventDetails.date].push({
-                name: eventDetails.bands.name,
-                logo: eventDetails.bands.logo,
-                music: eventDetails.bands.music,
-                style: eventDetails.bands.style
-            });
-        });
+// Utilisez un objet pour regrouper les groupes par date
+const groupedEvents = {};
 
-        // Bouclez sur les groupes regroupés et ajoutez-les à la modale
-        for (const [date, bands] of Object.entries(groupedEvents)) {
-            modalContent.innerHTML += `<p>Date: ${date}</p>`;
-            bands.forEach(band => {
-                modalContent.innerHTML += `
-				<div class="flex item-align">
-					<div class="img-project-db border-2 border-green-500 ">
-						<img src="${band.logo}" alt="">
-					</div>
-					<div>
-						<p>${band.name}</p>
-						<p>${band.music}/${band.style}</p>
-					</div>
-				</div>
-				
-
-				`;
-            });
-        }
-
-        // Affichez la modale
-        document.getElementById('eventModal').style.display = 'block';
-    } else {
-        // Aucun événement trouvé pour la date sélectionnée
-        console.error(`Aucun détail d'événement trouvé pour la date : ${date}`);
-    }
+// Bouclez sur les événements pour les regrouper par date
+eventsOnSelectedDate.forEach(eventDetails => {
+if (! groupedEvents[eventDetails.date]) {
+groupedEvents[eventDetails.date] = [];
 }
+// Utilisez eventDetails.bands comme un tableau d'objets pour chaque groupe
+eventDetails.bands.forEach(band => {
+groupedEvents[eventDetails.date].push({
+name: band.name,
+logo: band.logo,
+music: band.music,
+style: band.style,
+status: band.status,
+// Ajoutez d'autres détails de groupe ici si nécessaire
+});
+});
+});
+
+// Bouclez sur les groupes regroupés et ajoutez-les à la modale
+for (const [date, bands] of Object.entries(groupedEvents)) {
+modalContent.innerHTML += `
+<div class="flex justify-between item-align bg-slate-500 relative rounded-t-md text-white p-2 ">
+<p> ${formatDate(date)}</p>
+<div class="close ml-3 px-1 font-bold bg-slate-700 rounded-full " onclick="closeModal()">&times;</div>
+</div>
+`
+;
+bands.forEach(band => {
+if (band.status == "validate") {
+modalContent.innerHTML += `
+    <div class="flex justify-between items-center">
+        <div class="flex p-2 items-center relative">
+            <div class="img-project-db border-2 border-green-500 ">
+				<img src="${band.logo}" alt="">
+			</div>
+			<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+				✓
+			</div>
+            <div>
+                <p class="text-blue-400 font-semibold">${band.name}</p>
+                <p>${band.music}/${band.style}</p>
+            </div>
+        </div>
+    </div>
+`;
+} else if (band.status == "guest") {
+modalContent.innerHTML += `
+    <div class="flex justify-between items-center">
+        <div class="flex p-2 items-center relative">
+            <div class="img-project-db border-2 bg-slate-300">
+                <img src="${band.logo}" alt="">
+            </div>
+            <div class="bg-slate-300 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+                ⧖
+            </div>
+            <div>
+                <p class="text-blue-400 font-semibold">${band.name}</p>
+                <p>${band.music}/${band.style}</p>
+            </div>
+        </div>
+    </div>
+`;
+}
+});
+}
+
+// Affichez la modale
+document.getElementById('eventModal').style.display = 'block';
+} else { // Aucun événement trouvé pour la date sélectionnée
+console.error (`Aucun détail d'événement trouvé pour la date : ${date}`);
+}
+}
+
+function formatDate(date) {
+    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    const formattedDate = new Date(date).toLocaleDateString('fr-FR', options);
+    return formattedDate;
+}
+
 
 function closeModal() {
 document.getElementById('eventModal').style.display = 'none';
@@ -514,85 +550,5 @@ content.style.transition = '';
 }
 });
 	</script>
-
-{% endblock %}
-
-
-{% block javascripts %}
-	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/index.global.min.js" integrity="sha256-dHUNnePy81fXq4D/wfu7cPsEIP7zl6MvLb84jtZf+UY=" crossorigin="anonymous"></script>
-
-
-	<script>
-		document.addEventListener('DOMContentLoaded', () => {
-var calendarEl = document.getElementById('calendar-holder');
-
-var calendar = new FullCalendar.Calendar(calendarEl, {
-
-defaultView: 'dayGridMonth',
-editable: true,
-eventSources: [
-{
-url: "/fc-load-events",
-method: "POST",
-extraParams: {
-filters: JSON.stringify({})
-},
-failure: () => { // alert("There was an error while fetching FullCalendar!");
-}
-},
-],
-headerToolbar: {
-start: 'prev,next today',
-center: 'title',
-end: 'dayGridMonth,timeGridWeek,timeGridDay'
-},
-timeZone: 'UTC'
-});
-calendar.render();
-});
-	</script>
-
-
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-const validateButtons = document.querySelectorAll('.validate-button');
-const rejectButtons = document.querySelectorAll('.reject-button');
-
-validateButtons.forEach(button => {
-button.addEventListener('click', function () {
-const eventId = this.getAttribute('data-event-id');
-updateEventStatus(eventId, 1); // Mettre à jour le statut à 1 (Validé)
-});
-});
-
-rejectButtons.forEach(button => {
-button.addEventListener('click', function () {
-const eventId = this.getAttribute('data-event-id');
-updateEventStatus(eventId, 2); // Mettre à jour le statut à 2 (Refusé)
-});
-});
-
-function updateEventStatus(eventId, newStatus) {
-// Envoyer une requête AJAX au serveur pour mettre à jour le statut
-// Utilisez votre chemin de contrôleur et les données nécessaires
-const url = `/update-event-status/${eventId}/${newStatus}`;
-
-// Vous pouvez utiliser fetch ou une bibliothèque comme Axios pour envoyer la requête
-fetch(url, {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-// Ajoutez d'autres en-têtes si nécessaire
-},
-// Ajoutez un corps de requête si nécessaire
-}).then(response => { // Traitez la réponse du serveur si nécessaire
-console.log(response);
-}).catch(error => {
-console.error('Erreur lors de la mise à jour du statut de l\'événement :', error);
-});
-}
-});
-	</script>
-
 
 {% endblock %}

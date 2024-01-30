@@ -8,6 +8,7 @@ use App\Entity\Band;
 use App\Entity\BandEvent;
 use App\Entity\Notification;
 use App\Form\FilterSearchType;
+use App\Repository\EventRepository;
 use App\Repository\MusicCategoryRepository;
 use App\Repository\HallRepository;
 use App\Service\NotificationService;
@@ -30,6 +31,7 @@ class SearchController extends AbstractController
 
         $halls = $hallRepository->findAll();
         if ($filter->isSubmitted() && $filter->isValid()) {
+            // dd($filter);
             $halls = $hallRepository->filter($filter->getData());
         }
 
@@ -51,13 +53,15 @@ class SearchController extends AbstractController
     }
 
     #[Route('/search/booking/{id}', name: 'app_search_booking', methods: ['GET', 'POST'])]
-    public function booking(Request $request, $id,NotificationService $notification, HallRepository $hallRepository, EntityManagerInterface $em): Response
+    public function booking(Request $request, $id,NotificationService $notification, EventRepository $eventRepository, HallRepository $hallRepository, EntityManagerInterface $em): Response
     {
+        
         $date = $request->query->get('date');
         $hall = $hallRepository->find($id);
         $dateBooking = $request->request->get('booking_date');
         $bandId = $request->request->get('band_id');
-
+        
+        $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
 
         if ($request->isMethod('POST')) {
 
@@ -86,6 +90,8 @@ class SearchController extends AbstractController
         return $this->render('search/booking.html.twig', [
             'hall' => $hall,
             'date' => $date,
+            'eventCome' => $eventCome,
+
         ]);
     }
 }

@@ -187,10 +187,8 @@ class ProfilController extends AbstractController
                     'Body'   => $img,
                     'SourceFile' => $img->getRealPath(),
                     'ContentType' => $img->getMimeType(),
-                    'ContentSHA256' => $sha256
-
-                    
-                    // 'ACL'    => 'public-read',
+                    'ContentSHA256' => $sha256,
+                    'ACL'    => 'public-read',
                 ]);
                 // dd($s3->getObjectUrl('symtour', $fileName));
             } catch (S3Exception $e){
