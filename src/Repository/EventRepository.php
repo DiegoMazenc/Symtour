@@ -36,6 +36,7 @@ class EventRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    
 
     public function getComeEventsByHallAsc(Hall $hall)
     {

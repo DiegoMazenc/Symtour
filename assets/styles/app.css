@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+.bg-blue-one{
+background-color: #334155;
+}
+
+.t-white{
+    color: white;
+}
+
+
 .list-category{
     flex-wrap: wrap;
 }
@@ -94,7 +103,7 @@ padding: 15px;
     object-fit: cover;
 }
 
-/* .card-event-list{
+.card-event-list{
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -104,7 +113,7 @@ padding: 15px;
 .card-event{
     width: 49.5%;
     margin: 15px 0;
-} */
+}
 
 .event-confirm-db{
     width: 48%;
@@ -136,7 +145,7 @@ left: 0%;}
 }
 
 .card-event{
-    width: 40%;
+    width: 95%;
     margin: 15px 0;
 }
 
@@ -295,6 +304,8 @@ height: 24px;
 
 .valide-day{
     cursor:pointer;
+    transition: 0.3s;
+
 
 }
 
@@ -303,9 +314,24 @@ height: 24px;
 }
 
 .event-reserved{
-    color: rgb(151, 154, 165);
-    background-color: #626980;
+    color: rgb(120, 123, 133);
+    background-color: #4f535e;
 }
+
+.in-progress{
+    color: rgb(255, 255, 255);
+    background-color: #636d8a;
+    cursor:pointer;
+    transition: 0.3s;
+
+
+}
+
+.in-progress:hover{
+    background-color: #996969;
+
+}
+
 .close{
     cursor:pointer;
 

@@ -189,7 +189,7 @@ class HallController extends AbstractController
     #[Route('/{id}/event', name: 'app_hall_event', methods: ['GET', 'POST'])]
     public function event(Hall $hall, Request $request,NotificationService $notification, BandRepository $bandRepository, EventRepository $eventRepository, EntityManagerInterface $em): Response
     {
-        $eventCome = $eventRepository->getComeEventsByHall($hall);
+        $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
         $eventPast = $eventRepository->getPastEventsByHall($hall);
         $dateAdd = null;
         $bandFind = null;

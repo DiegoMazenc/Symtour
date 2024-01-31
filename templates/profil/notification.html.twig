@@ -40,11 +40,14 @@
                             <p>{{ notification.message }}</p>
                         </div>
                     </div>
-                    <form action="">
-                        <button class="bg-slate-200 px-3 pb-1 rounded-full text-white font-bold  hover:bg-slate-500 "> x </button>
-                    </form>
+                    
+ <form action="{{ path('app_profil_notification', {'id': app.user.profil.id}) }}"  method="post">
+				<input type="hidden" name="id_notif" value="{{ notification.id }}">
+                <button class="bg-slate-200 px-3 pb-1 rounded-full text-white font-bold  hover:bg-slate-500 "> x </button>
+                </form>
                 </div>
             </a>
+           
         </div>
         {% endfor %}
     </div>
