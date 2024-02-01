@@ -253,7 +253,7 @@
 {
 date: '{{ event.date|date('Y-m-d') }}',
 bands: [{% for bandEvent in event.bandEvents %}
-{
+	{
 name: '{{ bandEvent.band.name }}',
 logo: '{{ bandEvent.band.logo }}',
 music: '{{ bandEvent.band.musicCategory.category }}',
