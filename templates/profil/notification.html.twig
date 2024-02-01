@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <div class="user-contain py-5 px-20 bg bg-slate-100">
+    <div class="user-contain">
         {% for notification in profil.notifications|reverse %}
             {% set pageLink = '' %}
             {% set memberType = '' %}
@@ -21,16 +21,18 @@
             {% endif %}
 
             {% if notification.status == 1 %}
-                <div class="bg-slate-200 my-3 p-3 w-1/2 rounded-md border-2 border-slate-300 hover:bg-white hover:border-2 hover:border-slate-300 duration-300">
+                <div class="bg-slate-200 my-3 p-3 w-flex rounded-md border-2 border-slate-300 hover:bg-white hover:border-2 hover:border-slate-300 duration-300">
             {% else %}
-                <div class="bg-white my-3 w-1/2 p-3 rounded-md border-2 border-white hover:border-2 hover:border-slate-300 duration-300">
+                <div class="bg-white my-3 w-flex p-3 rounded-md border-2 border-white hover:border-2 hover:border-slate-300 duration-300">
             {% endif %}
 
             <a href="{{ pageLink }}">
                 <div class="flex justify-between items-center">
                     <div class="flex">
+                    <div class="img-project-db ">
                         <img src="{{ memberType.band.logo ?? memberType.hall.logo ?? profil.picture }}" alt="" class="w-10 rounded-full mr-3">
-                        <div>
+                        </div>   
+                        <div>   
                             <div class="flex item-center">
                                 <p class="mr-3 text-blue-400 font-semibold">
                                     {{ memberType.band.name ?? memberType.hall.name ?? profil.pseudo }}

@@ -224,6 +224,37 @@ class HallController extends AbstractController
             
         }}
 
+        if ($request->isMethod('POST')) {
+            $action = $request->request->get('action');
+            $eventId = $request->request->get('event_id');
+            $bandId = $request->request->get('bandId');
+            $band = $bandRepository->find($bandId);
+
+            if ($action === 'validate') {
+                $status = 1;
+
+                // $chatRoom = new ChatRoom();
+
+                // $chatRoom->setEvent($em->getRepository(Event::class)->find($eventId))
+                // ->setDateCreate(new \DateTime());
+                // $em->persist($chatRoom);
+                // $em->flush();
+
+            } elseif ($action === 'reject') {
+                $status = 2;
+            } else {
+                $status = 3;
+            }
+
+            $event = $em->getRepository(Event::class)->find($eventId);
+            if ($event) {
+                $event->setStatus($status);
+                $em->flush();
+            }
+
+            $notification->addNotificationBand("band", $hall->getName(), $bandId, "hall", $hall->getId(), "response", $band, $status, $em);
+        }
+
         return $this->render('hall/event.html.twig', [
             'hall' => $hall,
             'eventCome' => $eventCome,
