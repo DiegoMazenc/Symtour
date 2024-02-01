@@ -6,18 +6,56 @@
 
 {% block body %}
 	<div class="user-contain ">
+		 <div class="flex justify-between w-flex">
+		 <form action="{{ path('app_hall_event', {'id': hall.id}) }}" method="post" name="all">
+   			 <button type="submit" name="filter" value="all"
+			 {% if filterEvent == "all" %}
+			  class="border-2 border-blue-200 hover:border-blue-500 bg-blue-500 font-bold text-white rounded-lg p-2 duration-300"
+  					{% else %}
+			  class="border-2 border-blue-200 hover:border-blue-500 font-bold rounded-lg p-2 duration-300"
+					{% endif %}
+			  >Toute mes dates</button>
+		</form>
+
+		<form action="{{ path('app_hall_event', {'id': hall.id}) }}" method="post" name="valid">
+		    <button type="submit" name="filter" value="valid"
+			 {% if filterEvent == "valid" %}
+			  class="border-2 border-blue-200 hover:border-blue-500 bg-blue-500 font-bold text-white rounded-lg p-2 duration-300"
+  					{% else %}
+			  class="border-2 border-blue-200 hover:border-blue-500 font-bold rounded-lg p-2 duration-300"
+					{% endif %}
+			 >Dates validées</button>
+		</form>
+
+		<form action="{{ path('app_hall_event', {'id': hall.id}) }}" method="post" name="in-progress">
+		    <button type="submit" name="filter" value="in-progress"
+			 {% if filterEvent == "in-progress" %}
+			  class="border-2 border-blue-200 hover:border-blue-500 bg-blue-500 font-bold text-white rounded-lg p-2 duration-300"
+  					{% else %}
+			  class="border-2 border-blue-200 hover:border-blue-500 font-bold rounded-lg p-2 duration-300"
+					{% endif %}
+			 >Demandes de date</button>
+		</form>
+    </div>
 		<div class="w-flex">
 			
 				<h2>Mes prochains événements</h2>
 				{% for events in eventCome %}
-					{% if events.status != 2 %}
+					{% if filterEvent == "all" %}
+       					{% set condition = events.status != 2 %}
+   					{% elseif filterEvent == "valid" %}
+      					{% set condition = events.status == 1 %}
+  					{% elseif filterEvent == "in-progress" %}
+  						{% set condition = events.status == 3 %}
+  					{% endif %}
+					   {% if condition %}
 						<div class="card-event bg-white">
-						{% if events.status == 1 %}
-							<div class="flex bg-green-500 text-white p-2 rounded-t-md items-center justify-between">
-							{% else %}
-							<div class="flex bg-slate-500 text-white p-2 rounded-t-md items-center justify-between">
-								
-						{% endif %}
+							{% if events.status == 1 %}
+								<div class="flex bg-green-500 text-white p-2 rounded-t-md items-center justify-between">
+								{% else %}
+								<div class="flex bg-slate-500 text-white p-2 rounded-t-md items-center justify-between">
+									
+							{% endif %}
 							<div class="flex items-center ">
 								<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
 								<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
@@ -127,7 +165,7 @@
 															</button>
 														</form>
 													{% else %}
-														<p class="px-5">Détails ▽</p>
+														<p class="px-5 clicBand">Détails ▽</p>
 													{% endif %}
 												</div>
 												<div class="openBand">
@@ -164,7 +202,7 @@
 									</div>
 									{% for band in band %}
 										{% if dateAdd == events.date|date() %}
-											<div class="clic">
+											<div >
 												<div class=" flex justify-between items-center">
 													<div class="flex p-2 items-center relative">
 														<div class="img-project-db border-2 border-slate-500 ">
@@ -187,10 +225,10 @@
 
 															<button type="submit" class="validate-button px-1  rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Inviter</button>
 														</form>
-														<p>Détails ▽</p>
+														<p class="clicBand">Détails ▽</p>
 													</div>
 												</div>
-												<div class="open">
+												<div class="openBand">
 													{% for member in band.bandMembers %}
 														<div class="flex justify-between list-member-event">
 															<div class="flex">
@@ -219,18 +257,28 @@
 				<h2>Mes événements passés</h2>
 				<div class="card-event-list ">
 					{% for events in eventPast %}
-						{% if events.status != 2 %}
+					{% if filterEvent == "all" %}
+       					{% set condition = events.status != 2 %}
+   					{% elseif filterEvent == "valid" %}
+      					{% set condition = events.status == 1 %}
+  					{% elseif filterEvent == "in-progress" %}
+  						{% set condition = events.status == 3 %}
+  					{% endif %}
+						{% if condition %}
 						<div class="card-event bg-slate-200  ">
 						{% if events.status == 1 %}
 							<div class="flex bg-slate-400 text-white p-2 rounded-t-md items-center">
+							<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+								<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+							</div>
 						{% elseif events.status == 3%}
 							<div class="flex bg-red-400 text-white p-2 rounded-t-md items-center">
-						{% endif %}
 								<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
 								<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
-								<p class="px-5 clicEvent">▽</p>
+								<p class="px-5 ">Demande Expirée</p>
 							</div>
-							<div class="plateau openEvent">
+						{% endif %}
+							<div class="plateau ">
 								<div class="">
 									{% for bandEvent in events.bandEvents %}
 										<div class="">
@@ -288,11 +336,9 @@
 					searchMemberDiv.hide();
 				}
 			 });
-
-			// $(".clicEvent").click(function () {
-			// 	 $(this).closest('.card-event').find(".openEvent").toggle();
-			// });
 		});
+	
+
 	</script>
 {% endblock %}
 

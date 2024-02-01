@@ -33,10 +33,7 @@
 
 					
 					<div id="eventModal" class="modal  bg-white rounded-md shadow-md lg:absolute" >
-						<div class="modal-content">
-							<!-- Contenu de la modale -->
-							<!-- Ajoutez ici les éléments pour afficher les détails de l'événement -->
-						</div>
+						<div class="modal-content"></div>
 					</div>
 					<div class="event-list-db bg-white rounded-md shadow-md w-full mt-3 lg:mt-0">
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes demandes de date</h4>
@@ -192,21 +189,6 @@
 																	</div>
 																</div>
 															</div>
-															<div class="open">
-																{% for member in bandEvent.band.bandMembers %}
-																	<div class=" flex justify-between list-member-event">
-																		<div class="flex">
-																			<div class="img-profil-event border-2 border-slate-500">
-																				<img src="{{ member.profil.picture }}" alt="" class="w-5">
-
-																			</div>
-																			<p>{{ member.profil.pseudo }}
-																			</p>
-																		</div>
-																		<p>{{ member.role.roleName }}</p>
-																	</div>
-																{% endfor %}
-															</div>
 														</div>
 														<hr>
 													{% endif %}
@@ -346,7 +328,7 @@ return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && e
 if (eventsOnDay.length > 0 && eventsOnDay.every(event => event.statusDate !== "2")) {
     if(eventsOnDay.every(event => event.statusDate == "1")){
         dayElement.classList.add('event-day-valid');
-    } else {
+    } else if (eventsOnDay.every(event => event.statusDate == "3")) {
         dayElement.classList.add('event-day');
     }
     dayElement.addEventListener('click', () => openEventModal(`${currentYear}-${currentMonth + 1}-${day}`));

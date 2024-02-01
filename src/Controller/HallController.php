@@ -193,6 +193,8 @@ class HallController extends AbstractController
         $eventPast = $eventRepository->getPastEventsByHall($hall);
         $dateAdd = null;
         $bandFind = null;
+        $filterEvent = "all";
+
         if ($request->isMethod('POST')) {
             $formName = $request->request->get('formName');
 
@@ -224,7 +226,20 @@ class HallController extends AbstractController
             
         }}
 
+
         if ($request->isMethod('POST')) {
+            $filter = $request->request->get('filter');
+        
+            if ($filter == 'all') {
+                $filterEvent = "all";
+            } elseif ($filter == 'valid') {
+                $filterEvent = "valid";
+            } elseif ($filter == 'in-progress') {
+                $filterEvent = "in-progress";
+            }
+        }
+
+        if ($request->isMethod('POST') && $request->request->get('action')) {
             $action = $request->request->get('action');
             $eventId = $request->request->get('event_id');
             $bandId = $request->request->get('bandId');
@@ -232,13 +247,6 @@ class HallController extends AbstractController
 
             if ($action === 'validate') {
                 $status = 1;
-
-                // $chatRoom = new ChatRoom();
-
-                // $chatRoom->setEvent($em->getRepository(Event::class)->find($eventId))
-                // ->setDateCreate(new \DateTime());
-                // $em->persist($chatRoom);
-                // $em->flush();
 
             } elseif ($action === 'reject') {
                 $status = 2;
@@ -260,7 +268,8 @@ class HallController extends AbstractController
             'eventCome' => $eventCome,
             'eventPast' => $eventPast,
             'band' => $bandFind,
-            'dateAdd' => $dateAdd
+            'dateAdd' => $dateAdd,
+            'filterEvent' => $filterEvent
         ]);
     }
 

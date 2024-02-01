@@ -166,7 +166,8 @@ class BandController extends AbstractController
 
     
     #[Route('/{id}/event', name: 'app_band_event', methods: ['GET', 'POST'])]
-    public function event(Band $band, Request $request,NotificationService $notification, BandRepository $bandRepository, EventRepository $eventRepository, EntityManagerInterface $em): Response
+    public function event(Band $band, Request $request,NotificationService $notification,HallRepository
+     $hallRepository, BandRepository $bandRepository, EventRepository $eventRepository, EntityManagerInterface $em): Response
     {
         $eventCome = $eventRepository->getComeEventsByBand($band);
         $eventPast = $eventRepository->getPastEventsByBand($band);
@@ -174,6 +175,8 @@ class BandController extends AbstractController
         $idBandConnect = $band->getId();
         $dateAdd = null;
         $bandFind = null;
+        $filterEvent = "all";
+
         if ($request->isMethod('POST')) {
             $formName = $request->request->get('formName');
 
@@ -206,6 +209,44 @@ class BandController extends AbstractController
             
         }}
 
+        if ($request->isMethod('POST') && $request->request->get('action')) {
+            $action = $request->request->get('action');
+            $eventId = $request->request->get('event_id');
+            $hallId = $request->request->get('hallId');
+            $bandEventId = $request->request->get('bandEvent_id');
+            $hall = $hallRepository->find((int)$hallId);
+
+            if ($action === 'cancel') {
+            $notification->addNotificationHall("hall", $band->getName(), $hall->getId(), "band", $band->getId(), $action, $hall, $em);
+            $bandEvent = $em->getRepository(BandEvent::class)->find($bandEventId);
+            if ($bandEvent) {
+                $em->remove($bandEvent);
+                $em->flush();
+            }
+
+            $event = $em->getRepository(Event::class)->find($eventId);
+            if ($event) {
+                $em->remove($event);
+                $em->flush();
+            }else{
+                dd($event);
+            }
+
+             }  
+        }
+
+        if ($request->isMethod('POST')) {
+            $filter = $request->request->get('filter');
+        
+            if ($filter == 'all') {
+                $filterEvent = "all";
+            } elseif ($filter == 'valid') {
+                $filterEvent = "valid";
+            } elseif ($filter == 'in-progress') {
+                $filterEvent = "in-progress";
+            }
+        }
+
         return $this->render('band/event.html.twig', [
 
             'idBandConnect' => $idBandConnect,
@@ -213,7 +254,9 @@ class BandController extends AbstractController
             'band' => $band,
             'eventPast' => $eventPast,
             'bandFind' => $bandFind,
-            'dateAdd' => $dateAdd
+            'dateAdd' => $dateAdd,
+            'filterEvent' => $filterEvent
+
         ]);
     }
 

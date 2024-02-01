@@ -20,6 +20,11 @@ class NotificationService
     {
 
         $uniqueProfiles = [];
+        if ($type == "event"){
+            $message = "$bandName vous à fait une demande d'event";
+        } else if ($type == "cancel"){
+            $message = "$bandName à annulé sa demande d'event";
+        }
     
         foreach ($hall->getHallMembers() as $hallMember) {
             $profil = $hallMember->getProfile();
@@ -29,7 +34,7 @@ class NotificationService
         foreach ($uniqueProfiles as $profil) {
             $notification = new Notification;
         $notification
-            ->setMessage("$bandName vous à fait une demande d'event")
+            ->setMessage($message)
             ->setStatus(1)
             ->setDate(new \DateTime())
             ->setReceiptPage($receipt)

@@ -5,7 +5,7 @@
 
 {% block body %}
 
-	<div class="user-contain px-5 lg:px-28 py-5 bg bg-slate-100">
+	<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
 		<div class="header-user flex justify-evenly">
 			<div class="pic_profil">
 				<img src="{{ band.logo }}" alt="" class="user-img">
@@ -137,7 +137,7 @@
 												{% for bandEvent in events.bandEvents|slice(0, 3) %}
 													{% if bandEvent.status == "validate" %}
 
-														<div class="clic">
+														<div class="">
 															<div class=" flex justify-between items-center">
 																<div class="flex p-2 items-center relative">
 																	<div class="img-project-db border-2 border-green-500 ">
@@ -152,21 +152,6 @@
 																	</div>
 																</div>
 															</div>
-															<div class="open">
-																{% for member in bandEvent.band.bandMembers %}
-																	<div class="flex justify-between list-member-event">
-																		<div class="flex">
-																			<div class="img-profil-event border-2 border-slate-500">
-																				<img src="{{ member.profil.picture }}" alt="" class="w-5">
-
-																			</div>
-																			<p>{{ member.profil.pseudo }}
-																			</p>
-																		</div>
-																		<p>{{ member.role.roleName }}</p>
-																	</div>
-																{% endfor %}
-															</div>
 														</div>
 														<hr>
 													{% endif %}
@@ -178,7 +163,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="md:w-full lg:w-1/2 lg:mr-3 bg-white rounded-md shadow-md mt-3 ">
+					<div class="md:w-full lg:w-1/2 bg-white rounded-md shadow-md mt-3 ">
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mon dernier events
 						</h4>
 						<div class=" flex justify-between">
@@ -199,7 +184,7 @@
 											{% for bandEvent in events.bandEvents|slice(0, 1) %}
 												{% if bandEvent.status == "validate" %}
 
-													<div class="clic">
+													
 														<div class=" flex justify-between items-center">
 															<div class="flex p-2 items-center relative">
 																<div class="img-project-db border-2 border-slate-500 ">
@@ -214,22 +199,7 @@
 																</div>
 															</div>
 														</div>
-														<div class="open">
-															{% for member in bandEvent.band.bandMembers %}
-																<div class="flex justify-between list-member-event">
-																	<div class="flex">
-																		<div class="img-profil-event border-2 border-slate-500">
-																			<img src="{{ member.profil.picture }}" alt="" class="w-5">
-
-																		</div>
-																		<p>{{ member.profil.pseudo }}
-																		</p>
-																	</div>
-																	<p>{{ member.role.roleName }}</p>
-																</div>
-															{% endfor %}
-														</div>
-													</div>
+													
 													<hr>
 												{% endif %}
 											{% endfor %}
