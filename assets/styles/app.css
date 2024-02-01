@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+.bg-blue-one{
+background-color: #334155;
+}
+
+.t-white{
+    color: white;
+}
+
+.flex-responsive{
+    display: flex;
+    justify-content: space-between;
+}
+
+.w-flex{
+    width: 48%;
+}
+
+
 .list-category{
     flex-wrap: wrap;
 }
@@ -70,7 +88,11 @@ padding: 15px;
     margin-right: 20px;
 }
 
-.open {
+.clicBand, .clicEvent{
+    cursor: pointer;
+}
+
+.openBand {
     display: none;
 }
 
@@ -94,17 +116,10 @@ padding: 15px;
     object-fit: cover;
 }
 
-/* .card-event-list{
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    width: 100%;
-}
-
 .card-event{
     width: 49.5%;
-    margin: 15px 0;
-} */
+    margin: 5px 0;
+}
 
 .event-confirm-db{
     width: 48%;
@@ -124,20 +139,20 @@ padding: 15px;
     /* width: 200%; */
 left: 0%;}
 
-.card-event-list{
+/* .card-event-list{
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     width: 100%;
-}
+} */
 
 .card-event-db{
     width: 100%;
 }
 
 .card-event{
-    width: 40%;
-    margin: 15px 0;
+    width: 100%;
+    /* margin: 15px 0; */
 }
 
 
@@ -146,6 +161,14 @@ left: 0%;}
     .card-event {
         width: 100%;
         margin: 15px 0;
+    }
+
+    .flex-responsive{
+        display: block;
+    }
+
+    .w-flex{
+        width: 100%;
     }
     
 }
@@ -225,6 +248,17 @@ height: 24px;
 
 .user-contain{
     width: 100%;
+    background-color: #f1f5f9;
+    padding: 20px 7%;
+
+}
+
+@media screen and (max-width: 770px) {
+
+    .user-contain{
+        padding: 20px 4%;
+    }
+    
 }
 
 .nav-side-bar li{
@@ -295,6 +329,8 @@ height: 24px;
 
 .valide-day{
     cursor:pointer;
+    transition: 0.3s;
+
 
 }
 
@@ -303,9 +339,24 @@ height: 24px;
 }
 
 .event-reserved{
-    color: rgb(151, 154, 165);
-    background-color: #626980;
+    color: rgb(120, 123, 133);
+    background-color: #4f535e;
 }
+
+.in-progress{
+    color: rgb(255, 255, 255);
+    background-color: #636d8a;
+    cursor:pointer;
+    transition: 0.3s;
+
+
+}
+
+.in-progress:hover{
+    background-color: #996969;
+
+}
+
 .close{
     cursor:pointer;
 
@@ -327,3 +378,19 @@ left: 272px;
         
 } */
 
+.bottom-bar{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 15px 30px;
+    background-color: #082f49;
+    display: flex;
+    justify-content: space-between;
+}
+
+@media screen and (min-width:770px) {
+    .bottom-bar{
+        display: none;
+    }
+    
+}

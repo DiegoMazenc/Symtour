@@ -45,13 +45,19 @@
 
 
 								<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
-								<label for="booking_date" class='text-blue-400 font-semibold'>Date Sélectionné :</label><br>
-<input type="text" id="booking_date" name="booking_date" value="{{ date }}" class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5" required readonly> <br>
+								<label for="booking_date" class='text-blue-400 font-semibold'>Date Sélectionné : <span id="eventCountDisplay"></span></label><br>
+								<input type="text" id="booking_date" name="booking_date" value="{{ date }}" class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3  w-3/5" required readonly> <br>
+								
 									<label for="band_id" class='text-blue-400 font-semibold'>Pour quel projet souhaitez-vous réserver ?</label><br>
 									<select name="band_id" required class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5">
+										{% set displayedBands = [] %}
+
 										{% for bandMember in app.user.profil.bandMembers %}
 											{% set musicCategory = bandMember.band.musicCategory.category %}
 											{% set isMusicAccepted = hall.musicCategory|filter(category => category.category == musicCategory)|length > 0 %}
+										{% set bandName = bandMember.band.name %}
+										{% if bandName not in displayedBands %}
+
 											<option value="{{ bandMember.band.id }}" {% if not isMusicAccepted %} disabled {% endif %}>
 												{{ bandMember.band.name }}
 												({{ musicCategory }})
@@ -61,7 +67,30 @@
 												{% endif %}
 
 											</option>
+											{% set displayedBands = displayedBands|merge([bandName]) %}
+										{% endif %}
 										{% endfor %}
+
+
+
+{# 
+										{% set displayedBands = [] %}
+
+								{% for bandMember in app.user.profil.bandMembers %}
+									{% set musicCategory = bandMember.band.musicCategory.category %}
+									{% set isMusicAccepted = hall.musicCategory|filter(category => category.category == musicCategory)|length > 0 %}
+
+									{% if isMusicAccepted %}
+										{% set bandName = bandMember.band.name %}
+										{% if bandName not in displayedBands %}
+											<p class="text-green-500 mr-4">{{ bandName }}
+												✓</p>
+											{% set displayedBands = displayedBands|merge([bandName]) %}
+										{% endif %}
+									{% endif %}
+								{% endfor %} #}
+
+
 									</select><br>
 									<button type="submit">Réserver</button>
 								</form>
@@ -88,11 +117,13 @@
 <script>
 		const events = [
 {% for event in eventCome %}
-{date: '{{ event.date|date('Y-m-d') }}',},
+{
+	date: '{{ event.date|date('Y-m-d') }}',
+	statusDate: '{{ event.status }}',
+},
 {% endfor %}
 // Ajoutez d'autres événements au besoin
 ];
-
 console.log(events)
 document.addEventListener('DOMContentLoaded', function () {
 const calendar = document.getElementById('calendrier');
@@ -156,8 +187,7 @@ calendar.appendChild(dayElement);
 // Reset startPosition for the days of the current month
 startPosition = 0;
 
-// Fill in the days of the current month
- for (let day = 1; day <= daysInMonth; day++) {
+for (let day = 1; day <= daysInMonth; day++) {
     const dayElement = document.createElement('div');
     dayElement.className = 'day current-month-day';
     dayElement.classList.add('valide-day');
@@ -169,21 +199,41 @@ startPosition = 0;
         return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
     });
 
-    // Add event styling if there are events
-    if (eventsOnDay.length > 0) {
+    // Process events based on statusDate
+    const eventWithStatus1 = eventsOnDay.find(event => event.statusDate === '1');
+    const eventWithStatus2 = eventsOnDay.find(event => event.statusDate === '2');
+    const eventWithStatus3 = eventsOnDay.filter(event => event.statusDate === '3'); // Utiliser filter pour obtenir tous les événements avec le statut 3
+
+    if (eventWithStatus1) {
         dayElement.classList.remove('valide-day');
         dayElement.classList.add('event-reserved');
+    } else if (eventWithStatus3.length > 0) {
+        dayElement.classList.remove('valide-day');
+        dayElement.classList.add('in-progress');
+        addClickEventListener(dayElement, day, currentMonth, currentYear, eventWithStatus3.length); 
+    } else {
+        addClickEventListener(dayElement, day, currentMonth, currentYear, 0); 
     }
-
-    // Add click event listener
-    dayElement.addEventListener('click', () => {
-        if (!dayElement.classList.contains('event-reserved')) {
-		const formattedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-        document.getElementById('booking_date').value = formattedDate;
-    }
-    });
 
     calendar.appendChild(dayElement);
+}
+
+function addClickEventListener(element, day, month, year, eventCount) {
+    element.addEventListener('click', () => {
+        const formattedDate = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        document.getElementById('booking_date').value = formattedDate;
+
+        // Afficher le nombre d'événements avec le statut 3 au-dessus du formulaire
+        const eventCountDisplay = document.getElementById('eventCountDisplay');
+        if (eventCountDisplay ) {
+			if (eventCount == 0 ){
+				eventCountDisplay.innerHTML = `<span class=" text-green-500">Libre</span>`;
+			} else {
+                const demandeText = eventCount === 1 ? 'Demande' : 'Demandes';
+                eventCountDisplay.innerHTML = `<span class="text-red-500">${eventCount} ${demandeText} en cours</span>`;
+            }
+        }
+    });
 }
 
 // Fill in the remaining days of the grid with the next month

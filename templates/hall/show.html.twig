@@ -6,7 +6,7 @@
 {% block body %}
 
 
-	<div class="user-contain px-10 lg:px-28 py-5  bg-slate-100">
+	<div class="user-contain px-5 lg:px-28 py-5  bg-slate-100">
 		<div class="header-user flex justify-evenly">
 			<div class="pic_profil">
 				<img src="{{ hall.logo }}" alt="" class="user-img">
@@ -52,7 +52,7 @@
 												/
 												{{ bandEvent.band.defineStyle }}</p>
 
-											<div>
+											<div class="flex">
 												<form action="{{ path('app_hall_show', {'id': hall.id}) }}" method="post">
 													<input type="hidden" name="action" value="validate">
 													<input type="hidden" name="bandId" value="{{ bandEvent.band.id }}">
@@ -116,7 +116,7 @@
 												{% for bandEvent in events.bandEvents|slice(0, 3) %}
 													{% if bandEvent.status == "validate" %}
 
-														<div class="clic">
+														<div class="clicBand">
 															<div class=" flex justify-between items-center">
 																<div class="flex p-2 items-center relative">
 																	<div class="img-project-db border-2 border-green-500 ">
@@ -125,6 +125,65 @@
 																	<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
 																		✓
 																	</div>
+																	<div>
+																		<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+																		<p>{{ bandEvent.band.musicCategory.category }}
+																			/
+																			{{ bandEvent.band.defineStyle }}</p>
+																	</div>
+																</div>
+															</div>
+															<div class="openBand">
+																{% for member in bandEvent.band.bandMembers %}
+																	<div class=" flex justify-between list-member-event">
+																		<div class="flex">
+																			<div class="img-profil-event border-2 border-slate-500">
+																				<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
+																			</div>
+																			<p>{{ member.profil.pseudo }}
+																			</p>
+																		</div>
+																		<p>{{ member.role.roleName }}</p>
+																	</div>
+																{% endfor %}
+															</div>
+														</div>
+														<hr>
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+					<div class="md:w-full lg:w-1/2 lg:ml-3 bg-slate-200 rounded-md shadow-md mt-3 ">
+						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mon dernier events
+						</h4>
+						<div class=" flex justify-between">
+							{% for events in eventPast|slice(0, 1) %}
+
+									{% if events.status == 1 %}
+
+										<div class="card-event-db ">
+
+											<div class="flex bg-slate-500 text-white p-2  items-center">
+												<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 	24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.	05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.	825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.	588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+												<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+											</div>
+											<div class="plateau">
+												{% for bandEvent in events.bandEvents|slice(0, 3) %}
+													{% if bandEvent.status == "validate" %}
+
+														<div class="clic">
+															<div class=" flex justify-between items-center">
+																<div class="flex p-2 items-center relative">
+																	<div class="img-project-db border-2 border-slate-500 ">
+																		<img src="{{ bandEvent.band.logo }}" alt="">
+																	</div>
+
 																	<div>
 																		<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
 																		<p>{{ bandEvent.band.musicCategory.category }}
@@ -156,64 +215,6 @@
 										</div>
 									{% endif %}
 								{% endfor %}
-							</div>
-						</div>
-					</div>
-					<div class="md:w-full lg:w-1/2 lg:ml-3 bg-white rounded-md shadow-md mt-3 ">
-						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mon dernier events
-						</h4>
-						<div class=" flex justify-between">
-							{% for events in eventPast %}
-								{% if events.status == 1 %}
-									<div class="card-event-db bg-white ">
-										<div class="flex bg-slate-500 text-white p-2  items-center">
-											<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 	24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.	05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.	825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.	588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
-											<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
-										</div>
-										<div class="plateau">
-											{% for bandEvent in events.bandEvents|slice(0, 1) %}
-												{% if bandEvent.status == "validate" %}
-
-													<div class="clic">
-														<div class=" flex justify-between items-center">
-															<div class="flex p-2 items-center relative">
-																<div class="img-project-db border-2 border-green-500 ">
-																	<img src="{{ bandEvent.band.logo }}" alt="">
-																</div>
-																<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
-																	✓
-																</div>
-																<div>
-																	<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
-																	<p>{{ bandEvent.band.musicCategory.category }}
-																		/
-																		{{ bandEvent.band.defineStyle }}</p>
-																</div>
-															</div>
-														</div>
-														<div class="open">
-															{% for member in bandEvent.band.bandMembers %}
-																<div class="flex justify-between list-member-event">
-																	<div class="flex">
-																		<div class="img-profil-event border-2 border-slate-500">
-																			<img src="{{ member.profil.picture }}" alt="" class="w-5">
-
-																		</div>
-																		<p>{{ member.profil.pseudo }}
-																		</p>
-																	</div>
-																	<p>{{ member.role.roleName }}</p>
-																</div>
-															{% endfor %}
-														</div>
-													</div>
-													<hr>
-												{% endif %}
-											{% endfor %}
-										</div>
-									</div>
-								{% endif %}
-							{% endfor %}
 						</div>
 					</div>
 				</div>
@@ -252,6 +253,7 @@
 {% for event in eventCome %}
 {
 date: '{{ event.date|date('Y-m-d') }}',
+statusDate: '{{ event.status }}',
 bands: [{% for bandEvent in event.bandEvents %}
 	{
 name: '{{ bandEvent.band.name }}',
@@ -341,14 +343,17 @@ return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && e
 });
 
 // Add event styling if there are events
-if (eventsOnDay.length > 0) {
-dayElement.classList.add('event-day'); // Add class for event styling
-dayElement.addEventListener('click', () => openEventModal(`${currentYear}-${
-currentMonth + 1
-}-${day}`));
+if (eventsOnDay.length > 0 && eventsOnDay.every(event => event.statusDate !== "2")) {
+    if(eventsOnDay.every(event => event.statusDate == "1")){
+        dayElement.classList.add('event-day-valid');
+    } else {
+        dayElement.classList.add('event-day');
+    }
+    dayElement.addEventListener('click', () => openEventModal(`${currentYear}-${currentMonth + 1}-${day}`));
 }
 calendar.appendChild(dayElement);
 }
+
 
 // Fill in the remaining days of the grid with the next month
 const remainingDays = 35 - startPosition - daysInMonth; // 42 is the maximum number of days in a grid
@@ -408,31 +413,37 @@ const groupedEvents = {};
 // Bouclez sur les événements pour les regrouper par date
 eventsOnSelectedDate.forEach(eventDetails => {
 if (! groupedEvents[eventDetails.date]) {
-groupedEvents[eventDetails.date] = [];
+groupedEvents[eventDetails.date] = {
+      statusDate: eventDetails.statusDate,
+      bands: [],
+    };
 }
 // Utilisez eventDetails.bands comme un tableau d'objets pour chaque groupe
 eventDetails.bands.forEach(band => {
-groupedEvents[eventDetails.date].push({
+groupedEvents[eventDetails.date].bands.push({
 name: band.name,
 logo: band.logo,
 music: band.music,
 style: band.style,
 status: band.status,
-// Ajoutez d'autres détails de groupe ici si nécessaire
 });
 });
 });
+console.log(groupedEvents);
 
 // Bouclez sur les groupes regroupés et ajoutez-les à la modale
-for (const [date, bands] of Object.entries(groupedEvents)) {
-modalContent.innerHTML += `
-<div class="flex justify-between item-align bg-slate-500 relative rounded-t-md text-white p-2 ">
-<p> ${formatDate(date)}</p>
-<div class="close ml-3 px-1 font-bold bg-slate-700 rounded-full " onclick="closeModal()">&times;</div>
-</div>
-`
-;
-bands.forEach(band => {
+for (const [date, dateDetails] of Object.entries(groupedEvents)) {
+  const { statusDate, bands } = dateDetails;
+
+if(statusDate == "1"){
+	modalContent.innerHTML += `
+	<div class="flex justify-between item-align bg-green-500 relative rounded-t-md text-white p-2 ">
+	<p> ${formatDate(date)}</p>
+	<div class="close ml-3 px-1 font-bold bg-green-700 rounded-full " onclick="closeModal()">&times;</div>
+	</div>
+	`
+	;
+	bands.forEach(band => {
 if (band.status == "validate") {
 modalContent.innerHTML += `
     <div class="flex justify-between items-center">
@@ -469,6 +480,34 @@ modalContent.innerHTML += `
 `;
 }
 });
+} else {
+	modalContent.innerHTML += `
+	<div class="flex justify-between item-align bg-slate-500 relative rounded-t-md text-white p-2 ">
+	<p> ${formatDate(date)}</p>
+	<div class="close ml-3 px-1 font-bold bg-slate-700 rounded-full " onclick="closeModal()">&times;</div>
+	</div>
+	`
+	;
+
+	bands.forEach(band => {
+if (band.status == "validate") {
+modalContent.innerHTML += `
+    <div class="flex justify-between items-center">
+        <div class="flex p-2 items-center relative">
+            <div class="img-project-db border-2 border-slate-500 ">
+				<img src="${band.logo}" alt="">
+			</div>
+			
+            <div>
+                <p class="text-blue-400 font-semibold">${band.name}</p>
+                <p>${band.music}/${band.style}</p>
+            </div>
+        </div>
+    </div>
+`;
+}})
+}
+
 }
 
 // Affichez la modale

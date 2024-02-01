@@ -10,7 +10,6 @@ use App\Entity\ChatRoom;
 use App\Form\ProfilType;
 use App\Entity\BandMember;
 use App\Entity\HallMember;
-use App\Entity\Notification;
 use Doctrine\ORM\Mapping\Id;
 use App\Security\EmailVerifier;
 use Aws\Credentials\Credentials;
@@ -121,9 +120,16 @@ class ProfilController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/notification', name: 'app_profil_notification', methods: ['GET'])]
-    public function notification(Profil $profil, ProfilRepository $profilRepository, BandMemberRepository $bandMemberRepository): Response
+    #[Route('/{id}/notification', name: 'app_profil_notification', methods: ['GET', 'POST'])]
+    public function notification(Profil $profil, EntityManagerInterface $em, Request $request, NotificationRepository $notificationRepository): Response
     {
+
+        if ($request->isMethod('POST')) {
+            $idNotif = $request->request->get('id_notif');
+            $notification = $notificationRepository->find((int)$idNotif);
+            $em->remove($notification);
+            $em->flush();
+        }
 
         return $this->render('profil/notification.html.twig', [
             'profil' => $profil,

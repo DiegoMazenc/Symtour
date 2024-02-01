@@ -5,7 +5,7 @@
 
 {% block body %}
 
-	<div class="user-contain   px-28 py-5 bg bg-slate-100">
+	<div class="user-contain px-5 lg:px-28 py-5 bg bg-slate-100">
 		<div class="header-user flex justify-evenly">
 			<div class="pic_profil">
 				<img src="{{ band.logo }}" alt="" class="user-img">
@@ -26,7 +26,7 @@
 			<div class="my-3">
 				<div class="lg:flex lg:relative">
 					<div class=" calendar bg-slate-700  text-white p-5 rounded-md lg:mr-3 mb-3 lg:mb-0">
-						<div class="flex justify-between">
+						<div class="flex justify-between pb-3">
 							<button id="prevMonth" class="arrow-left text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10094;</button>
 							<div id="monthYearHeader"></div>
 							<button id="nextMonth" class="arrow-right text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10095;</button>
@@ -48,7 +48,7 @@
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes dernières demandes
 						</h4>
 						<div class="p-3">
-							{% for bandEvent in band.bandEvents|reverse|slice(0, 5) %}
+							{% for bandEvent in band.bandEvents|reverse|slice(0, 4) %}
 								<div class="cardAdminProfil flex justify-between ">
 									<p>{{ bandEvent.event.date|date('d-m-Y')  }}</p>
 									<a href="{{ path('app_hall_show', {'id': bandEvent.event.hall.id}) }}">{{ bandEvent.event.hall.name }}</a>

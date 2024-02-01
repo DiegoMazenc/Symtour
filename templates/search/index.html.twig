@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 
-	<div class="user-contain   px-28 py-5 bg bg-slate-100">
+	<div class="user-contain px-5 lg:px-28 py-5 bg bg-slate-100">
 		{{ form_start(searchForm) }}
 		<div class="relative">
 			{{ form_widget(searchForm.search, {
@@ -82,8 +82,6 @@
 
 									{% if isMusicAccepted %}
 										{% set bandName = bandMember.band.name %}
-
-										{# Vérifie si le groupe n'a pas déjà été affiché #}
 										{% if bandName not in displayedBands %}
 											<p class="text-green-500 mr-4">{{ bandName }}
 												✓</p>
