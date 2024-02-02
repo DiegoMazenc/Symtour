@@ -29,10 +29,9 @@
 						<div id="calendrier"></div>
 						{# <div id="calendar-holder"></div> #}
 					</div>
-					
 
-					
-					<div id="eventModal" class="modal  bg-white rounded-md shadow-md lg:absolute" >
+
+					<div id="eventModal" class="modal  bg-white rounded-md shadow-md lg:absolute">
 						<div class="modal-content"></div>
 					</div>
 					<div class="event-list-db bg-white rounded-md shadow-md w-full mt-3 lg:mt-0">
@@ -106,7 +105,7 @@
 										<div class="card-event-db bg-white ">
 
 											<div class="flex bg-slate-500 text-white p-2  items-center">
-												<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 	24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.	05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.	825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.	588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+												<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
 												<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
 											</div>
 											<div class="plateau">
@@ -162,41 +161,41 @@
 						<div class=" flex justify-between">
 							{% for events in eventPast|slice(0, 1) %}
 
-									{% if events.status == 1 %}
+								{% if events.status == 1 %}
 
-										<div class="card-event-db ">
+									<div class="card-event-db ">
 
-											<div class="flex bg-slate-500 text-white p-2  items-center">
-												<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 	24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.	05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.	825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.	588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
-												<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
-											</div>
-											<div class="plateau">
-												{% for bandEvent in events.bandEvents|slice(0, 3) %}
-													{% if bandEvent.status == "validate" %}
+										<div class="flex bg-slate-500 text-white p-2  items-center">
+											<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+											<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+										</div>
+										<div class="plateau">
+											{% for bandEvent in events.bandEvents|slice(0, 3) %}
+												{% if bandEvent.status == "validate" %}
 
-														<div class="clic">
-															<div class=" flex justify-between items-center">
-																<div class="flex p-2 items-center relative">
-																	<div class="img-project-db border-2 border-slate-500 ">
-																		<img src="{{ bandEvent.band.logo }}" alt="">
-																	</div>
+													<div class="clic">
+														<div class=" flex justify-between items-center">
+															<div class="flex p-2 items-center relative">
+																<div class="img-project-db border-2 border-slate-500 ">
+																	<img src="{{ bandEvent.band.logo }}" alt="">
+																</div>
 
-																	<div>
-																		<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
-																		<p>{{ bandEvent.band.musicCategory.category }}
-																			/
-																			{{ bandEvent.band.defineStyle }}</p>
-																	</div>
+																<div>
+																	<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+																	<p>{{ bandEvent.band.musicCategory.category }}
+																		/
+																		{{ bandEvent.band.defineStyle }}</p>
 																</div>
 															</div>
 														</div>
-														<hr>
-													{% endif %}
-												{% endfor %}
-											</div>
+													</div>
+													<hr>
+												{% endif %}
+											{% endfor %}
 										</div>
-									{% endif %}
-								{% endfor %}
+									</div>
+								{% endif %}
+							{% endfor %}
 						</div>
 					</div>
 				</div>
@@ -233,11 +232,11 @@
 	<script>
 		const events = [
 {% for event in eventCome %}
+{% if event.status != 2 %}
 {
 date: '{{ event.date|date('Y-m-d') }}',
 statusDate: '{{ event.status }}',
-bands: [{% for bandEvent in event.bandEvents %}
-	{
+bands: [{% for bandEvent in event.bandEvents %}{
 name: '{{ bandEvent.band.name }}',
 logo: '{{ bandEvent.band.logo }}',
 music: '{{ bandEvent.band.musicCategory.category }}',
@@ -245,7 +244,9 @@ style: '{{ bandEvent.band.defineStyle }}',
 status: '{{ bandEvent.status }}',
 // Ajoutez d'autres propriétés de la bande ici si nécessaire
 },{% endfor %}]
-},{% endfor %}
+},
+{% endif %}
+{% endfor %}
 // Ajoutez d'autres événements au besoin
 ];
 
@@ -304,7 +305,7 @@ let startPosition = (firstDayOfMonth - 1 + 7) % 7;
 // Fill in the days of the previous month
 for (let day = daysInPreviousMonth - startPosition + 1; day <= daysInPreviousMonth; day++) {
 const dayElement = document.createElement('div');
-dayElement.className = 'day previous-month-day'; // Add a class to style differently
+dayElement.className = 'day other-month-day'; // Add a class to style differently
 dayElement.textContent = day;
 calendar.appendChild(dayElement);
 }
@@ -325,23 +326,27 @@ return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && e
 });
 
 // Add event styling if there are events
-if (eventsOnDay.length > 0 && eventsOnDay.every(event => event.statusDate !== "2")) {
-    if(eventsOnDay.every(event => event.statusDate == "1")){
-        dayElement.classList.add('event-day-valid');
-    } else if (eventsOnDay.every(event => event.statusDate == "3")) {
-        dayElement.classList.add('event-day');
-    }
-    dayElement.addEventListener('click', () => openEventModal(`${currentYear}-${currentMonth + 1}-${day}`));
+if (eventsOnDay.length > 0 ) {
+if (eventsOnDay.every(event => event.statusDate == "1")) {
+dayElement.classList.add('event-day-valid');
+} else if (eventsOnDay.every(event => event.statusDate == "3")) {
+dayElement.classList.add('event-day');
+}
+dayElement.addEventListener('click', () => openEventModal(`${currentYear}-${
+currentMonth + 1
+}-${day}`));
 }
 calendar.appendChild(dayElement);
 }
+
+// console.log(eventsOnDay);
 
 
 // Fill in the remaining days of the grid with the next month
 const remainingDays = 35 - startPosition - daysInMonth; // 42 is the maximum number of days in a grid
 for (let day = 1; day <= remainingDays; day++) {
 const dayElement = document.createElement('div');
-dayElement.className = 'day next-month-day'; // Add a class to style differently
+dayElement.className = 'day other-month-day'; // Add a class to style differently
 dayElement.textContent = day;
 calendar.appendChild(dayElement);
 }
@@ -396,9 +401,9 @@ const groupedEvents = {};
 eventsOnSelectedDate.forEach(eventDetails => {
 if (! groupedEvents[eventDetails.date]) {
 groupedEvents[eventDetails.date] = {
-      statusDate: eventDetails.statusDate,
-      bands: [],
-    };
+statusDate: eventDetails.statusDate,
+bands: []
+};
 }
 // Utilisez eventDetails.bands comme un tableau d'objets pour chaque groupe
 eventDetails.bands.forEach(band => {
@@ -407,7 +412,7 @@ name: band.name,
 logo: band.logo,
 music: band.music,
 style: band.style,
-status: band.status,
+status: band.status
 });
 });
 });
@@ -415,30 +420,39 @@ console.log(groupedEvents);
 
 // Bouclez sur les groupes regroupés et ajoutez-les à la modale
 for (const [date, dateDetails] of Object.entries(groupedEvents)) {
-  const { statusDate, bands } = dateDetails;
+const {statusDate, bands} = dateDetails;
 
-if(statusDate == "1"){
-	modalContent.innerHTML += `
+if (statusDate == "1") {
+modalContent.innerHTML += `
 	<div class="flex justify-between item-align bg-green-500 relative rounded-t-md text-white p-2 ">
-	<p> ${formatDate(date)}</p>
+	<p> ${
+formatDate(date)
+}</p>
 	<div class="close ml-3 px-1 font-bold bg-green-700 rounded-full " onclick="closeModal()">&times;</div>
 	</div>
-	`
-	;
-	bands.forEach(band => {
+	`;
+bands.forEach(band => {
 if (band.status == "validate") {
 modalContent.innerHTML += `
     <div class="flex justify-between items-center">
         <div class="flex p-2 items-center relative">
             <div class="img-project-db border-2 border-green-500 ">
-				<img src="${band.logo}" alt="">
+				<img src="${
+band.logo
+}" alt="">
 			</div>
 			<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
 				✓
 			</div>
             <div>
-                <p class="text-blue-400 font-semibold">${band.name}</p>
-                <p>${band.music}/${band.style}</p>
+                <p class="text-blue-400 font-semibold">${
+band.name
+}</p>
+                <p>${
+band.music
+}/${
+band.style
+}</p>
             </div>
         </div>
     </div>
@@ -448,14 +462,22 @@ modalContent.innerHTML += `
     <div class="flex justify-between items-center">
         <div class="flex p-2 items-center relative">
             <div class="img-project-db border-2 bg-slate-300">
-                <img src="${band.logo}" alt="">
+                <img src="${
+band.logo
+}" alt="">
             </div>
             <div class="bg-slate-300 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
                 ⧖
             </div>
             <div>
-                <p class="text-blue-400 font-semibold">${band.name}</p>
-                <p>${band.music}/${band.style}</p>
+                <p class="text-blue-400 font-semibold">${
+band.name
+}</p>
+                <p>${
+band.music
+}/${
+band.style
+}</p>
             </div>
         </div>
     </div>
@@ -463,31 +485,41 @@ modalContent.innerHTML += `
 }
 });
 } else {
-	modalContent.innerHTML += `
+modalContent.innerHTML += `
 	<div class="flex justify-between item-align bg-slate-500 relative rounded-t-md text-white p-2 ">
-	<p> ${formatDate(date)}</p>
+	<p> ${
+formatDate(date)
+}</p>
 	<div class="close ml-3 px-1 font-bold bg-slate-700 rounded-full " onclick="closeModal()">&times;</div>
 	</div>
-	`
-	;
+	`;
 
-	bands.forEach(band => {
+bands.forEach(band => {
 if (band.status == "validate") {
 modalContent.innerHTML += `
     <div class="flex justify-between items-center">
         <div class="flex p-2 items-center relative">
             <div class="img-project-db border-2 border-slate-500 ">
-				<img src="${band.logo}" alt="">
+				<img src="${
+band.logo
+}" alt="">
 			</div>
 			
             <div>
-                <p class="text-blue-400 font-semibold">${band.name}</p>
-                <p>${band.music}/${band.style}</p>
+                <p class="text-blue-400 font-semibold">${
+band.name
+}</p>
+                <p>${
+band.music
+}/${
+band.style
+}</p>
             </div>
         </div>
     </div>
 `;
-}})
+}
+})
 }
 
 }
@@ -500,9 +532,14 @@ console.error (`Aucun détail d'événement trouvé pour la date : ${date}`);
 }
 
 function formatDate(date) {
-    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-    const formattedDate = new Date(date).toLocaleDateString('fr-FR', options);
-    return formattedDate;
+const options = {
+weekday: 'long',
+day: 'numeric',
+month: 'long',
+year: 'numeric'
+};
+const formattedDate = new Date(date).toLocaleDateString('fr-FR', options);
+return formattedDate;
 }
 
 

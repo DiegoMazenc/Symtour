@@ -250,6 +250,7 @@ height: 24px;
     width: 100%;
     background-color: #f1f5f9;
     padding: 20px 7%;
+    overflow: hidden;
 
 }
 

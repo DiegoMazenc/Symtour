@@ -82,12 +82,12 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_hall_show', methods: ['GET', 'POST'])]
-    public function show(Hall $hall, BandRepository $bandRepository,EventRepository $eventRepository, Request $request, EntityManagerInterface $em, NotificationService $notification): Response
+    public function show(Hall $hall, BandRepository $bandRepository, EventRepository $eventRepository, Request $request, EntityManagerInterface $em, NotificationService $notification): Response
     {
         $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
         $eventPast = $eventRepository->getPastEventsByHall($hall);
 
-// dd($eventCome);
+        // dd($eventCome);
         $notification->isRead((int)$request->query->get('notification_id'));
         if ($request->isMethod('POST')) {
             $action = $request->request->get('action');
@@ -187,7 +187,7 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}/event', name: 'app_hall_event', methods: ['GET', 'POST'])]
-    public function event(Hall $hall, Request $request,NotificationService $notification, BandRepository $bandRepository, EventRepository $eventRepository, EntityManagerInterface $em): Response
+    public function event(Hall $hall, HallRepository $hallRepository, Request $request, NotificationService $notification, BandRepository $bandRepository, EventRepository $eventRepository, EntityManagerInterface $em): Response
     {
         $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
         $eventPast = $eventRepository->getPastEventsByHall($hall);
@@ -220,16 +220,15 @@ class HallController extends AbstractController
                 $em->flush();
 
                 $notification->addNotificationHallToBand("band", $hall->getName(), $band->getId(), "hall", $hall->getId(), "guest", $band, $em);
-                
-        return $this->redirectToRoute('app_hall_event', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
 
-            
-        }}
+                return $this->redirectToRoute('app_hall_event', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
+            }
+        }
 
 
         if ($request->isMethod('POST')) {
             $filter = $request->request->get('filter');
-        
+
             if ($filter == 'all') {
                 $filterEvent = "all";
             } elseif ($filter == 'valid') {
@@ -242,12 +241,29 @@ class HallController extends AbstractController
         if ($request->isMethod('POST') && $request->request->get('action')) {
             $action = $request->request->get('action');
             $eventId = $request->request->get('event_id');
+            $event = $em->getRepository(Event::class)->find($eventId);
+            $date = $request->request->get('date');
             $bandId = $request->request->get('bandId');
             $band = $bandRepository->find($bandId);
+            $hallEventId = $request->request->get('hallId');
+            $hallEvent = $hallRepository->find($hallEventId);
+
 
             if ($action === 'validate') {
                 $status = 1;
-
+                $eventCancel = $eventRepository->getCancelEventsByHallAndDate($hallEvent, $date, $event);
+                $bands = [];
+                foreach ($eventCancel as $eventUpdate) {
+                    $bandEvents = $eventUpdate->getBandEvents();
+                    foreach ($bandEvents as $bandEvent) {
+                        $bands[] = $bandEvent->getBand();
+                        foreach ($bands as $band) {
+                            $notification->addNotificationBand("band", $hall->getName(), $band->getId(), "hall", $hall->getId(), "response", $band, 2, $em);
+                        }
+                    }
+                    $eventUpdate->setStatus(2);
+                    $em->flush();
+                }
             } elseif ($action === 'reject') {
                 $status = 2;
             } else {
@@ -292,20 +308,19 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}/event-delete', name: 'app_hall_event_delete', methods: ['POST'])]
-    public function deleteEvent(Request $request,Hall $hall, BandEventRepository $bandEventRepository, EntityManagerInterface $entityManager): Response
+    public function deleteEvent(Request $request, Hall $hall, BandEventRepository $bandEventRepository, EntityManagerInterface $entityManager): Response
     {
         if ($request->isMethod('POST')) {
             $eventId = $request->request->get('idEvent');
-            
+
             $bandEvent = $bandEventRepository->find($eventId);
-    
+
             if ($bandEvent) {
                 $entityManager->remove($bandEvent);
                 $entityManager->flush();
             }
-    
         }
-        
+
 
         return $this->redirectToRoute('app_hall_event', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
     }

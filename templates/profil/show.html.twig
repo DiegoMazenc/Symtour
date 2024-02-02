@@ -6,7 +6,7 @@
 
 {% block body %}
 	{% if app.user.profil.id == app.request.attributes.get('id') and app.user.isVerified == 0 %}
-		<div class="user-contain py-5 px-20  bg bg-slate-100">
+		<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
 			{% for message in app.flashes('warning') %}
 				<div class="">
 					<p>{{ message }}</p>
@@ -16,13 +16,13 @@
 			<a href="{{ path("app_resend_confirmation_mail", {id: profil.id}) }}">cliquez ici pour renvoyer le mail de confirmation</a>
 		</div>
 	{% elseif app.user.profil.id == app.request.attributes.get('id') and app.user.isVerified == 1 and app.user.profil.pseudo == ''  %}
-		<div class="user-contain py-5 px-20  bg bg-slate-100">
+		<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
 
 			<p>Félicitation vous êtes bien inscrit, pour accéder aux services, merci de remplir vos informations</p>
 			<a href="/profil/{{ app.user.profil.id}}/edit">Je remplis mes informations</a>
 		</div>
 	{% else %}
-		<div class="user-contain py-5 px-20  bg bg-slate-100">
+		<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
 			<div class="header-user flex ">
 				<div class="pic_profil">
 					<img src="{{ profil.picture }}" alt="" class="user-img">
@@ -40,8 +40,8 @@
 					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Pages suivies</h4>
 				</div>
 			</div>
-			<div class="tab_project flex w-full justify-between">
-				<div class="my-10 w-full mr-3">
+			<div class="tab_project flex-responsive w-full justify-between">
+				<div class="my-10 w-flex">
 					<div class="bg-white rounded-md shadow-md w-full">
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes salles</h4>
 						{% set processedHalls = [] %}
@@ -111,9 +111,9 @@
 						</div>
 					</div>
 				</div>
-				<div class="my-10 w-full ml-3">
+				<div class="my-10 w-flex">
 					<div class="bg-white rounded-lg shadow-md  w-full  ">
-						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes projets</h4>
+						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes projets musicaux</h4>
 
 						{% set processedBands = [] %}
 

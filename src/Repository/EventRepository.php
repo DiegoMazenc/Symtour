@@ -36,7 +36,23 @@ class EventRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getCancelEventsByHallAndDate(Hall $hall, $date, $event)
+    {
+        $formattedDate = (new \DateTime($date))->format('Y-m-d');
+
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.hall = :hall')
+            ->andWhere('e.date = :date')
+            ->andWhere('e.id != :eId')
+            ->setParameter('hall', $hall)
+            ->setParameter('eId', $event->getId())
+            ->setParameter('date', $formattedDate)
+            ->orderBy('e.date', 'DESC')    
+            ->getQuery()
+            ->getResult();
     
+    }
 
     public function getComeEventsByHallAsc(Hall $hall)
     {

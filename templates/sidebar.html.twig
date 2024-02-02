@@ -31,10 +31,16 @@
 							{% endif %}
 						{% endfor %}
 						{% if counter > 0 %}
+						<div>
 							<div
-								class="bg-red-500 text-white px-1 rounded-full absolute text-xs left-5">
+								class="bg-red-500 text-white px-1 rounded-full absolute text-xs  left-5 animate-ping">
+								0
+							</div>
+							<div
+								class="bg-red-500 text-white px-1 rounded-full absolute text-xs left-5 ">
 								{{ counter }}
 							</div>
+						</div>
 						{% endif %}
 						{% if app.request.pathInfo matches '/^\\/profil\\/[0-9]+\\/notification/' %}
 							<div class="triangle"></div>
