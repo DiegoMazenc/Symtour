@@ -17,6 +17,7 @@ use Aws\S3\Exception\S3Exception;
 use App\Repository\BandRepository;
 use App\Repository\ChatRepository;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Repository\ProfilRepository;
 use App\Service\NotificationService;
 use App\Repository\ChatRoomRepository;
@@ -28,9 +29,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 #[Route('/profil')]
 class ProfilController extends AbstractController
@@ -121,9 +124,13 @@ class ProfilController extends AbstractController
     }
 
     #[Route('/{id}/notification', name: 'app_profil_notification', methods: ['GET', 'POST'])]
-    public function notification(Profil $profil, EntityManagerInterface $em, Request $request, NotificationRepository $notificationRepository): Response
+    public function notification(Profil $profil, EntityManagerInterface $em, Request $request, NotificationRepository $notificationRepository, TokenInterface $token): Response
     {
+        if(!$this->isGranted('profil_edit', $profil)){
+            $user = $token->getUser();
+            return $this->redirectToRoute('app_profil_notification', ["id" => $user->getProfil()->getId()], Response::HTTP_SEE_OTHER);
 
+        };
         if ($request->isMethod('POST')) {
             $idNotif = $request->request->get('id_notif');
             $notification = $notificationRepository->find((int)$idNotif);
@@ -137,20 +144,20 @@ class ProfilController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/chat-room', name: 'app_profil_chat-room', methods: ['GET'])]
-    public function chatRoom(Profil $profil,ChatRoomRepository $chatRoomRepository): Response
-    {
-        $chatBand = $chatRoomRepository->chatRoomByProfilBand($profil);
+    // #[Route('/{id}/chat-room', name: 'app_profil_chat-room', methods: ['GET'])]
+    // public function chatRoom(Profil $profil,ChatRoomRepository $chatRoomRepository): Response
+    // {
+    //     $chatBand = $chatRoomRepository->chatRoomByProfilBand($profil);
 
-        $chatHall = $chatRoomRepository->chatRoomByProfilHall($profil);
-        // dd($chatHall, $chatBand);
+    //     $chatHall = $chatRoomRepository->chatRoomByProfilHall($profil);
+    //     // dd($chatHall, $chatBand);
 
-        return $this->render('profil/chatroom.html.twig', [
-            'chatHall' => $chatHall,
-            'chatBand' => $chatBand,
+    //     return $this->render('profil/chatroom.html.twig', [
+    //         'chatHall' => $chatHall,
+    //         'chatBand' => $chatBand,
 
-        ]);
-    }
+    //     ]);
+    // }
 
     // #[Route('/{id}/chat-room/{chatRoom}/chat', name: 'app_profil_chat', methods: ['GET', 'POST'])]
     // public function chat(Profil $profil,Chat $chat, ChatRoom $chatRoom, ChatRoomRepository $chatRoomRepository, ChatRepository $chatRepository): Response
@@ -164,10 +171,19 @@ class ProfilController extends AbstractController
     //     ]);
     // }
 
-
+    /**
+     *
+     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("POST_SHOW")
+     */
     #[Route('/{id}/edit', name: 'app_profil_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Profil $profil, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function edit(Request $request, Profil $profil,TokenInterface $token, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
+        if(!$this->isGranted('profil_edit', $profil)){
+            $user = $token->getUser();
+            return $this->redirectToRoute('app_profil_edit', ["id" => $user->getProfil()->getId()], Response::HTTP_SEE_OTHER);
+
+        };
         $form = $this->createForm(ProfilType::class, $profil);
         $form->handleRequest($request);
 

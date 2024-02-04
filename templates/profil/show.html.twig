@@ -105,27 +105,28 @@
 							{% endif %}
 
 						{% endfor %}
+						{% if is_granted('profil_edit', profil) %}
 						<div class="p-3">
 							<a href="{{ path('app_hall_new') }}" class="text-slate-400 hover:text-blue-500 ">
 								<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Créer une nouvelle salle</a>
 						</div>
+						{% endif %}
 					</div>
 				</div>
 				<div class="my-10 w-flex">
 					<div class="bg-white rounded-lg shadow-md  w-full  ">
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes projets musicaux</h4>
 
-						{% set processedBands = [] %}
 
 						{% for bandMember in profil.bandMembers %}
-							{% if bandMember.status != "reject" and bandMember.band.id not in processedBands %}
-								{% set processedBands = processedBands|merge([bandMember.band.id]) %}
+							{% if bandMember.status == "member" or bandMember.status == "admin" %}
 								<a href="/band/{{ bandMember.band.id }}">
 									<div class="flex justify-between p-3 hover:bg-slate-100 items-center">
 										<div class="flex relative">
 											<div class="img-project-db">
 												<img src="{{ bandMember.band.logo}}" alt="">
 											</div>
+											{% if is_granted('profil_edit', profil) %}
 											{% set counter = 0 %}
 											{% for notification in app.user.profil.notifications %}
 												{% if notification.status == 1 and notification.receiptId == bandMember.band.id %}
@@ -137,9 +138,13 @@
 													{{ counter }}
 												</div>
 											{% endif %}
+											{% endif %}
+
 											<div class="ml-3">
 												<p class="text-blue-400 font-semibold">{{ bandMember.band.name}}</p>
-												<p>{{ bandMember.role.roleName}}</p>
+												{% for BandMemberRole in bandMember.BandMemberRoles %}
+													<p>{{ BandMemberRole.roleBand.roleName}}</p>
+												{% endfor %}
 											</div>
 										</div>
 
@@ -171,7 +176,7 @@
 							{% endif %}
 						{% endfor %}
 						{% for bandMember in profil.bandMembers %}
-							{% if bandMember.status == "guest" %}
+							{% if bandMember.status == "guest" and is_granted('profil_edit', profil)%}
 								<a href="/band/{{ bandMember.band.id }}">
 									<div class="flex justify-between p-3 hover:bg-slate-100 items-center">
 										<div class="flex relative">
@@ -190,8 +195,10 @@
 												</div>
 											{% endif %}
 											<div class="ml-3">
-												<p class="text-blue-400 font-semibold">{{ bandMember.band.name}}</p>
-												<p>{{ bandMember.role.roleName}}</p>
+												<p class="text-blue-400 font-semibold">{{ bandMember.band.name}} vous invite à les rejoindres</p>
+												{% for BandMemberRole in bandMember.BandMemberRoles %}
+													<p>{{ BandMemberRole.roleBand.roleName}}</p>
+												{% endfor %}
 											</div>
 										</div>
 										<div>
@@ -213,11 +220,13 @@
 								<hr>
 							{% endif %}
 						{% endfor %}
-						<div class="p-3">
-							<a href="{{ path('app_band_new') }}" class="text-slate-400 hover:text-blue-500 p-3">
-								<span class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</span>Créer un nouveau groupe
-							</a>
-						</div>
+						{% if is_granted('profil_edit', profil) %}
+							<div class="p-3">
+								<a href="{{ path('app_band_new') }}" class="text-slate-400 hover:text-blue-500 p-3">
+									<span class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</span>Créer un nouveau groupe
+								</a>
+							</div>
+						{% endif %}
 					</div>
 				</div>
 			</div>

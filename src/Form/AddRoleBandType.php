@@ -17,7 +17,7 @@ class AddRoleBandType extends AbstractType
                 'required' => true,
 
             ])
-            ->add('profil', null, [
+            ->add('profilFind', null, [
                 'required' => true,
 
             ])

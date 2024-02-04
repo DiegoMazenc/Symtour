@@ -27,6 +27,14 @@ class BandMember
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
 
+    #[ORM\OneToMany(mappedBy: 'band_member', targetEntity: BandMemberRole::class)]
+    private Collection $bandMemberRoles;
+
+    public function __construct()
+    {
+        $this->bandMemberRoles = new ArrayCollection();
+    }
+
 
    
 
@@ -80,6 +88,36 @@ class BandMember
     public function setStatus(?string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BandMemberRole>
+     */
+    public function getBandMemberRoles(): Collection
+    {
+        return $this->bandMemberRoles;
+    }
+
+    public function addBandMemberRole(BandMemberRole $bandMemberRole): static
+    {
+        if (!$this->bandMemberRoles->contains($bandMemberRole)) {
+            $this->bandMemberRoles->add($bandMemberRole);
+            $bandMemberRole->setBandMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBandMemberRole(BandMemberRole $bandMemberRole): static
+    {
+        if ($this->bandMemberRoles->removeElement($bandMemberRole)) {
+            // set the owning side to null (unless already changed)
+            if ($bandMemberRole->getBandMember() === $this) {
+                $bandMemberRole->setBandMember(null);
+            }
+        }
 
         return $this;
     }

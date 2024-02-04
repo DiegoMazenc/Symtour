@@ -86,17 +86,23 @@
 											</div>
 											<div class="openBand">
 												{% for member in bandEvent.band.bandMembers %}
-													<div class="flex justify-between list-member-event">
-														<div class="flex">
-															<div class="img-profil-event border-2 border-slate-500">
-																<img src="{{ member.profil.picture }}" alt="" class="w-5">
+													{% if member.status == "admin" or member.status == "member" %}
+														<div class="flex justify-between list-member-event">
+															<div class="flex">
+																<div class="img-profil-event border-2 border-slate-500">
+																	<img src="{{ member.profil.picture }}" alt="" class="w-5">
 
+																</div>
+																<p>{{ member.profil.pseudo }}
+																</p>
 															</div>
-															<p>{{ member.profil.pseudo }}
-															</p>
+															<div class="flex">
+																{% for bandMemberRole in member.bandMemberRoles %}
+																	<p class="ml-3">{{ bandMemberRole.roleBand.roleName|capitalize }}</p>
+																{% endfor %}
+															</div>
 														</div>
-														<p>{{ member.role.roleName }}</p>
-													</div>
+													{% endif %}
 												{% endfor %}
 											</div>
 										</div>
@@ -147,17 +153,24 @@
 													</div>
 													<div class="openBand">
 														{% for member in bandEvent.band.bandMembers %}
-															<div class="flex justify-between list-member-event">
-																<div class="flex">
-																	<div class="img-profil-event border-2 border-slate-500">
-																		<img src="{{ member.profil.picture }}" alt="" class="w-5">
+															{% if member.status == "admin" or member.status == "member" %}
 
+																<div class="flex justify-between list-member-event">
+																	<div class="flex">
+																		<div class="img-profil-event border-2 border-slate-500">
+																			<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
+																		</div>
+																		<p>{{ member.profil.pseudo }}
+																		</p>
 																	</div>
-																	<p>{{ member.profil.pseudo }}
-																	</p>
+																	<div class="flex">
+																		{% for bandMemberRole in member.bandMemberRoles %}
+																			<p class="ml-3">{{ bandMemberRole.roleBand.roleName|capitalize }}</p>
+																		{% endfor %}
+																	</div>
 																</div>
-																<p>{{ member.role.roleName }}</p>
-															</div>
+															{% endif %}
 														{% endfor %}
 													</div>
 												</div>
@@ -207,17 +220,24 @@
 													</div>
 													<div class="openBand">
 														{% for member in band.bandMembers %}
-															<div class="flex justify-between list-member-event">
-																<div class="flex">
-																	<div class="img-profil-event border-2 border-slate-500">
-																		<img src="{{ member.profil.picture }}" alt="" class="w-5">
+															{% if member.status == "admin" or member.status == "member" %}
 
+																<div class="flex justify-between list-member-event">
+																	<div class="flex">
+																		<div class="img-profil-event border-2 border-slate-500">
+																			<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
+																		</div>
+																		<p>{{ member.profil.pseudo }}
+																		</p>
 																	</div>
-																	<p>{{ member.profil.pseudo }}
-																	</p>
+																	<div class="flex">
+																		{% for bandMemberRole in member.bandMemberRoles %}
+																			<p class="ml-3">{{ bandMemberRole.roleBand.roleName|capitalize }}</p>
+																		{% endfor %}
+																	</div>
 																</div>
-																<p>{{ member.role.roleName }}</p>
-															</div>
+															{% endif %}
 														{% endfor %}
 													</div>
 												</div>
@@ -273,15 +293,22 @@
 												</div>
 												<div class="openBand">
 													{% for member in bandEvent.band.bandMembers %}
-														<div class="flex justify-between list-member-event">
-															<div class="flex">
-																<div class="img-profil-event border-2 border-slate-500">
-																	<img src="{{ member.profil.picture }}" alt="" class="w-5">
+														{% if member.status == "admin" or member.status == "member" %}
+
+															<div class="flex justify-between list-member-event">
+																<div class="flex">
+																	<div class="img-profil-event border-2 border-slate-500">
+																		<img src="{{ member.profil.picture }}" alt="" class="w-5">
+																	</div>
+																	<p>{{ member.profil.pseudo }}</p>
 																</div>
-																<p>{{ member.profil.pseudo }}</p>
+																<div class="flex">
+																	{% for bandMemberRole in member.bandMemberRoles %}
+																	<p class="ml-3">{{ bandMemberRole.roleBand.roleName|capitalize }}</p>
+																	{% endfor %}
+																</div>
 															</div>
-															<p>{{ member.role.roleName }}</p>
-														</div>
+														{% endif %}
 													{% endfor %}
 												</div>
 											</div>

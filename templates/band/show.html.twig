@@ -212,22 +212,35 @@
 				</div>
 			</div>
 			<div class="my-10">
-
-				<h4>Membres</h4>
+				<div class="flex justify-between item-align bg-slate-700 relative rounded-t-md">
+					<h4 class=" text-white p-2 ">Membres</h4>				
+				</div>
 				<div class="bg-white rounded-lg shadow-md p-3">
+				
 
 					{% for member in band.bandMembers %}
+					{% if member.status == "admin" or member.status == "member" %}
 						<div class="cardAdminProfil flex justify-between ">
-							{# <p>{{ bandMember.band.logo}}</p> #}
-							{# <p>{{ member.profil.id }}</p> #}
-								<p>
-							{{ member.role.roleName}}
-							</p>
-								<p>
-							{{ member.profil.pseudo}}
-						</p>
+							<div class="flex items-center">
+									<div class="img-member-db">
+										<img src="{{ member.profil.picture }}" alt="">
+									</div>
+									<div>
+										<a href="{{ path('app_profil_show', {'id': member.profil.id}) }}" class="text-blue-400 font-semibold">{{ member.profil.pseudo}}
+											{% if member.status == "admin" %}
+												(Admin)
+											{% endif %}
+										</a>
+										{% for bandMemberRole in member.bandMemberRoles %}
+											
+										<p>{{ bandMemberRole.roleBand.roleName|capitalize}}</p>
+										{% endfor %}
+									</div>
+								</div>
 						</div>
-					<hr class="my-3"> {% endfor %}
+					<hr class="my-3"> 
+					{% endif %}
+					{% endfor %}
 					<a href="{{ path('app_band_new') }}" class="text-slate-400 hover:text-blue-500 ">
 						<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Ajouter un nouveau membre</a>
 				</div>

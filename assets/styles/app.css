@@ -92,7 +92,7 @@ padding: 15px;
     cursor: pointer;
 }
 
-.openBand {
+.openBand, .openMember, .openRole {
     display: none;
 }
 

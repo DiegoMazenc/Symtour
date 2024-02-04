@@ -10,6 +10,7 @@ use App\Entity\BandInfo;
 use App\Entity\RoleBand;
 use App\Entity\BandEvent;
 use App\Entity\BandMember;
+use App\Entity\BandMemberRole;
 use App\Form\BandMemberType;
 use App\Form\SearchFormType;
 use App\Form\AddRoleBandType;
@@ -20,6 +21,8 @@ use App\Repository\ProfilRepository;
 use App\Service\NotificationService;
 use App\Repository\RoleBandRepository;
 use App\Repository\BandEventRepository;
+use App\Repository\BandMemberRepository;
+use App\Repository\BandMemberRoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -78,10 +81,15 @@ class BandController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_band_show', methods: ['GET','POST'])]
-    public function show(Band $band,EntityManagerInterface $em,EventRepository $eventRepository
-     , Request $request,HallRepository $hallRepository, NotificationService $notification): Response
-    {
+    #[Route('/{id}', name: 'app_band_show', methods: ['GET', 'POST'])]
+    public function show(
+        Band $band,
+        EntityManagerInterface $em,
+        EventRepository $eventRepository,
+        Request $request,
+        HallRepository $hallRepository,
+        NotificationService $notification
+    ): Response {
         $eventCome = $eventRepository->getComeEventsByBand($band);
         $eventPast = $eventRepository->getPastEventsByBand($band);
         $notification->isRead((int)$request->query->get('notification_id'));
@@ -94,9 +102,9 @@ class BandController extends AbstractController
 
             if ($action === 'validate') {
                 $status = "validate";
-            } else  {
+            } else {
                 $status = "reject";
-            } 
+            }
 
             $bandEvent = $em->getRepository(BandEvent::class)->find($eventId);
             if ($bandEvent) {
@@ -115,8 +123,16 @@ class BandController extends AbstractController
 
     #[Route('/{id}/members', name: 'app_band_members', methods: ['GET', 'POST'])]
     public function bandMembers(
-       NotificationService $notification, Band $band, RoleBandRepository $roleBandRepository, Request $request, ProfilRepository $profilRepository, EntityManagerInterface $em, BandRepository $bandRepository): Response
-    {
+        NotificationService $notification,
+        Band $band,
+        RoleBandRepository $roleBandRepository,
+        Request $request,
+        ProfilRepository $profilRepository,
+        EntityManagerInterface $em,
+        BandMemberRepository $bandMemberRepository,
+        BandMemberRoleRepository $bandMemberRoleRepository,
+        BandRepository $bandRepository
+    ): Response {
         $notification->isRead((int)$request->query->get('notification_id'));
 
         $roles = $roleBandRepository->findAll();
@@ -124,6 +140,7 @@ class BandController extends AbstractController
         $searchForm = $this->createForm(SearchFormType::class);
         $searchForm->handleRequest($request);
         $profil = '';
+
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
             $searchData = $searchForm->getData();
             $profil = $profilRepository->findBySearch($searchForm->isSubmitted() && $searchForm->isValid() ? $searchData['search'] : null);
@@ -150,8 +167,58 @@ class BandController extends AbstractController
             $em->persist($bandMember);
             $em->flush();
 
+            $notification->addNotificationProfil("profil", $bandName, $profilId, "band", $bandId, "add", $em);
+        }
 
-            $notification->addNotificationProfil("profil",$bandName, $profilId, "band", $bandId, "add", $em);
+        if ($request->isMethod('POST')) {
+            $member = $request->request->get('memberId');
+
+            foreach ($request->request->all() as $key => $value) {
+                if (strpos($key, 'role_') !== false) {
+                    $idRole = $value;
+                    $role = $roleBandRepository->find((int)$idRole);
+                    $idMemberRoleBand = $request->request->get("idMemberRoleBand_" . substr($key, 5));
+                    $MemberRoleBand = $bandMemberRoleRepository->find((int)$idMemberRoleBand);
+
+                    if ($MemberRoleBand) {
+                        $MemberRoleBand->setRoleBand($role);
+                    }
+
+                }
+
+                if ($request->request->has("deleteRole_" . substr($key, 5))) {
+                    $idMemberRoleBandToDelete = $request->request->get("idMemberRoleBand_" . substr($key, 5));
+                    $memberRoleToDelete = $bandMemberRoleRepository->find((int)$idMemberRoleBandToDelete);
+
+                    if ($memberRoleToDelete) {
+                        $em->remove($memberRoleToDelete);
+                        $em->flush();
+                    }
+                }
+            }
+
+            $status = $request->request->get('status');
+            $bandMember = $bandMemberRepository->find((int)$member);
+
+            if ($bandMember) {
+                $bandMember->setStatus($status);
+                $em->persist($bandMember);
+                $em->flush();
+            }
+
+            $newRole = $request->request->get('newRole');
+            $role = $roleBandRepository->find((int)$newRole);
+
+            if ($newRole != "1") {
+                $newMemberRoleBand = new BandMemberRole;
+
+                $newMemberRoleBand
+                    ->setBandMember($bandMember)
+                    ->setRoleBand($role);
+
+                $em->persist($newMemberRoleBand);
+                $em->flush();
+            }
         }
 
         return $this->render('band/members.html.twig', [
@@ -160,14 +227,14 @@ class BandController extends AbstractController
             'addRoleBand' => $addRoleBand->createView(),
             'profil' => $profil,
             'roles' => $roles
-
         ]);
     }
 
-    
+
+
     #[Route('/{id}/event', name: 'app_band_event', methods: ['GET', 'POST'])]
-    public function event(Band $band, Request $request,NotificationService $notification,HallRepository
-     $hallRepository, BandRepository $bandRepository, EventRepository $eventRepository, EntityManagerInterface $em): Response
+    public function event(Band $band, Request $request, NotificationService $notification, HallRepository
+    $hallRepository, BandRepository $bandRepository, EventRepository $eventRepository, EntityManagerInterface $em): Response
     {
         $eventCome = $eventRepository->getComeEventsByBand($band);
         $eventPast = $eventRepository->getPastEventsByBand($band);
@@ -184,30 +251,28 @@ class BandController extends AbstractController
                 $addBand = $request->request->get('addBand');
                 $dateAdd = $request->request->get('date');
                 $bandFind = $bandRepository->findBySearch($addBand);
-
             } elseif ($formName === 'inviteBandForm') {
 
                 $bandId = $request->request->get('bandId');
                 $bandGuest = $bandRepository->find($bandId);
                 $eventId = $request->request->get('eventId');
                 $event = $eventRepository->find($eventId);
-            
+
                 $bandEvent = new BandEvent();
-            
+
                 $bandEvent
                     ->setEvent($event)
                     ->setBand($bandGuest)
                     ->setStatus("guest");
-            
+
                 $em->persist($bandEvent);
                 $em->flush();
-            
-                $notification->addNotificationHallToBand("band", $band->getName(), $bandGuest->getId(), "band", $band->getId(), "guest", $band, $em);
-            
-                return $this->redirectToRoute('app_band_event', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
 
-            
-        }}
+                $notification->addNotificationHallToBand("band", $band->getName(), $bandGuest->getId(), "band", $band->getId(), "guest", $band, $em);
+
+                return $this->redirectToRoute('app_band_event', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
+            }
+        }
 
         if ($request->isMethod('POST') && $request->request->get('action')) {
             $action = $request->request->get('action');
@@ -217,27 +282,26 @@ class BandController extends AbstractController
             $hall = $hallRepository->find((int)$hallId);
 
             if ($action === 'cancel') {
-            $notification->addNotificationHall("hall", $band->getName(), $hall->getId(), "band", $band->getId(), $action, $hall, $em);
-            $bandEvent = $em->getRepository(BandEvent::class)->find($bandEventId);
-            if ($bandEvent) {
-                $em->remove($bandEvent);
-                $em->flush();
-            }
+                $notification->addNotificationHall("hall", $band->getName(), $hall->getId(), "band", $band->getId(), $action, $hall, $em);
+                $bandEvent = $em->getRepository(BandEvent::class)->find($bandEventId);
+                if ($bandEvent) {
+                    $em->remove($bandEvent);
+                    $em->flush();
+                }
 
-            $event = $em->getRepository(Event::class)->find($eventId);
-            if ($event) {
-                $em->remove($event);
-                $em->flush();
-            }else{
-                dd($event);
+                $event = $em->getRepository(Event::class)->find($eventId);
+                if ($event) {
+                    $em->remove($event);
+                    $em->flush();
+                } else {
+                    dd($event);
+                }
             }
-
-             }  
         }
 
         if ($request->isMethod('POST')) {
             $filter = $request->request->get('filter');
-        
+
             if ($filter == 'all') {
                 $filterEvent = "all";
             } elseif ($filter == 'valid') {
@@ -261,20 +325,19 @@ class BandController extends AbstractController
     }
 
     #[Route('/{id}/event-delete', name: 'app_band_event_delete', methods: ['POST'])]
-    public function deleteEvent(Request $request,Band $band, BandEventRepository $bandEventRepository, EntityManagerInterface $entityManager): Response
+    public function deleteEvent(Request $request, Band $band, BandEventRepository $bandEventRepository, EntityManagerInterface $entityManager): Response
     {
         if ($request->isMethod('POST')) {
             $eventId = $request->request->get('idEvent');
-            
+
             $bandEvent = $bandEventRepository->find($eventId);
-    
+
             if ($bandEvent) {
                 $entityManager->remove($bandEvent);
                 $entityManager->flush();
             }
-    
         }
-        
+
 
         return $this->redirectToRoute('app_band_event', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
     }
