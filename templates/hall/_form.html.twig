@@ -34,5 +34,11 @@
 {% endfor %}
 </div><br>
     {# {{ form_widget(form) }} #}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {% set isMember = false %}
+	{% for member in hall.hallMembers %}
+		{% if is_granted('hall_member_view', member)%}
+			{% set isMember = true %}
+		{% endif %}
+	{% endfor %}
+    <button class="rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5" {% if isMember %}  disabled {% endif %}>{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

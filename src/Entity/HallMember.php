@@ -19,9 +19,6 @@ class HallMember
     #[ORM\ManyToOne(inversedBy: 'hallMembers')]
     private ?Hall $hall = null;
 
-    #[ORM\ManyToOne]
-    private ?RoleHall $role = null;
-
     #[ORM\ManyToOne(inversedBy: 'hallMembers')]
     private ?Profil $profile = null;
 
@@ -31,11 +28,13 @@ class HallMember
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
 
+    #[ORM\OneToMany(mappedBy: 'hall_member', targetEntity: HallMemberRole::class)]
+    private Collection $hallMemberRoles;
 
-
-
-
-
+    public function __construct()
+    {
+        $this->hallMemberRoles = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -50,18 +49,6 @@ class HallMember
     public function setHall(?Hall $hall): static
     {
         $this->hall = $hall;
-
-        return $this;
-    }
-
-    public function getRole(): ?RoleHall
-    {
-        return $this->role;
-    }
-
-    public function setRole(?RoleHall $role): static
-    {
-        $this->role = $role;
 
         return $this;
     }
@@ -98,6 +85,36 @@ class HallMember
     public function setStatus(?string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HallMemberRole>
+     */
+    public function getHallMemberRoles(): Collection
+    {
+        return $this->hallMemberRoles;
+    }
+
+    public function addHallMemberRole(HallMemberRole $hallMemberRole): static
+    {
+        if (!$this->hallMemberRoles->contains($hallMemberRole)) {
+            $this->hallMemberRoles->add($hallMemberRole);
+            $hallMemberRole->setHallMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHallMemberRole(HallMemberRole $hallMemberRole): static
+    {
+        if ($this->hallMemberRoles->removeElement($hallMemberRole)) {
+            // set the owning side to null (unless already changed)
+            if ($hallMemberRole->getHallMember() === $this) {
+                $hallMemberRole->setHallMember(null);
+            }
+        }
 
         return $this;
     }

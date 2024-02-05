@@ -129,21 +129,7 @@
 																	</div>
 																</div>
 															</div>
-															<div class="openBand">
-																{% for member in bandEvent.band.bandMembers %}
-																	<div class=" flex justify-between list-member-event">
-																		<div class="flex">
-																			<div class="img-profil-event border-2 border-slate-500">
-																				<img src="{{ member.profil.picture }}" alt="" class="w-5">
-
-																			</div>
-																			<p>{{ member.profil.pseudo }}
-																			</p>
-																		</div>
-																		<p>{{ member.role.roleName }}</p>
-																	</div>
-																{% endfor %}
-															</div>
+															
 														</div>
 														<hr>
 													{% endif %}
@@ -213,7 +199,11 @@
 									</div>
 									<div>
 										<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">{{ member.profile.pseudo}}</a>
-										<p>{{ member.role.roleName}}</p>
+										<div class="flex">
+											{% for hallMemberRole in member.hallMemberRoles %}
+												<p>{{ hallMemberRole.roleHall.roleName}}</p>
+											{% endfor %}
+										</div>
 									</div>
 								</div>
 								<p>{{ member.dateCreate|date('d-m-Y')  }}</p>

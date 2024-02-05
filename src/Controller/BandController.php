@@ -61,7 +61,7 @@ class BandController extends AbstractController
 
             $bandMember->setBand($band)
                 ->setProfil($profil[0])
-                ->setRole($defaultRole);
+                ->setStatus("admin");
             $entityManager->persist($bandMember);
             $entityManager->flush();
 
@@ -71,6 +71,12 @@ class BandController extends AbstractController
             $entityManager->flush();
 
 
+            $bandMemberRole = new BandMemberRole();
+            $bandMemberRole
+                ->setBandMember($bandMember)
+                ->setRoleBand($defaultRole);
+            $entityManager->persist($bandMemberRole);
+            $entityManager->flush();
 
             return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
         }
@@ -161,10 +167,16 @@ class BandController extends AbstractController
             $bandMember = new BandMember();
             $bandMember
                 ->setBand($bandEntity)
-                ->setRole($roleEntity)
-                ->setProfil($profilEntity);
+                ->setProfil($profilEntity)
+                ->setStatus("guest");
 
             $em->persist($bandMember);
+
+            $bandMemberRole = new BandMemberRole();
+            $bandMemberRole->setBandMember($bandMember)
+                ->setRoleBand($roleEntity);
+            $em->persist($bandMemberRole);
+
             $em->flush();
 
             $notification->addNotificationProfil("profil", $bandName, $profilId, "band", $bandId, "add", $em);
@@ -183,7 +195,6 @@ class BandController extends AbstractController
                     if ($MemberRoleBand) {
                         $MemberRoleBand->setRoleBand($role);
                     }
-
                 }
 
                 if ($request->request->has("deleteRole_" . substr($key, 5))) {
@@ -201,9 +212,16 @@ class BandController extends AbstractController
             $bandMember = $bandMemberRepository->find((int)$member);
 
             if ($bandMember) {
-                $bandMember->setStatus($status);
-                $em->persist($bandMember);
-                $em->flush();
+                $band = $bandMember->getBand();
+                $countAdmin = $bandMemberRepository->countAdmin($band, 'admin');
+            
+                if ($status != "admin" && $countAdmin < 2) {
+                    $this->addFlash('denied', 'Vous devez élire un nouvel Admin !');
+                } else {
+                    $bandMember->setStatus($status);
+                    $em->persist($bandMember);
+                    $em->flush();
+                }
             }
 
             $newRole = $request->request->get('newRole');
@@ -218,6 +236,24 @@ class BandController extends AbstractController
 
                 $em->persist($newMemberRoleBand);
                 $em->flush();
+            }
+
+            if ($request->request->has("deleteMember")) {
+                $idMember = $request->request->get('idMember');
+                $member = $bandMemberRepository->find($idMember);
+
+                if ($member) {
+                    $bandMemberRoles = $bandMemberRoleRepository->findBy(['band_member' => $member]);
+
+                    foreach ($bandMemberRoles as $bandMemberRole) {
+                        $em->remove($bandMemberRole);
+                    }
+
+                    $em->flush();
+
+                    $em->remove($member);
+                    $em->flush();
+                }
             }
         }
 

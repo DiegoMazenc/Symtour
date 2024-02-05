@@ -22,7 +22,18 @@ class BandMemberRepository extends ServiceEntityRepository
         parent::__construct($registry, BandMember::class);
     }
 
-   
+    public function countAdmin($band): int
+   {
+    return count(
+        $this->createQueryBuilder('b')
+            ->andWhere('b.band = :band')
+            ->andWhere('b.status = :status')
+            ->setParameter('band', $band)
+            ->setParameter('status', "admin")
+            ->getQuery()
+            ->getResult()
+        );
+   }
 
 
     

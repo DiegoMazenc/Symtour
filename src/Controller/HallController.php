@@ -11,9 +11,11 @@ use App\Entity\ChatRoom;
 use App\Entity\HallInfo;
 use App\Entity\RoleHall;
 use App\Entity\BandEvent;
+use App\Entity\BandMember;
 use App\Entity\HallMember;
 use App\Form\SearchFormType;
 use App\Form\AddRoleHallType;
+use App\Entity\HallMemberRole;
 use App\Form\FilterSearchType;
 use App\Repository\BandRepository;
 use App\Repository\HallRepository;
@@ -22,6 +24,8 @@ use App\Repository\ProfilRepository;
 use App\Service\NotificationService;
 use App\Repository\RoleHallRepository;
 use App\Repository\BandEventRepository;
+use App\Repository\HallMemberRepository;
+use App\Repository\HallMemberRoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,13 +67,20 @@ class HallController extends AbstractController
 
             $hallMember->setHall($hall)
                 ->setProfile($profil[0])
-                ->setRole($defaultRole);
+                ->setStatus("admin");
             $entityManager->persist($hallMember);
             $entityManager->flush();
 
             $hallInfo = new HallInfo;
             $hallInfo->setHall($hall);
             $entityManager->persist($hallInfo);
+            $entityManager->flush();
+
+            $hallMemberRole = new HallMemberRole();
+            $hallMemberRole
+                ->setHallMember($hallMember)
+                ->setRoleHall($defaultRole);
+            $entityManager->persist($hallMemberRole);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_hall_info_edit', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
@@ -87,7 +98,6 @@ class HallController extends AbstractController
         $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
         $eventPast = $eventRepository->getPastEventsByHall($hall);
 
-        // dd($eventCome);
         $notification->isRead((int)$request->query->get('notification_id'));
         if ($request->isMethod('POST')) {
             $action = $request->request->get('action');
@@ -130,15 +140,32 @@ class HallController extends AbstractController
     #[Route('/{id}/members', name: 'app_hall_members', methods: ['GET', 'POST'])]
 
     public function bandMembers(
+        TokenInterface $token,
         NotificationService $notification,
         Hall $hall,
         RoleHallRepository $roleHallRepository,
         Request $request,
         ProfilRepository $profilRepository,
         EntityManagerInterface $em,
+        HallMemberRepository $hallMemberRepository,
+        HallMemberRoleRepository $hallMemberRoleRepository,
         HallRepository $hallRepository
     ): Response {
         $notification->isRead((int)$request->query->get('notification_id'));
+
+        $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
+        $canAccess = false;
+        
+        foreach ($allHallMembers as $hallMember) {
+            if ($this->isGranted('hall_member', $hallMember)) {
+                $canAccess = true;
+                break; 
+            }
+        }
+        
+        if (!$canAccess) {
+            return $this->redirectToRoute('app_hall_show', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
+        }
 
         $roles = $roleHallRepository->findAll();
 
@@ -166,14 +193,98 @@ class HallController extends AbstractController
 
             $hallMember
                 ->setHall($hallEntity)
-                ->setRole($roleEntity)
-                ->setProfile($profilEntity);
+                ->setProfile($profilEntity)
+                ->setStatus("guest");
+
 
             $em->persist($hallMember);
+
+            $hallMemberRole = new HallMemberRole();
+            $hallMemberRole->setHallMember($hallMember)
+            ->setRoleHall($roleEntity);
+            $em->persist($hallMemberRole);
+
             $em->flush();
 
 
             $notification->addNotificationProfil("profil", $hallName, $profilId, "hall", $hallId, "add", $em);
+        }
+
+        if ($request->isMethod('POST')) {
+            $member = $request->request->get('memberId');
+
+            foreach ($request->request->all() as $key => $value) {
+                if (strpos($key, 'role_') !== false) {
+                    $idRole = $value;
+                    $role = $roleHallRepository->find((int)$idRole);
+                    $idMemberRoleHall = $request->request->get("idMemberRoleHall_" . substr($key, 5));
+                    $MemberRoleHall = $hallMemberRoleRepository->find((int)$idMemberRoleHall);
+
+                    if ($MemberRoleHall) {
+                        $MemberRoleHall->setRoleHall($role);
+                    }
+
+                }
+
+                if ($request->request->has("deleteRole_" . substr($key, 5))) {
+                    $idMemberRoleHallToDelete = $request->request->get("idMemberRoleHall_" . substr($key, 5));
+                    $memberRoleToDelete = $hallMemberRoleRepository->find((int)$idMemberRoleHallToDelete);
+
+                    if ($memberRoleToDelete) {
+                        $em->remove($memberRoleToDelete);
+                        $em->flush();
+                    }
+                }
+            }
+
+            $status = $request->request->get('status');
+            $hallMember = $hallMemberRepository->find((int)$member);
+
+            if ($hallMember) {
+                $hall = $hallMember->getHall();
+                $countAdmin = $hallMemberRepository->countAdmin($hall, 'admin');
+            
+                if ($status != "admin" && $countAdmin < 2) {
+                    $this->addFlash('denied', 'Vous devez élire un nouvel Admin !');
+                } else {
+                    $hallMember->setStatus($status);
+                    $em->persist($hallMember);
+                    $em->flush();
+                }
+            }
+
+            $newRole = $request->request->get('newRole');
+            $role = $roleHallRepository->find((int)$newRole);
+
+            if ($newRole != "1") {
+                $newMemberRoleHall = new HallMemberRole;
+
+                $newMemberRoleHall
+                    ->setHallMember($hallMember)
+                    ->setRoleHall($role);
+
+                $em->persist($newMemberRoleHall);
+                $em->flush();
+            }
+
+            if ($request->request->has("deleteMember")) {
+                $idMember = $request->request->get('idMember');
+                $member = $hallMemberRepository->find($idMember);
+            
+                if ($member) {
+                    $hallMemberRoles = $hallMemberRoleRepository->findBy(['hall_member' => $member]);
+            
+                    foreach ($hallMemberRoles as $hallMemberRole) {
+                        $em->remove($hallMemberRole);
+                    }
+            
+                    $em->flush();
+            
+                    $em->remove($member);
+                    $em->flush();
+            
+                }
+            }
         }
 
         return $this->render('hall/members.html.twig', [
@@ -290,15 +401,29 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_hall_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Hall $hall, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Hall $hall,HallMemberRepository $hallMemberRepository, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(HallType::class, $hall);
         $form->handleRequest($request);
 
+        $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
+        $canAccess = false;
+        
+        foreach ($allHallMembers as $hallMember) {
+            if ($this->isGranted('hall_member', $hallMember)) {
+                $canAccess = true;
+                break; 
+            }
+        }
+
+        if (!$canAccess) {
+            return $this->redirectToRoute('app_hall_show', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_hall_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Vos informations sont bien enregistrées');
+            return $this->redirectToRoute('app_hall_edit', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('hall/edit.html.twig', [

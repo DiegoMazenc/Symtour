@@ -18,9 +18,6 @@ class BandMember
     #[ORM\ManyToOne(inversedBy: 'bandMembers')]
     private ?Band $band = null;
 
-    #[ORM\ManyToOne]
-    private ?RoleBand $role = null;
-
     #[ORM\ManyToOne(inversedBy: 'bandMembers')]
     private ?Profil $profil = null;
 
@@ -52,18 +49,6 @@ class BandMember
     public function setBand(?Band $band): static
     {
         $this->band = $band;
-
-        return $this;
-    }
-
-    public function getRole(): ?RoleBand
-    {
-        return $this->role;
-    }
-
-    public function setRole(?RoleBand $role): static
-    {
-        $this->role = $role;
 
         return $this;
     }

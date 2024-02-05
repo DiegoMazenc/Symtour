@@ -21,6 +21,19 @@ class HallMemberRepository extends ServiceEntityRepository
         parent::__construct($registry, HallMember::class);
     }
 
+    public function countAdmin($hall): int
+    {
+     return count(
+         $this->createQueryBuilder('h')
+             ->andWhere('h.hall = :hall')
+             ->andWhere('h.status = :status')
+             ->setParameter('hall', $hall)
+             ->setParameter('status', "admin")
+             ->getQuery()
+             ->getResult()
+         );
+    }
+
 //    /**
 //     * @return HallMember[] Returns an array of HallMember objects
 //     */

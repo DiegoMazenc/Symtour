@@ -167,7 +167,7 @@
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mon dernier events
 						</h4>
 						<div class=" flex justify-between">
-							{% for events in eventPast %}
+							{% for events in eventPast|slice(0, 1) %}
 								{% if events.status == 1 %}
 									<div class="card-event-db bg-white ">
 										<div class="flex bg-slate-500 text-white p-2  items-center">
@@ -253,6 +253,9 @@
 	<script>
 		const events = [
 {% for event in eventCome %}
+{% if event.status != 2 %}
+	
+
 {
 date: '{{ event.date|date('Y-m-d') }}',
 halls: [
@@ -263,7 +266,9 @@ city: '{{event.hall.hallInfo.city }}',
 status: '{{ event.status }}',
 // Ajoutez d'autres propriétés de la bande ici si nécessaire
 }]
-},{% endfor %}
+},
+{% endif %}
+{% endfor %}
 // Ajoutez d'autres événements au besoin
 ];
 

@@ -1,114 +1,212 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit BandMember
+{% block title %}Edit hallMember
 {% endblock %}
 
 {% block body %}
 
-	<div class="form-contain basis-3/4  py-20 bg bg-slate-100">
-		<div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
-			<div class="w-3/5">
-			<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5">Membres Actifs</h4>
+	<div class="user-contain bg-slate-100">
+		<div class="form-edit bg-white p-10 rounded-l-xl shadow-lg">
+			<div class="w-flex">
+				<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5">Membres Actifs</h4>
+
+				{% set isAdmin = false %}
 				{% for member in hall.hallMembers %}
-				{% if member.status != "guest" and member.status != "reject" %}
-					
-				
-					<div class="cardAdminProfil flex justify-between">
-						<div class="flex items-center">
-							<div class="img-member-db">
-								<img src="{{ member.profile.picture }}" alt="">
-							</div>
-							<div>
-								<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">{{ member.profile.pseudo}}</a>
-								<p>{{ member.role.roleName}}</p>
-							</div>
-						</div>
-					</div>
-					<hr class="my-3">
+					{% if is_granted('hall_member_edit', member)%}
+						{% set isAdmin = true %}
 					{% endif %}
 				{% endfor %}
-				<a href="#" class="text-slate-400 hover:text-blue-500 " id="toggleSearch">
-					<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>
-					Ajouter un Membre
-				</a>
-				<div class="search-member">
-					{{ form_start(searchForm) }}
-					{{ form_widget(searchForm.search, {
+				{% set isMember = false %}
+				{% for member in hall.hallMembers %}
+					{% if is_granted('hall_member_view', member)%}
+						{% set isMember = true %}
+					{% endif %}
+				{% endfor %}
+
+				{% for member in hall.hallMembers %}
+					{% if member.status != "guest" and member.status != "reject" %}
+
+						<div class="flex justify-between">
+							<div class="cardAdminProfil flex justify-between">
+								<div class="flex items-center">
+									<div class="img-member-db">
+										<img src="{{ member.profile.picture }}" alt="">
+									</div>
+									<div>
+										<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">{{ member.profile.pseudo}}
+											{% if member.status == "admin" %}
+												(Admin)
+											{% endif %}
+										</a>
+										<div class="flex">
+											{% for hallMemberRole in member.hallMemberRoles %}
+												<p class="ml-3">{{ hallMemberRole.rolehall.roleName|capitalize }}</p>
+											{% endfor %}
+										</div>
+									</div>
+								</div>
+							</div>
+							{% if isAdmin %}
+								<div class="update">
+									<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewbox="0 0 24 24"><path fill="none" stroke="#60a5fa" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828z"/></svg>
+								</div>
+							{% endif %}
+
+						</div>
+						{% if isAdmin %}
+
+							<div class="openMember">
+								<form action="{{ path('app_hall_members', {'id': hall.id}) }}" method="post">
+									<input type="hidden" name="memberId" value="{{ member.id }}">
+									{% for hallMemberRole in member.hallMemberRoles %}
+										<div class="w-full flex">
+											<div class="w-full">
+												<input type="hidden" name="idMemberRolehall_{{ loop.index }}" value="{{ hallMemberRole.id }}">
+												<label for="role_{{ loop.index }}">Rôle
+													{{ loop.index }}</label><br>
+												<select name="role_{{ loop.index }}" id="" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
+													{% for role in roles %}
+														<option value="{{ role.id }}" {% if role.roleName == hallMemberRole.roleHall.roleName %} selected {% endif %}>{{ role.roleName|capitalize }}</option>
+													{% endfor %}
+												</select>
+											</div>
+											<div class="ml-3 mt-7">
+												<button type="submit" name="deleteRole_{{ loop.index }}" value="1">
+													<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewbox="0 0 24 24"><path fill="#8c8c8c" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+												</button>
+											</div>
+										</div>
+									{% endfor %}
+									<div class="my-3 Parent">
+										<a href="#" class="text-slate-400 hover:text-blue-500 roleToggle">
+											<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>
+											Ajouter un rôle
+										</a>
+										<div class="openRole">
+											<label for="newRole">Nouveau rôle</label><br>
+											<select name="newRole" id="" class=" w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300 ">
+												{% for role in roles %}
+													<option value="{{ role.id }}">{{ role.roleName|capitalize }}</option>
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+									<div class=" w-full ">
+									{% for message in app.flashes('denied') %}
+												<p class="text-red-500">{{ message }}</p>
+										{% endfor %}
+										<label for="status">Status</label><br>
+										<select name="status" id="" class=" w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
+											<option value="admin" {% if member.status == "admin" %} selected {% endif %}>Admin</option>
+											<option value="member" {% if member.status == "member" %} selected {% endif %}>Membre</option>
+										</select>
+									</div>
+									<button class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg relative mt-5 p-2 duration-300">Modifier</button>
+								</form>
+								<form action="{{ path('app_hall_members', {'id': hall.id}) }}" method="post">
+									<input type="hidden" name="idMember" value="{{ member.id }}">
+									<div class="flex-responsive">
+										<button name="deleteMember" class="w-full  border-2 border-red-200 hover:border-red-500 hover:bg-red-300 rounded-lg mt-5 p-2 duration-300">Supprimer ce membre</button>
+									</div>
+
+								</form>
+							</div>
+						{% endif %}
+
+						<hr class="my-3">
+					{% endif %}
+				{% endfor %}
+				{% if isAdmin %}
+
+					<a href="#" class="text-slate-400 hover:text-blue-500 " id="toggleSearch">
+						<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>
+						Ajouter un Membre
+					</a>
+					<div class="search-member">
+						{{ form_start(searchForm) }}
+						{{ form_widget(searchForm.search, {
 						'attr': {
 							'class': 'w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300',
 						}
 					}) }}
-					{{ form_widget(searchForm.submit, {
+						{{ form_widget(searchForm.submit, {
 						'attr': {
 							'class': 'hidden',  
 						}
 					}) }}
-					{{ form_end(searchForm) }}
-				</div>
-				{% for profil in profil %}
-					<div class="flex items-center justify-between bg-slate-100 border-1 border-slate-300 rounded-md p-2 my-2">
-						<div class="flex items-center">
-							<div class="img-member-db">
-								<img src="{{ profil.picture }}" alt="{{ profil.pseudo }}">
+						{{ form_end(searchForm) }}
+					</div>
+					{# {{ include('/hall_member/_form.html.twig') }} #}
+					{% for profil in profil %}
+						<div class="flex items-center justify-between bg-slate-100 border-1 border-slate-300 rounded-md p-2 my-2">
+							<div class="flex items-center">
+								<div class="img-member-db">
+									<img src="{{ profil.picture }}" alt="{{ profil.pseudo }}">
+								</div>
+								<a href="{{ path('app_profil_show', {'id': profil.id}) }}" class="text-blue-400 font-semibold">{{ profil.pseudo}}</a>
 							</div>
-							<a href="{{ path('app_profil_show', {'id': profil.id}) }}" class="text-blue-400 font-semibold">{{ profil.pseudo}}</a>
-						</div>
-						<div>
-							{{ form_start(addRoleHall) }}
-								<select id="{{ addRoleHall.role.vars.id }}" name="{{ addRoleHall.role.vars.full_name }}" class="border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300"> <option value="">Choisissez son rôle</option>
-								{% for role in roles %}
-									<option value="{{ role.id }}">{{ role.roleName }}</option>
-								{% endfor %}
-							</select>
-							{{ form_widget(addRoleHall.profil, {
+							<div>
+								{{ form_start(addRoleHall) }}
+								<select id="{{ addRoleHall.role.vars.id }}" name="{{ addRoleHall.role.vars.full_name }}" class="border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
+									<option value="">Choisissez son rôle</option>
+									{% for role in roles %}
+										<option value="{{ role.id }}">{{ role.roleName|capitalize }}</option>
+									{% endfor %}
+								</select>
+								{{ form_widget(addRoleHall.profil, {
 								'attr': {
 									'class': 'hidden',  
 									'value': profil.id
 								}
 							}) }}
-							{{ form_widget(addRoleHall.hall, {
+								{{ form_widget(addRoleHall.hall, {
 								'attr': {
 									'class': 'hidden',  
 									'value': hall.id
 								}
 							}) }}
-							
-							{{ form_widget(addRoleHall.submit, {
+
+								{{ form_widget(addRoleHall.submit, {
 								'attr': {
 									'class': 'border-2 border-blue-200 hover:bg-white hover:border-blue-500 rounded-lg p-2 duration-300',  
 								}
 							}) }}
-							{{ form_widget(addRoleHall._token) }}
+								{{ form_widget(addRoleHall._token) }}
 
-							{{ form_end(addRoleHall, {render_rest: false}) }}
+								{{ form_end(addRoleHall, {render_rest: false}) }}
 
+							</div>
 						</div>
-					</div>
 
-				{% endfor %}
+					{% endfor %}
+				{% endif %}
+
 				<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5" style="margin-top: 50px;">Mes demandes d'hadhésion</h4>
 				{% for member in hall.hallMembers|reverse %}
-				{% if member.status == "guest" or member.status == "reject" %}
-					
-				
-					<div class="cardAdminProfil flex justify-between items-center">
-						<div class="flex items-center">
-							<div class="img-member-db">
-								<img src="{{ member.profile.picture }}" alt="">
-							</div>
-							<div>
-								<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">{{ member.profile.pseudo}}</a>
-								<p>{{ member.role.roleName}}</p>
-							</div>
-						</div>
-						{% if member.status == "reject" %}
-							<p style="color: red;">x Refusé</p>
-							{% else %}
-							<p style="color: gray;">... En cours</p>
+					{% if member.status == "guest" or member.status == "reject" %}
 
-						{% endif %}
-					</div>
-					<hr class="my-3">
+
+						<div class="cardAdminProfil flex justify-between items-center">
+							<div class="flex items-center">
+								<div class="img-member-db">
+									<img src="{{ member.profile.picture }}" alt="">
+								</div>
+								<div>
+									<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">{{ member.profile.pseudo}}</a>
+									{% for hallMemberRole in member.hallMemberRoles %}
+
+										<p>{{ hallMemberRole.roleHall.roleName|capitalize}}</p>
+									{% endfor %}
+								</div>
+							</div>
+							{% if member.status == "reject" %}
+								<p style="color: red;">x Refusé</p>
+							{% else %}
+								<p style="color: gray;">... En cours</p>
+
+							{% endif %}
+						</div>
+						<hr class="my-3">
 					{% endif %}
 				{% endfor %}
 			</div>
@@ -116,10 +214,9 @@
 	</div>
 </div>
 
-
-<a href="{{ path('app_hall_member_index') }}">back to list</a>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
 
 	let toggleSearchLink = document.getElementById('toggleSearch');
 toggleSearchLink.addEventListener('click', function () {
@@ -132,6 +229,17 @@ toggleSearchLink.style.display = 'none';
 searchMemberDiv.style.display = 'none';
 }
 });
+
+
+$(document).ready(function () {
+$(".update").click(function () {
+$(this).closest('.flex').next(".openMember").toggle();
+});
+$(".roleToggle").click(function () {
+$(this).hide();
+$(this).closest('.Parent').find(".openRole").toggle();
+});
+});
 </script>
 
-{% endblock %}
+{# {{ include('hall_member/_delete_form.html.twig') }} #}{% endblock %}

@@ -44,13 +44,9 @@
 				<div class="my-10 w-flex">
 					<div class="bg-white rounded-md shadow-md w-full">
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes salles</h4>
-						{% set processedHalls = [] %}
 
 						{% for hallMember in profil.hallMembers %}
-
-
-							{% if hallMember.status != "reject" and hallMember.hall.id not in processedHalls %}
-								{% set processedHalls = processedHalls|merge([hallMember.hall.id]) %}
+							{% if hallMember.status != "reject"%}
 								<a href="/hall/{{ hallMember.hall.id }}">
 
 									<div class="flex justify-between p-3 hover:bg-slate-100 items-center">
@@ -73,7 +69,11 @@
 											{% endif %}
 											<div class="ml-3">
 												<p class="text-blue-400 font-semibold">{{ hallMember.hall.name}}</p>
-												<p>{{ hallMember.role.roleName}}</p>
+												<div class="flex">
+													{% for hallMemberRole in hallMember.hallMemberRoles %}
+														<p>{{ hallMemberRole.roleHall.roleName}}</p>
+													{% endfor %}
+												</div>
 											</div>
 										</div>
 
@@ -106,10 +106,10 @@
 
 						{% endfor %}
 						{% if is_granted('profil_edit', profil) %}
-						<div class="p-3">
-							<a href="{{ path('app_hall_new') }}" class="text-slate-400 hover:text-blue-500 ">
-								<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Créer une nouvelle salle</a>
-						</div>
+							<div class="p-3">
+								<a href="{{ path('app_hall_new') }}" class="text-slate-400 hover:text-blue-500 ">
+									<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Créer une nouvelle salle</a>
+							</div>
 						{% endif %}
 					</div>
 				</div>
@@ -127,17 +127,17 @@
 												<img src="{{ bandMember.band.logo}}" alt="">
 											</div>
 											{% if is_granted('profil_edit', profil) %}
-											{% set counter = 0 %}
-											{% for notification in app.user.profil.notifications %}
-												{% if notification.status == 1 and notification.receiptId == bandMember.band.id %}
-													{% set counter = counter + 1 %}
+												{% set counter = 0 %}
+												{% for notification in app.user.profil.notifications %}
+													{% if notification.status == 1 and notification.receiptId == bandMember.band.id %}
+														{% set counter = counter + 1 %}
+													{% endif %}
+												{% endfor %}
+												{% if counter > 0 %}
+													<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-0 left-9">
+														{{ counter }}
+													</div>
 												{% endif %}
-											{% endfor %}
-											{% if counter > 0 %}
-												<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-0 left-9">
-													{{ counter }}
-												</div>
-											{% endif %}
 											{% endif %}
 
 											<div class="ml-3">
@@ -195,7 +195,8 @@
 												</div>
 											{% endif %}
 											<div class="ml-3">
-												<p class="text-blue-400 font-semibold">{{ bandMember.band.name}} vous invite à les rejoindres</p>
+												<p class="text-blue-400 font-semibold">{{ bandMember.band.name}}
+													vous invite à les rejoindres</p>
 												{% for BandMemberRole in bandMember.BandMemberRoles %}
 													<p>{{ BandMemberRole.roleBand.roleName}}</p>
 												{% endfor %}

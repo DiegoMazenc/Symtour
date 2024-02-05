@@ -29,13 +29,13 @@ final class InsertListener
             $entity->setStatus(3);
         }
 
-        if($entity instanceof BandMember){
-            $entity->setStatus('guest');
-        }
+        // if($entity instanceof BandMember){
+        //     $entity->setStatus('guest');
+        // }
 
-        if($entity instanceof HallMember){
-            $entity->setStatus('guest');
-        }
+        // if($entity instanceof HallMember){
+        //     $entity->setStatus('guest');
+        // }
 
     }
 }
