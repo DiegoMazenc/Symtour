@@ -343,6 +343,10 @@ height: 24px;
     background-color: #4f535e;
 }
 
+.current-day{
+    border: solid 1px rgb(169, 228, 255);
+}
+
 .in-progress{
     color: rgb(255, 255, 255);
     background-color: #636d8a;

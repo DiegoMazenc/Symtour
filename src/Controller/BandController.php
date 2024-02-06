@@ -10,20 +10,21 @@ use App\Entity\BandInfo;
 use App\Entity\RoleBand;
 use App\Entity\BandEvent;
 use App\Entity\BandMember;
-use App\Entity\BandMemberRole;
 use App\Form\BandMemberType;
 use App\Form\SearchFormType;
 use App\Form\AddRoleBandType;
+use App\Entity\BandMemberRole;
 use App\Repository\BandRepository;
 use App\Repository\HallRepository;
 use App\Repository\EventRepository;
 use App\Repository\ProfilRepository;
 use App\Service\NotificationService;
+use App\Repository\BandInfoRepository;
 use App\Repository\RoleBandRepository;
 use App\Repository\BandEventRepository;
 use App\Repository\BandMemberRepository;
-use App\Repository\BandMemberRoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\BandMemberRoleRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -141,6 +142,20 @@ class BandController extends AbstractController
     ): Response {
         $notification->isRead((int)$request->query->get('notification_id'));
 
+        $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
+        $canAccess = false;
+
+        foreach ($allBandMembers as $bandMember) {
+            if ($this->isGranted('band_member', $bandMember)) {
+                $canAccess = true;
+                break;
+            }
+        }
+
+        if (!$canAccess) {
+            return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
+        }
+
         $roles = $roleBandRepository->findAll();
 
         $searchForm = $this->createForm(SearchFormType::class);
@@ -214,7 +229,7 @@ class BandController extends AbstractController
             if ($bandMember) {
                 $band = $bandMember->getBand();
                 $countAdmin = $bandMemberRepository->countAdmin($band, 'admin');
-            
+
                 if ($status != "admin" && $countAdmin < 2) {
                     $this->addFlash('denied', 'Vous devez élire un nouvel Admin !');
                 } else {
@@ -269,9 +284,32 @@ class BandController extends AbstractController
 
 
     #[Route('/{id}/event', name: 'app_band_event', methods: ['GET', 'POST'])]
-    public function event(Band $band, Request $request, NotificationService $notification, HallRepository
-    $hallRepository, BandRepository $bandRepository, EventRepository $eventRepository, EntityManagerInterface $em): Response
-    {
+    public function event(
+        Band $band,
+        Request $request,
+        NotificationService $notification,
+        HallRepository $hallRepository,
+        BandRepository $bandRepository,
+        BandEventRepository $bandEventRepository,
+        EventRepository $eventRepository,
+        BandMemberRepository $bandMemberRepository,
+        EntityManagerInterface $em
+    ): Response {
+        $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
+        $canAccess = false;
+
+        foreach ($allBandMembers as $bandMember) {
+            if ($this->isGranted('band_member', $bandMember)) {
+                $canAccess = true;
+                break;
+            }
+        }
+
+        if (!$canAccess) {
+            return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+
         $eventCome = $eventRepository->getComeEventsByBand($band);
         $eventPast = $eventRepository->getPastEventsByBand($band);
 
@@ -319,13 +357,13 @@ class BandController extends AbstractController
 
             if ($action === 'cancel') {
                 $notification->addNotificationHall("hall", $band->getName(), $hall->getId(), "band", $band->getId(), $action, $hall, $em);
-                $bandEvent = $em->getRepository(BandEvent::class)->find($bandEventId);
+                $bandEvent = $bandEventRepository->find($bandEventId);
                 if ($bandEvent) {
                     $em->remove($bandEvent);
                     $em->flush();
                 }
 
-                $event = $em->getRepository(Event::class)->find($eventId);
+                $event = $eventRepository->find($eventId);
                 if ($event) {
                     $em->remove($event);
                     $em->flush();
@@ -361,8 +399,23 @@ class BandController extends AbstractController
     }
 
     #[Route('/{id}/event-delete', name: 'app_band_event_delete', methods: ['POST'])]
-    public function deleteEvent(Request $request, Band $band, BandEventRepository $bandEventRepository, EntityManagerInterface $entityManager): Response
+    public function deleteEvent(Request $request, BandMemberRepository $bandMemberRepository, Band $band, BandEventRepository $bandEventRepository, EntityManagerInterface $entityManager): Response
+
     {
+        $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
+        $canAccess = false;
+
+        foreach ($allBandMembers as $bandMember) {
+            if ($this->isGranted('band_member', $bandMember)) {
+                $canAccess = true;
+                break;
+            }
+        }
+
+        if (!$canAccess) {
+            return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
+        }
+
         if ($request->isMethod('POST')) {
             $eventId = $request->request->get('idEvent');
 
@@ -380,8 +433,22 @@ class BandController extends AbstractController
 
 
     #[Route('/{id}/edit', name: 'app_band_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Band $band, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Band $band, BandMemberRepository $bandMemberRepository, EntityManagerInterface $entityManager): Response
     {
+
+        $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
+        $canAccess = false;
+
+        foreach ($allBandMembers as $bandMember) {
+            if ($this->isGranted('band_member', $bandMember)) {
+                $canAccess = true;
+                break;
+            }
+        }
+
+        if (!$canAccess) {
+            return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
+        }
         $form = $this->createForm(BandType::class, $band);
         $form->handleRequest($request);
 
@@ -396,10 +463,72 @@ class BandController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/infos', name: 'app_band_infos', methods: ['GET', 'POST'])]
+    public function infos(
+        Request $request,
+        Band $band,
+        BandMemberRepository $bandMemberRepository,
+        BandInfoRepository $bandInfoRepository,
+        EntityManagerInterface $em
+    ): Response {
+        $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
+        $canAccess = false;
+
+        foreach ($allBandMembers as $bandMember) {
+            if ($this->isGranted('band_member', $bandMember)) {
+                $canAccess = true;
+                break;
+            }
+        }
+
+        if (!$canAccess) {
+            return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
+        }
+        $bandInfos = $bandInfoRepository->find($band);
+
+        if ($request->isMethod('POST')) {
+            $bandInfos
+                ->setZipCode($request->request->get('zipCode'))
+                ->setCity($request->request->get('city'))
+                ->setDepartment($request->request->get('departement'))
+                ->setRegion($request->request->get('region'))
+                ->setcountry($request->request->get('country'))
+                ->setEmail($request->request->get('mail'))
+                ->setPhone($request->request->get('phone'))
+                ->setWebsite($request->request->get('website'));
+
+            $em->persist($bandInfos);
+            $em->flush();
+
+            $this->addFlash('success', 'Vos informations ont été enregistrées avec succès !');
+
+            return $this->redirectToRoute('app_band_infos', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('band/infos.html.twig', [
+            'band' => $band,
+            'bandInfos' => $bandInfos,
+        ]);
+    }
+
 
     #[Route('/{id}', name: 'app_band_delete', methods: ['POST'])]
-    public function delete(Request $request, Band $band, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Band $band, BandMemberRepository $bandMemberRepository, EntityManagerInterface $entityManager): Response
     {
+        $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
+        $canAccess = false;
+
+        foreach ($allBandMembers as $bandMember) {
+            if ($this->isGranted('band_member_edit', $bandMember)) {
+                $canAccess = true;
+                break;
+            }
+        }
+
+        if (!$canAccess) {
+            return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
+        }
+
         if ($this->isCsrfTokenValid('delete' . $band->getId(), $request->request->get('_token'))) {
             $entityManager->remove($band);
             $entityManager->flush();

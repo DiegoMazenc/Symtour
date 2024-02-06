@@ -38,6 +38,9 @@ class BandInfo
     #[ORM\OneToOne(inversedBy: 'bandInfo', cascade: ['persist', 'remove'])]
     private ?Band $bandId = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $zip_code = null;
+
 
 
     public function getId(): ?int
@@ -137,6 +140,18 @@ class BandInfo
     public function setBandId(?Band $bandId): static
     {
         $this->bandId = $bandId;
+
+        return $this;
+    }
+
+    public function getZipCode(): ?int
+    {
+        return $this->zip_code;
+    }
+
+    public function setZipCode(?int $zip_code): static
+    {
+        $this->zip_code = $zip_code;
 
         return $this;
     }

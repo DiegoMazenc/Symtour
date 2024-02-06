@@ -27,14 +27,16 @@
 {{ form_widget(form.city, {
         'attr': {
             'class': 'rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5 ',
-            'placeholder': 'Nom Etablissement'
+            'placeholder': 'Nom Etablissement',
+            'id' : 'city'
         }
     }) }}<br>
     {{ form_label(form.zip_code, "Code Postal ", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
 {{ form_widget(form.zip_code, {
         'attr': {
             'class': 'rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5 ',
-            'placeholder': 'Nom Etablissement'
+            'placeholder': 'Nom Etablissement',
+            'id' : 'zipCode'
         }
     }) }}<br>
     {{ form_label(form.email, "Email ", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
@@ -61,3 +63,9 @@
    
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
+
+
+
+{% block javascripts %}
+
+{% endblock %}

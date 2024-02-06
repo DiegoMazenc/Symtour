@@ -68,12 +68,10 @@
 												</div>
 											{% endif %}
 											<div class="ml-3">
-												<p class="text-blue-400 font-semibold">{{ hallMember.hall.name}}</p>
-												<div class="flex">
-													{% for hallMemberRole in hallMember.hallMemberRoles %}
-														<p>{{ hallMemberRole.roleHall.roleName}}</p>
-													{% endfor %}
-												</div>
+												<p class="text-blue-400 font-semibold">{{ hallMember.hall.name}} ({{ hallMember.status|capitalize }})</p>
+												{% for hallMemberRole in hallMember.hallMemberRoles %}
+													<p>{{ hallMemberRole.roleHall.roleName}}</p>
+												{% endfor %}
 											</div>
 										</div>
 
@@ -141,9 +139,9 @@
 											{% endif %}
 
 											<div class="ml-3">
-												<p class="text-blue-400 font-semibold">{{ bandMember.band.name}}</p>
+												<p class="text-blue-400 font-semibold">{{ bandMember.band.name}} ({{ bandMember.status|capitalize }})</p>
 												{% for BandMemberRole in bandMember.BandMemberRoles %}
-													<p>{{ BandMemberRole.roleBand.roleName}}</p>
+													<p>{{ BandMemberRole.roleBand.roleName|capitalize }}</p>
 												{% endfor %}
 											</div>
 										</div>
@@ -228,9 +226,15 @@
 								</a>
 							</div>
 						{% endif %}
+						
 					</div>
 				</div>
 			</div>
 		</div>
 	{% endif %}
+
+	
+
+
+
 {% endblock %}

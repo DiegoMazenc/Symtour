@@ -201,14 +201,14 @@
 										<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">{{ member.profile.pseudo}}</a>
 										<div class="flex">
 											{% for hallMemberRole in member.hallMemberRoles %}
-												<p>{{ hallMemberRole.roleHall.roleName}}</p>
+												<p class="ml-3">{{ hallMemberRole.roleHall.roleName}}</p>
 											{% endfor %}
 										</div>
 									</div>
 								</div>
 								<p>{{ member.dateCreate|date('d-m-Y')  }}</p>
 							</div>
-							<hr class="my-3">
+							<hr class="mr-3">
 						{% endfor %}
 						<a href="{{ path('app_hall_member_new') }}" class="text-slate-400 hover:text-blue-500 ">
 							<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Ajouter un nouveau membre</a>
@@ -221,7 +221,7 @@
 
 	<script>
 		const events = [
-{% for event in eventCome %}
+{% for event in eventAll %}
 {% if event.status != 2 %}
 {
 date: '{{ event.date|date('Y-m-d') }}',
@@ -308,6 +308,15 @@ for (let day = 1; day <= daysInMonth; day++) {
 const dayElement = document.createElement('div');
 dayElement.className = 'day current-month-day'; // Add a class to style differently
 dayElement.textContent = day;
+
+ const currentDate = new Date();
+    if (
+        day === currentDate.getDate() &&
+        currentMonth === currentDate.getMonth() &&
+        currentYear === currentDate.getFullYear()
+    ) {
+        dayElement.classList.add('current-day'); // Add a class for the current day
+    }
 
 // Check if there are events on this day
 const eventsOnDay = events.filter(event => {
@@ -549,29 +558,29 @@ const arrowRight = document.getElementById('arrow-right');
 // Initialisation de la position à 0
 let currentPosition = 0;
 
-arrowLeft.addEventListener('click', function () { // Décrémente la position
+arrowLeft.addEventListener('click', function () { 
 currentPosition -= 100;
 updatePosition();
 });
 
-arrowRight.addEventListener('click', function () { // Incrémente la position
+arrowRight.addEventListener('click', function () { 
 currentPosition += 100;
 updatePosition();
 });
 
-arrowLeft.addEventListener('mouseover', function () { // Change le curseur au survol
+arrowLeft.addEventListener('mouseover', function () { 
 arrowLeft.style.cursor = 'pointer';
 });
 
-arrowRight.addEventListener('mouseover', function () { // Change le curseur au survol
+arrowRight.addEventListener('mouseover', function () { 
 arrowRight.style.cursor = 'pointer';
 });
 
-arrowLeft.addEventListener('mouseout', function () { // Rétablit le curseur par défaut
+arrowLeft.addEventListener('mouseout', function () { 
 arrowLeft.style.cursor = 'default';
 });
 
-arrowRight.addEventListener('mouseout', function () { // Rétablit le curseur par défaut
+arrowRight.addEventListener('mouseout', function () { 
 arrowRight.style.cursor = 'default';
 });
 

@@ -24,6 +24,7 @@ use App\Repository\ProfilRepository;
 use App\Service\NotificationService;
 use App\Repository\RoleHallRepository;
 use App\Repository\BandEventRepository;
+use App\Repository\HallInfoRepository;
 use App\Repository\HallMemberRepository;
 use App\Repository\HallMemberRoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -97,6 +98,7 @@ class HallController extends AbstractController
     {
         $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
         $eventPast = $eventRepository->getPastEventsByHall($hall);
+        $eventAll = $eventRepository->getAllEventsByHall($hall);
 
         $notification->isRead((int)$request->query->get('notification_id'));
         if ($request->isMethod('POST')) {
@@ -133,7 +135,8 @@ class HallController extends AbstractController
         return $this->render('hall/show.html.twig', [
             'hall' => $hall,
             'eventCome' => $eventCome,
-            'eventPast' => $eventPast
+            'eventPast' => $eventPast,
+            'eventAll' => $eventAll
         ]);
     }
 
@@ -229,10 +232,11 @@ class HallController extends AbstractController
                 if ($request->request->has("deleteRole_" . substr($key, 5))) {
                     $idMemberRoleHallToDelete = $request->request->get("idMemberRoleHall_" . substr($key, 5));
                     $memberRoleToDelete = $hallMemberRoleRepository->find((int)$idMemberRoleHallToDelete);
-
                     if ($memberRoleToDelete) {
                         $em->remove($memberRoleToDelete);
                         $em->flush();
+                    } else {
+                        
                     }
                 }
             }
@@ -298,7 +302,15 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}/event', name: 'app_hall_event', methods: ['GET', 'POST'])]
-    public function event(Hall $hall, HallRepository $hallRepository, Request $request, NotificationService $notification, BandRepository $bandRepository, EventRepository $eventRepository, EntityManagerInterface $em): Response
+    public function event(
+        Hall $hall,
+        HallRepository $hallRepository,
+        Request $request,
+        NotificationService $notification,
+        BandRepository $bandRepository, 
+        EventRepository $eventRepository, 
+        EntityManagerInterface $em
+        ): Response
     {
         $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
         $eventPast = $eventRepository->getPastEventsByHall($hall);
@@ -306,7 +318,7 @@ class HallController extends AbstractController
         $bandFind = null;
         $filterEvent = "all";
 
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod('POST') && $request->request->get('formName')) {
             $formName = $request->request->get('formName');
 
             if ($formName === 'addBandForm') {
@@ -337,7 +349,7 @@ class HallController extends AbstractController
         }
 
 
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod('POST') && $request->request->get('filter')) {
             $filter = $request->request->get('filter');
 
             if ($filter == 'all') {
@@ -352,13 +364,12 @@ class HallController extends AbstractController
         if ($request->isMethod('POST') && $request->request->get('action')) {
             $action = $request->request->get('action');
             $eventId = $request->request->get('event_id');
-            $event = $em->getRepository(Event::class)->find($eventId);
+            $event = $eventRepository->find($eventId);
             $date = $request->request->get('date');
             $bandId = $request->request->get('bandId');
             $band = $bandRepository->find($bandId);
             $hallEventId = $request->request->get('hallId');
             $hallEvent = $hallRepository->find($hallEventId);
-
 
             if ($action === 'validate') {
                 $status = 1;
@@ -381,7 +392,7 @@ class HallController extends AbstractController
                 $status = 3;
             }
 
-            $event = $em->getRepository(Event::class)->find($eventId);
+            $event = $eventRepository->find($eventId);
             if ($event) {
                 $event->setStatus($status);
                 $em->flush();
@@ -422,13 +433,64 @@ class HallController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-            $this->addFlash('success', 'Vos informations sont bien enregistrées');
+            $this->addFlash('success', 'Vos informations ont été enregistrées avec succès !');
             return $this->redirectToRoute('app_hall_edit', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('hall/edit.html.twig', [
             'hall' => $hall,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}/infos', name: 'app_hall_infos', methods: ['GET', 'POST'])]
+    public function infos(
+        Request $request, 
+        Hall $hall, 
+        HallMemberRepository $hallMemberRepository,
+        HallInfoRepository $hallInfoRepository, 
+        EntityManagerInterface $em
+        ): Response
+    {
+        $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
+        $canAccess = false;
+        
+        foreach ($allHallMembers as $hallMember) {
+            if ($this->isGranted('hall_member', $hallMember)) {
+                $canAccess = true;
+                break; 
+            }
+        }
+        
+        if (!$canAccess) {
+            return $this->redirectToRoute('app_hall_show', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
+        }
+        $hallInfos = $hallInfoRepository->find($hall);
+
+        if ($request->isMethod('POST')) {
+           $hallInfos
+                ->setZipCode($request->request->get('zipCode'))
+                ->setCity($request->request->get('city'))
+                ->setNbrStreet($request->request->get('nbr'))
+                ->setStreet($request->request->get('street'))
+                ->setDepartment($request->request->get('departement'))
+                ->setRegion($request->request->get('region'))
+                ->setcountry($request->request->get('country'))
+                ->setEmail($request->request->get('mail'))
+                ->setPhone($request->request->get('phone'))
+                ->setWebsite($request->request->get('website'));
+
+                $em->persist($hallInfos);
+                $em->flush();
+
+                $this->addFlash('success', 'Vos informations ont été enregistrées avec succès !');
+
+                return $this->redirectToRoute('app_hall_infos', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
+            }
+
+        return $this->render('hall/infos.html.twig', [
+            'hall' => $hall,
+            'hallInfos' => $hallInfos,
         ]);
     }
 

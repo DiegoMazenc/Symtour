@@ -227,13 +227,14 @@ searchMemberDiv.style.display = 'none';
 
 
 $(document).ready(function () {
-$(".update").click(function () {
-$(this).closest('.flex').next(".openMember").toggle();
-});
-$(".roleToggle").click(function () {
-$(this).hide();
-$(this).closest('.Parent').find(".openRole").toggle();
-});
+	$(".update").click(function () {
+		$(this).closest('.flex').next(".openMember").toggle();
+	});
+
+	$(".roleToggle").click(function () {
+		$(this).hide();
+		$(this).closest('.Parent').find(".openRole").toggle();
+	});
 });
 </script>
 

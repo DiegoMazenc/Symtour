@@ -41,6 +41,12 @@ class HallInfo
     #[ORM\OneToOne(inversedBy: 'hallInfo', cascade: ['persist', 'remove'])]
     private ?Hall $hall = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nbr_street = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $street = null;
+
 
     public function getId(): ?int
     {
@@ -153,6 +159,30 @@ class HallInfo
     public function setHall(?Hall $hall): static
     {
         $this->hall = $hall;
+
+        return $this;
+    }
+
+    public function getNbrStreet(): ?string
+    {
+        return $this->nbr_street;
+    }
+
+    public function setNbrStreet(?string $nbr_street): static
+    {
+        $this->nbr_street = $nbr_street;
+
+        return $this;
+    }
+
+    public function getStreet(): ?string
+    {
+        return $this->street;
+    }
+
+    public function setStreet(?string $street): static
+    {
+        $this->street = $street;
 
         return $this;
     }

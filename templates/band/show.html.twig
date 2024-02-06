@@ -341,6 +341,16 @@ const dayElement = document.createElement('div');
 dayElement.className = 'day current-month-day'; // Add a class to style differently
 dayElement.textContent = day;
 
+ const currentDate = new Date();
+    if (
+        day === currentDate.getDate() &&
+        currentMonth === currentDate.getMonth() &&
+        currentYear === currentDate.getFullYear()
+    ) {
+        dayElement.classList.add('current-day'); // Add a class for the current day
+    }
+
+
 // Check if there are events on this day
 const eventsOnDay = events.filter(event => {
 const eventDate = new Date(event.date);

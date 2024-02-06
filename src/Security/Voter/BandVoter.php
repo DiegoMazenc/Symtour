@@ -14,10 +14,12 @@ class BandVoter extends Voter
 {
     public const BAND_MEMBER_EDIT = 'band_member_edit';
     public const BAND_MEMBER_VIEW = 'band_member_view';
+    public const BAND_MEMBER = 'band_member';
+
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::BAND_MEMBER_EDIT, self::BAND_MEMBER_VIEW])
+        return in_array($attribute, [self::BAND_MEMBER_EDIT, self::BAND_MEMBER_VIEW, self::BAND_MEMBER])
             && $subject instanceof \App\Entity\BandMember;
     }
 
@@ -29,14 +31,14 @@ class BandVoter extends Voter
             return false;
         }
 
-        // dd($attribute, $bandMember, $user);
-
 
         switch ($attribute) {
             case self::BAND_MEMBER_EDIT:
                 return $this->canEdit($bandMember, $user);
             case self::BAND_MEMBER_VIEW:
                 return $this->canView($bandMember, $user);
+            case self::BAND_MEMBER:
+                return $this->isUserInBand($bandMember, $user);
         }
 
         return false;

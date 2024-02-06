@@ -5,6 +5,18 @@
 {% endblock %}
 
 {% block body %}
+	{% set isAdmin = false %}
+	{% for member in band.bandMembers %}
+		{% if is_granted('band_member_edit', member ) %}
+			{% set isAdmin = true %}
+		{% endif %}
+	{% endfor %}
+	{% set countEvent = 0 %}
+	{% for events in eventCome %}
+		{% if events.status == 3 %}
+			{% set countEvent = countEvent + 1 %}
+		{% endif %}
+	{% endfor %}
 	<div class="user-contain ">
 		<div class="flex justify-between w-flex">
 			<form action="{{ path('app_band_event', {'id': band.id}) }}" method="post" name="all">
@@ -16,12 +28,19 @@
 			</form>
 
 			<form action="{{ path('app_band_event', {'id': band.id}) }}" method="post" name="in-progress">
-				<button type="submit" name="filter" value="in-progress" {% if filterEvent == "in-progress" %} class="border-2 border-blue-200 hover:border-blue-500 bg-blue-500 font-bold text-white rounded-lg p-2 duration-300" {% else %} class="border-2 border-blue-200 hover:border-blue-500 font-bold rounded-lg p-2 duration-300" {% endif %}>Demandes de date</button>
+				<div class="relative">
+					<button type="submit" name="filter" value="in-progress" {% if filterEvent == "in-progress" %} class="border-2 border-blue-200 hover:border-blue-500 bg-blue-500 font-bold text-white rounded-lg p-2 duration-300" {% else %} class="border-2 border-blue-200 hover:border-blue-500 font-bold rounded-lg p-2 duration-300" {% endif %}>Demandes de date</button>
+					{% if countEvent > 0 %}
+						<div class="bg-red-500 text-white py-1 px-2 rounded-full absolute bottom-7 left-36 text-xs ">
+							{{ countEvent }}
+						</div>
+					{% endif %}
+				</div>
 			</form>
 		</div>
 		<div class="w-flex">
 
-			<h2>Mes prochains événements</h2>
+			<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5 ">Mes prochains évènements</h4>
 			{% for events in eventCome %}
 				{% if filterEvent == "all" %}
 					{% set condition = events.status != 2 %}
@@ -177,73 +196,75 @@
 												<hr>
 											{% endif %}
 										{% endfor %}
-										<div class="p-3">
-											<div class="text-slate-400 hover:text-blue-500 toggleSearchLink">
-												<span class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</span>
-												Inviter un groupe
-											</div>
-										</div>
-										<div class="search-member">
-											<form action="{{ path('app_band_event', {'id': band.id}) }}" method="post" name="addBandForm">
-												<input type="text" name="addBand" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
-												<input type="hidden" name="formName" value="addBandForm">
-												<input type="hidden" name="date" value="{{ events.date|date() }}">
-											</form>
-										</div>
-										{% for band in bandFind %}
-											{% if dateAdd == events.date|date() %}
-												<div class="">
-													<div class=" flex justify-between items-center">
-														<div class="flex p-2 items-center relative">
-															<div class="img-project-db border-2 border-slate-500 ">
-																<img src="{{ band.logo }}" alt="">
-															</div>
-															<div>
-																<p class="text-blue-400 font-semibold">{{ band.name }}</p>
-																<p>{{ band.musicCategory.category }}
-																	/
-																	{{ band.defineStyle }}</p>
-															</div>
-														</div>
-														<div class="px-2">
-															<form action="{{ path('app_band_event', {'id': idBandConnect }) }}" method="post" name="inviteBandForm">
-																<input type="hidden" name="action" value="guest">
-																<input type="hidden" name="bandId" value="{{ band.id }}">
-																<input type="hidden" name="date" value="{{ events.date|date() }}">
-																<input type="hidden" name="eventId" value="{{ events.id }}">
-																<input type="hidden" name="formName" value="inviteBandForm">
-
-																<button type="submit" class="validate-button px-1  rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Inviter</button>
-															</form>
-															<p class="clicBand">Détails ▽</p>
-														</div>
-													</div>
-													<div class="openBand">
-														{% for member in band.bandMembers %}
-															{% if member.status == "admin" or member.status == "member" %}
-
-																<div class="flex justify-between list-member-event">
-																	<div class="flex">
-																		<div class="img-profil-event border-2 border-slate-500">
-																			<img src="{{ member.profil.picture }}" alt="" class="w-5">
-
-																		</div>
-																		<p>{{ member.profil.pseudo }}
-																		</p>
-																	</div>
-																	<div class="flex">
-																		{% for bandMemberRole in member.bandMemberRoles %}
-																			<p class="ml-3">{{ bandMemberRole.roleBand.roleName|capitalize }}</p>
-																		{% endfor %}
-																	</div>
-																</div>
-															{% endif %}
-														{% endfor %}
-													</div>
+										{% if isAdmin %}
+											<div class="p-3">
+												<div class="text-slate-400 hover:text-blue-500 toggleSearchLink">
+													<span class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</span>
+													Inviter un groupe
 												</div>
-												<hr>
-											{% endif %}
-										{% endfor %}
+											</div>
+											<div class="search-member">
+												<form action="{{ path('app_band_event', {'id': band.id}) }}" method="post" name="addBandForm">
+													<input type="text" name="addBand" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
+													<input type="hidden" name="formName" value="addBandForm">
+													<input type="hidden" name="date" value="{{ events.date|date() }}">
+												</form>
+											</div>
+											{% for band in bandFind %}
+												{% if dateAdd == events.date|date() %}
+													<div class="">
+														<div class=" flex justify-between items-center">
+															<div class="flex p-2 items-center relative">
+																<div class="img-project-db border-2 border-slate-500 ">
+																	<img src="{{ band.logo }}" alt="">
+																</div>
+																<div>
+																	<p class="text-blue-400 font-semibold">{{ band.name }}</p>
+																	<p>{{ band.musicCategory.category }}
+																		/
+																		{{ band.defineStyle }}</p>
+																</div>
+															</div>
+															<div class="px-2">
+																<form action="{{ path('app_band_event', {'id': idBandConnect }) }}" method="post" name="inviteBandForm">
+																	<input type="hidden" name="action" value="guest">
+																	<input type="hidden" name="bandId" value="{{ band.id }}">
+																	<input type="hidden" name="date" value="{{ events.date|date() }}">
+																	<input type="hidden" name="eventId" value="{{ events.id }}">
+																	<input type="hidden" name="formName" value="inviteBandForm">
+
+																	<button type="submit" class="validate-button px-1  rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Inviter</button>
+																</form>
+																<p class="clicBand">Détails ▽</p>
+															</div>
+														</div>
+														<div class="openBand">
+															{% for member in band.bandMembers %}
+																{% if member.status == "admin" or member.status == "member" %}
+
+																	<div class="flex justify-between list-member-event">
+																		<div class="flex">
+																			<div class="img-profil-event border-2 border-slate-500">
+																				<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
+																			</div>
+																			<p>{{ member.profil.pseudo }}
+																			</p>
+																		</div>
+																		<div class="flex">
+																			{% for bandMemberRole in member.bandMemberRoles %}
+																				<p class="ml-3">{{ bandMemberRole.roleBand.roleName|capitalize }}</p>
+																			{% endfor %}
+																		</div>
+																	</div>
+																{% endif %}
+															{% endfor %}
+														</div>
+													</div>
+													<hr>
+												{% endif %}
+											{% endfor %}
+										{% endif %}
 									</div>
 								{% endif %}
 
@@ -251,7 +272,7 @@
 						</div>
 					{% endif %}
 				{% endfor %}
-				<h2>Mes événements passés</h2>
+				<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5 ">Mes évènements passés</h4>
 				<div class="card-event-list ">
 					{% for events in eventPast %}
 						{% if filterEvent == "all" %}
@@ -304,7 +325,7 @@
 																</div>
 																<div class="flex">
 																	{% for bandMemberRole in member.bandMemberRoles %}
-																	<p class="ml-3">{{ bandMemberRole.roleBand.roleName|capitalize }}</p>
+																		<p class="ml-3">{{ bandMemberRole.roleBand.roleName|capitalize }}</p>
 																	{% endfor %}
 																</div>
 															</div>

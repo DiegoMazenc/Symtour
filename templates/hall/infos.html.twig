@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit hallMember
+{% endblock %}
+
+{% block body %}
+{% set isMember = false %}
+	{% for member in hall.hallMembers %}
+		{% if is_granted('hall_member_view', member)%}
+			{% set isMember = true %}
+		{% endif %}
+	{% endfor %}
+	<div class="user-contain bg-slate-100">
+		<div class="form-edit bg-white p-10 rounded-xl shadow-lg">
+			<div class="w-flex">
+			{% for message in app.flashes('success') %}
+				<div class="bg-green-100 w-full">
+					<p class="text-green-500 font-bold py-2 px-3">{{ message }}</p>
+				</div>
+			{% endfor %}
+				<form action="{{ path('app_hall_infos', {'id': hall.id}) }}" method="post">
+					<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5 flex"><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="white" d="M12 2C7.589 2 4 5.589 4 9.995C3.971 16.44 11.696 21.784 12 22c0 0 8.029-5.56 8-12c0-4.411-3.589-8-8-8m0 12c-2.21 0-4-1.79-4-4s1.79-4 4-4s4 1.79 4 4s-1.79 4-4 4"/></svg></span> Mon Adresse</h4>
+					<div>
+						<label for="zipCode">Code Postal</label><br>
+						<input type="text" name="zipCode" id="zipCode" value="{{ hallInfos.zipCode }}" class="w-full rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3">
+					</div>
+					<div>
+						<label for="city">Ville</label><br>
+						<select name="city" id="city" class="w-full rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3"></select>
+						<div id="zipCodeWarning" class="text-red-500"></div>
+
+					</div>
+					<div class="w-full flex justify-between">
+						<div class="w-1/6 mr-2">
+							<label for="nbr">N°</label><br>
+							<input type="text" name="nbr" id="nbr" value="{{ hallInfos.nbrStreet }}" class="w-full rounded-lg p-2  border-2 bg-slate-100 border-slate-400 mt-1 mb-3">
+						</div>
+						<div class="w-5/6">
+							<label for="street">Rue</label><br>
+							<input type="text" name="street" id="street" value="{{ hallInfos.street }}" class="w-full rounded-lg p-2  border-2 bg-slate-100 border-slate-400 mt-1 mb-3">
+						</div>
+					</div>
+					<div>
+						<label for="departement">Département</label><br>
+						<input type="text" name="departement" id="departement" value="{{ hallInfos.department }}" class="w-full rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3">
+					</div>
+					<div>
+						<label for="region">Région</label><br>
+						<input type="text" name="region" id="region" value="{{ hallInfos.region }}" class="w-full rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3">
+					</div>
+					<div>
+						<label for="country">Pays</label><br>
+						<input type="text" name="country" id="country" value="{{ hallInfos.country }}" class="w-full rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3">
+					</div>
+
+					<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5 flex"><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="white" d="M16.36 14c.08-.66.14-1.32.14-2c0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2c0-.68.06-1.35.16-2h4.68c.09.65.16 1.32.16 2c0 .68-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.923 7.923 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8.008 8.008 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2c0 .68.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.65 15.65 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg></span>Mes Coordonnées</h4>
+					<div>
+						<label for="mail">E-Mail</label><br>
+						<input type="text" name="mail" id="mail" value="{{ hallInfos.email }}" class="w-full rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3">
+					</div>
+					<div>
+						<label for="phone">Téléphone</label><br>
+						<input type="text" name="phone" id="phone" value="{{ hallInfos.phone }}" class="w-full rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3">
+					</div>
+					<div>
+						<label for="website">Site Internet</label><br>
+						<input type="text" name="website" id="website" value="{{ hallInfos.website }}" class="w-full rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3">
+					</div>
+					<hr>{% if isMember %}
+					<div class="rounded-lg p-2  border-2 bg-slate-300 border-slate-400 my-3 w-full flex justify-center" disabled ><p>Vous devez être Admin pour modifier les informations</p></div>
+					{% else %}
+					<button class="rounded-lg p-2 text-white bg-blue-400 my-3 w-full">Enregistrer</button>
+					 {% endif %} 
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	$(document).ready(function () {
+    const apiUrl = 'https://geo.api.gouv.fr/communes?codePostal=';
+    const format = '&format=json';
+    const regionApiUrl = 'https://geo.api.gouv.fr/regions/';
+    const departementApiUrl = 'https://geo.api.gouv.fr/departements/';
+
+    let zipCode = $('#zipCode');
+    let city = $('#city');
+    let region = $('#region');
+    let departement = $('#departement');
+    let country = $('#country');
+    let zipCodeWarning = $('#zipCodeWarning');
+
+    $(city).append('<option value="' + '{{ hallInfos.city }}' + '" selected>' + '{{ hallInfos.city }}' + '</option>');
+
+    $(zipCode).on('blur', function () {
+        let code = $(this).val();
+
+        if (!code) {
+            // Afficher le message d'avertissement si le code postal est vide
+            $(zipCodeWarning).text('Saisissez en premier le code postal');
+            return;
+        } else {
+            // Cacher le message d'avertissement si le code postal est rempli
+            $(zipCodeWarning).text('');
+        }
+
+        let url = apiUrl + code + format;
+
+        fetch(url, { method: 'get' }).then(response => response.json()).then(results => {
+            if (results.length) {
+                let regionCode = results[0].codeRegion;
+                let regionUrl = regionApiUrl + regionCode;
+
+                fetch(regionUrl, { method: 'get' }).then(response => response.json()).then(regionData => {
+                    if (regionData.nom) {
+                        $(region).val(regionData.nom);
+                        $(country).val('France');
+                    }
+                }).catch(err => {
+                    console.log(err);
+                });
+
+                let departementCode = results[0].codeDepartement;
+                let departementUrl = departementApiUrl + departementCode;
+
+                fetch(departementUrl, { method: 'get' }).then(response => response.json()).then(departementData => {
+                    if (departementData.nom) {
+                        $(departement).val(departementData.nom);
+                    }
+                }).catch(err => {
+                    console.log(err);
+                });
+
+                $(city).empty();
+                $.each(results, function (key, value) {
+                    $(city).append('<option value="' + value.nom + '">' + value.nom + '</option>');
+                });
+            }
+        }).catch(err => {
+            console.log(err);
+        });
+    });
+});
+
+</script>
+{% endblock %}

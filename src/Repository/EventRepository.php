@@ -22,6 +22,19 @@ class EventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Event::class);
     }
+
+    public function getAllEventsByHall(Hall $hall)
+    {
+        return $this->createQueryBuilder('e')
+            ->addSelect('hall', 'bandEvents')
+            ->leftJoin('e.hall', 'hall')    
+            ->leftJoin('e.bandEvents', 'bandEvents')  
+            ->andWhere('hall.id = :id')
+            ->setParameter('id', $hall->getId())
+            ->orderBy('e.date', 'DESC')    
+            ->getQuery()
+            ->getResult();
+    }
     
     public function getComeEventsByHall(Hall $hall)
     {
