@@ -14,6 +14,7 @@ use App\Form\BandMemberType;
 use App\Form\SearchFormType;
 use App\Form\AddRoleBandType;
 use App\Entity\BandMemberRole;
+use App\Form\BandInfoType;
 use App\Repository\BandRepository;
 use App\Repository\HallRepository;
 use App\Repository\EventRepository;
@@ -468,7 +469,6 @@ class BandController extends AbstractController
         Request $request,
         Band $band,
         BandMemberRepository $bandMemberRepository,
-        BandInfoRepository $bandInfoRepository,
         EntityManagerInterface $em
     ): Response {
         $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
@@ -484,30 +484,21 @@ class BandController extends AbstractController
         if (!$canAccess) {
             return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
         }
-        $bandInfos = $bandInfoRepository->find($band);
+        $form = $this->createForm(BandInfoType::class, $band->getBandInfo());
+        $form->handleRequest($request);
 
-        if ($request->isMethod('POST')) {
-            $bandInfos
-                ->setZipCode($request->request->get('zipCode'))
-                ->setCity($request->request->get('city'))
-                ->setDepartment($request->request->get('departement'))
-                ->setRegion($request->request->get('region'))
-                ->setcountry($request->request->get('country'))
-                ->setEmail($request->request->get('mail'))
-                ->setPhone($request->request->get('phone'))
-                ->setWebsite($request->request->get('website'));
-
-            $em->persist($bandInfos);
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
             $this->addFlash('success', 'Vos informations ont été enregistrées avec succès !');
 
             return $this->redirectToRoute('app_band_infos', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
-        }
+
+        } 
 
         return $this->render('band/infos.html.twig', [
             'band' => $band,
-            'bandInfos' => $bandInfos,
+            'form' => $form,
         ]);
     }
 

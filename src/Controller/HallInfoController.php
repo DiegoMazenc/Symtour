@@ -26,6 +26,7 @@ class HallInfoController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $hallInfo = new HallInfo();
+        $hallInfo->setCity('coucou');
         $form = $this->createForm(HallInfoType::class, $hallInfo);
         $form->handleRequest($request);
 

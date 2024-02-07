@@ -13,6 +13,7 @@ use App\Entity\RoleHall;
 use App\Entity\BandEvent;
 use App\Entity\BandMember;
 use App\Entity\HallMember;
+use App\Form\HallInfoType;
 use App\Form\SearchFormType;
 use App\Form\AddRoleHallType;
 use App\Entity\HallMemberRole;
@@ -22,12 +23,12 @@ use App\Repository\HallRepository;
 use App\Repository\EventRepository;
 use App\Repository\ProfilRepository;
 use App\Service\NotificationService;
+use App\Repository\HallInfoRepository;
 use App\Repository\RoleHallRepository;
 use App\Repository\BandEventRepository;
-use App\Repository\HallInfoRepository;
 use App\Repository\HallMemberRepository;
-use App\Repository\HallMemberRoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\HallMemberRoleRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -465,32 +466,21 @@ class HallController extends AbstractController
         if (!$canAccess) {
             return $this->redirectToRoute('app_hall_show', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
         }
-        $hallInfos = $hallInfoRepository->find($hall);
+        $form = $this->createForm(HallInfoType::class, $hall->getHallInfo());
+        $form->handleRequest($request);
 
-        if ($request->isMethod('POST')) {
-           $hallInfos
-                ->setZipCode($request->request->get('zipCode'))
-                ->setCity($request->request->get('city'))
-                ->setNbrStreet($request->request->get('nbr'))
-                ->setStreet($request->request->get('street'))
-                ->setDepartment($request->request->get('departement'))
-                ->setRegion($request->request->get('region'))
-                ->setcountry($request->request->get('country'))
-                ->setEmail($request->request->get('mail'))
-                ->setPhone($request->request->get('phone'))
-                ->setWebsite($request->request->get('website'));
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
 
-                $em->persist($hallInfos);
-                $em->flush();
+            $this->addFlash('success', 'Vos informations ont été enregistrées avec succès !');
 
-                $this->addFlash('success', 'Vos informations ont été enregistrées avec succès !');
+            return $this->redirectToRoute('app_hall_infos', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
 
-                return $this->redirectToRoute('app_hall_infos', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
-            }
+        } 
 
         return $this->render('hall/infos.html.twig', [
             'hall' => $hall,
-            'hallInfos' => $hallInfos,
+            'form' => $form,
         ]);
     }
 

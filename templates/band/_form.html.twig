@@ -1,36 +1,16 @@
 {{ form_start(form) }}
-{{ form_label(form.name, "Nom du projet *", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
-    {{ form_widget(form.name, {
-        'attr': {
-            'class': 'rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5 ',
-            'placeholder': 'Pays'
-        }
-    }) }}
+<h4 class="title-option"> <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="mr-3"><path fill="currentColor" d="M11 14c1 0 2.05.16 3.2.44c-.81.87-1.2 1.89-1.2 3.06c0 .89.25 1.73.78 2.5H3v-2c0-1.19.91-2.15 2.74-2.88C7.57 14.38 9.33 14 11 14m0-2c-1.08 0-2-.39-2.82-1.17C7.38 10.05 7 9.11 7 8c0-1.08.38-2 1.18-2.82C9 4.38 9.92 4 11 4c1.11 0 2.05.38 2.83 1.18C14.61 6 15 6.92 15 8c0 1.11-.39 2.05-1.17 2.83c-.78.78-1.72 1.17-2.83 1.17m7.5-2H22v2h-2v5.5a2.5 2.5 0 0 1-2.5 2.5a2.5 2.5 0 0 1-2.5-2.5a2.5 2.5 0 0 1 2.5-2.5c.36 0 .69.07 1 .21z"/></svg></span> Mon projet</h4>
+    {{ form_row(form.name) }}
     <hr class="my-5 border-1"> 
 
-    {{ form_label(form.logo, null, {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
-    {{ form_widget(form.logo, {
-        'attr': {
-            'class': 'rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5 ',
-            'placeholder': 'Pays'
-        }
-    }) }} <br>
+    {{ form_row(form.logo) }}
 
-    {{ form_label(form.music_category, "Catégorie Musicale *", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
-    {{ form_widget(form.music_category, {
-        'attr': {
-            'class': 'rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5 ',
-            'placeholder': 'Pays'
-        }
-    }) }}<br>
+    {{ form_row(form.music_category) }}
     
-    {{ form_label(form.define_style, "Sous Catégorie musicale *", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
-    {{ form_widget(form.define_style, {
-        'attr': {
-            'class': 'rounded-lg p-2 relative border-2 bg-slate-100 border-slate-400 mt-1 mb-3 w-3/5 ',
-            'placeholder': 'Pays'
-        }
-    }) }}
-    <br><br>
-    <button class="px-3 py-2 rounded-lg bg-blue-400 hover:bg-blue-500 text-white font-semibold">{{ button_label|default('Save') }}</button>
+    {{ form_row(form.define_style) }}
+
+    <button class="btnFormAccess">Enregistrer</button>
 {{ form_end(form) }}
+
+	{{ include('band/_delete_form.html.twig') }}
+

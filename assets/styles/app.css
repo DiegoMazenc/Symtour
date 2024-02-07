@@ -173,7 +173,49 @@ left: 0%;}
     
 }
 
+.inputForm{
+    width: 100%;
+    border-radius: 8px;
+    background-color: rgb(241 245 249);
+    border: 2px solid rgb(148 163 184);
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
 
+
+
+.btnFormAccess{
+    width: 100%;
+    border-radius: 8px;
+    color: white;
+    background-color: rgb(96 165 250);
+    padding: 8px;
+    margin: 15px 0;
+}
+
+.btnFormDenied{
+    width: 100%;
+    border-radius: 8px;
+    background-color: rgb(203 213 225);
+    padding: 8px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.title-option{
+    width: 100%;
+    background-color: rgb(51 65 85);
+    color: white;
+    padding: 8px;
+    margin: 20px 0;
+    border-radius: 8px;
+    margin: 20px 0;
+    display: flex;
+
+
+
+}
 
 .nav-edit-profil{
     position: relative;

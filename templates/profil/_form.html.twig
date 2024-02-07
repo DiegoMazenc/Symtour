@@ -1,52 +1,13 @@
 {{ form_start(form) }}
-    {# {{ form_widget(form) }} #}
-{{ form_label(form.pseudo, "Pseudo *", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
+<h4 class="title-option"> <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="mr-3"><path fill="white" fill-rule="evenodd" d="M8 7a4 4 0 1 1 8 0a4 4 0 0 1-8 0m0 6a5 5 0 0 0-5 5a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3a5 5 0 0 0-5-5z" clip-rule="evenodd"/></svg></span>Mon profil</h4>
 
-    {{ form_widget(form.pseudo, {
-        'attr': {
-            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mb-3 ',
-            'placeholder': 'Pseudo'
-        }
-    }) }}
-{{ form_label(form.country, "Pays", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
+    {{ form_row(form.pseudo) }}
+    {{ form_row(form.picture) }}
+    {{ form_row(form.description) }}
+    {{ form_row(form.zip_code) }}
+    {{ form_row(form.city) }}
+    {{ form_row(form.country) }}
 
-    {{ form_widget(form.country, {
-        'attr': {
-            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mb-3 ',
-            'placeholder': 'Pays'
-        }
-    }) }}
-{{ form_label(form.city, "Ville ", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
+    <button class="btnFormAccess">Enregistrer</button>
 
-     {{ form_widget(form.city, {
-        'attr': {
-            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mb-3 ',
-            'placeholder': 'Ville'
-        }
-    }) }}
-{{ form_label(form.zip_code, "Code Postal", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
-
-     {{ form_widget(form.zip_code, {
-        'attr': {
-            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mb-3 ',
-            'placeholder': 'Code Postal'
-        }
-    }) }}
-{{ form_label(form.description, "Description", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
-
-     {{ form_widget(form.description, {
-        'attr': {
-            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mb-3 ',
-            'placeholder': 'Description'
-        }
-    }) }}
-{{ form_label(form.picture, "Lien Photo", {'label_attr': {'class': 'text-blue-400 font-semibold'}}) }} <br>
-
-     {{ form_widget(form.picture, {
-        'attr': {
-            'class': 'rounded-lg p-2 relative border-2 border-blue-400 w-full mb-3 ',
-            'placeholder': 'Lien Photo'
-        }
-    }) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form ) }}

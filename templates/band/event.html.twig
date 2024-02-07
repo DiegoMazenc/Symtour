@@ -40,7 +40,7 @@
 		</div>
 		<div class="w-flex">
 
-			<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5 ">Mes prochains évènements</h4>
+			<h4 class="title-option">Mes prochains évènements</h4>
 			{% for events in eventCome %}
 				{% if filterEvent == "all" %}
 					{% set condition = events.status != 2 %}
@@ -272,7 +272,7 @@
 						</div>
 					{% endif %}
 				{% endfor %}
-				<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5 ">Mes évènements passés</h4>
+				<h4 class="title-option">Mes évènements passés</h4>
 				<div class="card-event-list ">
 					{% for events in eventPast %}
 						{% if filterEvent == "all" %}

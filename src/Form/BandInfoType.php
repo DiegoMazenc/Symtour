@@ -3,32 +3,61 @@
 namespace App\Form;
 
 use App\Entity\BandInfo;
-use App\Entity\Band;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 class BandInfoType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('country')
-            ->add('region')
-            ->add('department')
-            ->add('city')
-            ->add('email')
-            ->add('phone')
-            ->add('website')
-            ->add('bandId', EntityType::class, [
-                'class' => Band::class,
-'choice_label' => 'name',
-'label' => false,
-                'attr' => [
-                    'style' => 'display: none;', 
-                ],
-            ])
+        ->add('zipCode', TextType::class, [
+            'attr' => [
+                'class' => 'inputForm',
+            ],
+        ])
+        ->add('city', TextType::class, [
+            'label' => false,
+            'attr' => [
+                'class' => 'inputForm hidden',
+            ],
+        ])
+        ->add('department', TextType::class, [
+            'attr' => [
+                'class' => 'inputForm',
+            ],
+        ])
+        ->add('region', TextType::class, [
+            'attr' => [
+                'class' => 'inputForm',
+            ],
+        ])
+        ->add('country', TextType::class, [
+            'attr' => [
+                'class' => 'inputForm',
+            ],
+        ])
+        ->add('email', EmailType::class, [
+            'attr' => [
+                'class' => 'inputForm',
+            ],
+        ])
+        ->add('phone', TelType::class, [
+            'attr' => [
+                'class' => 'inputForm',
+            ],
+            'required' => false,
+        ])
+        ->add('website', TextType::class, [
+            'attr' => [
+                'class' => 'inputForm',
+            ],
+            'required' => false,
+        ])
         ;
     }
 

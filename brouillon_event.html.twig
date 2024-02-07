@@ -1,3 +1,66 @@
+controller band info 
+
+  #[Route('/{id}/infos', name: 'app_band_infos', methods: ['GET', 'POST'])]
+    public function infos(
+        Request $request,
+        Band $band,
+        BandMemberRepository $bandMemberRepository,
+        // BandInfoRepository $bandInfoRepository,
+        BandInfo $bandInfo,
+        EntityManagerInterface $em
+    ): Response {
+        $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
+        $canAccess = false;
+
+        foreach ($allBandMembers as $bandMember) {
+            if ($this->isGranted('band_member', $bandMember)) {
+                $canAccess = true;
+                break;
+            }
+        }
+
+        if (!$canAccess) {
+            return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
+        }
+        // $bandInfos = $bandInfoRepository->find($band);
+        $form = $this->createForm(BandInfoType::class, $bandInfo);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+
+            $this->addFlash('success', 'Vos informations ont été enregistrées avec succès !');
+
+            return $this->redirectToRoute('app_band_infos', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
+
+        }
+
+        // if ($request->isMethod('POST')) {
+        //     $bandInfos
+        //         ->setZipCode($request->request->get('zipCode'))
+        //         ->setCity($request->request->get('city'))
+        //         ->setDepartment($request->request->get('departement'))
+        //         ->setRegion($request->request->get('region'))
+        //         ->setcountry($request->request->get('country'))
+        //         ->setEmail($request->request->get('mail'))
+        //         ->setPhone($request->request->get('phone'))
+        //         ->setWebsite($request->request->get('website'));
+
+        //     $em->persist($bandInfos);
+        //     $em->flush();
+
+        //     $this->addFlash('success', 'Vos informations ont été enregistrées avec succès !');
+
+        //     return $this->redirectToRoute('app_band_infos', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
+        // }
+
+        return $this->render('band/infos.html.twig', [
+            'band' => $band,
+            'form' => $form,
+        ]);
+
+
+
 
 
 
