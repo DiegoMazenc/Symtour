@@ -22,16 +22,17 @@
 			<a href="/profil/{{ app.user.profil.id}}/edit">Je remplis mes informations</a>
 		</div>
 	{% else %}
-		<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
+		<contain class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
 			<div class="header-user flex ">
 				<div class="pic_profil">
 					<img src="{{ profil.picture }}" alt="" class="user-img">
 				</div>
-				<div class="user-infos">
+				<infos class="user-infos">
 					<h3 class="font-bold ">{{ profil.pseudo }}</h3>
 					<h3 class="mb-8">{{ profil.description }}</h3>
-
-				</div>
+					<h3 class="mb-8">{{ profil.city }}</h3>
+				</infos>
+				
 
 			</div>
 			<hr class=" border-black my-5">
@@ -230,7 +231,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</contain>
 	{% endif %}
 
 	
