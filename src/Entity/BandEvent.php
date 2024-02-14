@@ -14,10 +14,10 @@ class BandEvent
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'bandEvents')]
-    private ?band $band = null;
+    private ?Band $band = null;
 
     #[ORM\ManyToOne(inversedBy: 'bandEvents')]
-    private ?event $event = null;
+    private ?Event $event = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $status = null;
@@ -27,24 +27,24 @@ class BandEvent
         return $this->id;
     }
 
-    public function getBand(): ?band
+    public function getBand(): ?Band
     {
         return $this->band;
     }
 
-    public function setBand(?band $band): static
+    public function setBand(?Band $band): static
     {
         $this->band = $band;
 
         return $this;
     }
 
-    public function getEvent(): ?event
+    public function getEvent(): ?Event
     {
         return $this->event;
     }
 
-    public function setEvent(?event $event): static
+    public function setEvent(?Event $event): static
     {
         $this->event = $event;
 

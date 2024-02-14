@@ -65,7 +65,7 @@
 												
 												<label for="role_{{ loop.index }}">Rôle
 													{{ loop.index }}</label><br>
-												<select name="role_{{ loop.index }}" id="" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
+												<select name="role_{{ loop.index }}" >
 													{% for role in roles %}
 														<option value="{{ role.id }}" {% if role.roleName == hallMemberRole.roleHall.roleName %} selected {% endif %}>{{ role.roleName|capitalize }}</option>
 													{% endfor %}
@@ -85,7 +85,7 @@
 										</a>
 										<div class="openRole">
 											<label for="newRole">Nouveau rôle</label><br>
-											<select name="newRole" id="" class=" w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300 ">
+											<select name="newRole">
 												{% for role in roles %}
 													<option value="{{ role.id }}">{{ role.roleName|capitalize }}</option>
 												{% endfor %}
@@ -97,17 +97,17 @@
 												<p class="text-red-500">{{ message }}</p>
 										{% endfor %}
 										<label for="status">Status</label><br>
-										<select name="status" id="" class=" w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
+										<select name="status">
 											<option value="admin" {% if member.status == "admin" %} selected {% endif %}>Admin</option>
 											<option value="member" {% if member.status == "member" %} selected {% endif %}>Membre</option>
 										</select>
 									</div>
-									<button class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg relative mt-5 p-2 duration-300">Modifier</button>
+									<button class="btnFormAccess">Modifier</button>
 								</form>
 								<form action="{{ path('app_hall_members', {'id': hall.id}) }}" method="post">
 									<input type="hidden" name="idMember" value="{{ member.id }}">
 									<div class="flex-responsive">
-										<button name="deleteMember" class="w-full  border-2 border-red-200 hover:border-red-500 hover:bg-red-300 rounded-lg mt-5 p-2 duration-300">Supprimer ce membre</button>
+										<button name="deleteMember" class="w-full  border-2 border-red-200 hover:border-red-500 hover:bg-red-300 rounded-lg p-2 duration-300">Supprimer ce membre</button>
 									</div>
 
 								</form>
@@ -119,10 +119,10 @@
 				{% endfor %}
 				{% if isAdmin %}
 
-					<a href="#" class="text-slate-400 hover:text-blue-500 " id="toggleSearch">
+					<div class="text-slate-400 hover:text-blue-500 " id="toggleSearch">
 						<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>
 						Ajouter un Membre
-					</a>
+					</div>
 					<div class="search-member">
 						{{ form_start(searchForm) }}
 						{{ form_widget(searchForm.search, {

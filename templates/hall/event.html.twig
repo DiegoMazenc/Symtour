@@ -51,23 +51,22 @@
 					{% set condition = events.status == 3 %}
 				{% endif %}
 				{% if condition %}
-					<div class="card-event bg-white">
+					<div id="event_{{ events.id }}" class="transition">
+					<div class="card-event bg-white" id="event_content_{{ events.id }}">
 						{% if events.status == 1 %}
 							<div class="flex bg-green-500 text-white p-2 rounded-t-md items-center justify-between">
-							{% else %}
-								<div class="flex bg-slate-500 text-white p-2 rounded-t-md items-center justify-between">
-
-								{% endif %}
+						{% else %}
+							<div class="flex bg-slate-500 text-white p-2 rounded-t-md items-center justify-between">
+						{% endif %}
 								<div class="flex items-center ">
-									<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
-									<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+										<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+										<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
 								</div>
 								<p class="px-5 clicEvent">▽</p>
 							</div>
 							<div class="plateau openEvent">
 								{% for bandEvent in events.bandEvents %}
 									{% if bandEvent.status == "validate" %}
-
 										<div class="clicBand">
 											<div class=" flex justify-between items-center">
 												<div class="flex p-2 items-center relative">
@@ -95,22 +94,8 @@
 												{% else %}
 													{% if isAdmin  %}
 														<div class="flex">
-															<form action="{{ path('app_hall_event', {'id': hall.id}) }}" method="post">
-																<input type="hidden" name="action" value="validate">
-																<input type="hidden" name="bandId" value="{{ bandEvent.band.id }}">
-																<input type="hidden" name="hallId" value="{{ bandEvent.event.hall.id }}">
-																<input type="hidden" name="date" value="{{ bandEvent.event.date|date() }}">
-																<input type="hidden" name="event_id" value="{{ events.id }}">
-																<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
-															</form>
-															<form action="{{ path('app_hall_event', {'id': hall.id}) }}" method="post">
-																<input type="hidden" name="action" value="reject">
-																<input type="hidden" name="bandId" value="{{ bandEvent.band.id }}">
-																<input type="hidden" name="hallId" value="{{ bandEvent.event.hall.id }}">
-																<input type="hidden" name="date" value="{{ bandEvent.event.date|date() }}">
-																<input type="hidden" name="event_id" value="{{ events.id }}">
-																<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
-															</form>
+															<button type="submit" class=" bg-green-300 hover:bg-green-500 text-white px-2 py-1 rounded-full text-xs  mx-1 deleteNotif" data-eventid="{{ events.id }}" data-bandid="{{ bandEvent.band.id }}" data-date="{{ bandEvent.event.date|date() }}" data-action="validate">✓</button>
+															<button type="submit" class=" bg-red-300 hover:bg-red-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif" data-eventid="{{ events.id }}" data-bandid="{{ bandEvent.band.id }}"  data-date="{{ bandEvent.event.date|date() }}" data-action="reject">X</button>
 														</div>
 													{% endif %}
 												{% endif %}
@@ -118,8 +103,6 @@
 											<div class="openBand">
 												{% for member in bandEvent.band.bandMembers %}
 													{% if member.status == "member" or member.status == "admin" %}
-
-
 														<div class="flex justify-between list-member-event">
 															<div class="flex">
 																<div class="img-profil-event border-2 border-slate-500">
@@ -141,7 +124,6 @@
 										</div>
 										<hr>
 									{% endif %}
-
 								{% endfor %}
 								{% if events.status == 1 %}
 									<p class="bg-slate-300 w-full pl-3 text-white">Goupes invités</p>
@@ -215,7 +197,7 @@
 												</div>
 											</div>
 											<div class="search-member">
-												<form action="{{ path('app_hall_event', {'id': hall.id}) }}" method="post" name="addBandForm">
+												<form action="{{ path('app_hall_event', {'id': hall.id}) }}#event_{{ events.id }}" method="post" name="addBandForm">
 													<input type="text" name="addBand" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
 													<input type="hidden" name="formName" value="addBandForm">
 													<input type="hidden" name="date" value="{{ events.date|date() }}">
@@ -277,9 +259,10 @@
 								{% endif %}
 
 							</div>
-						</div>
-					{% endif %}
-				{% endfor %}
+					</div>
+					</div>
+				{% endif %}
+			{% endfor %}
 				<h4 class="title-option">Mes évènements passés</h4>
 				<div class="card-event-list ">
 					{% for events in eventPast %}
@@ -367,29 +350,67 @@ searchMemberDiv.hide();
 }
 });
 });
+
+
+$(document).ready(function () {
+    $('.deleteNotif').click(function (event) {
+        event.preventDefault();
+
+        let button = $(this);
+        console.log("pouet");
+        const hallId = {{ hall.id }};
+        let eventId = button.data('eventid');
+        let bandId = button.data('bandid');
+        let date = button.data('date');
+        let action = button.data('action');
+
+        let notification = document.querySelector('#event_' + eventId);
+        notification.classList.add('transition-delete');
+		let eventContent = document.querySelector('#event_content_'+ eventId);
+		if(action == "validate"){
+        eventContent.classList.add('validate-action');
+		} else{
+        eventContent.classList.add('reject-action');
+		}
+        setTimeout(() => {
+            notification.style.display = "none";
+        }, 300);
+
+        $.ajax({
+            type: 'POST',
+            url: '/hall/' + hallId + '/event',
+            data: {
+                action: action,
+                event_id: eventId,
+                bandId: bandId,
+                hallId: hallId,
+                date: date
+            },
+        });
+    });
+});
 		</script>
 	{% endblock %}
 
-
 	{# {% block scripts %}
-			
-			<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-			<script>
-				$(document).ready(function () {
-			$(".clic").click(function () {
-			$(this).find(".open").toggle();
-			});
-			
-			$(document).on('click', '.toggleSearchLink', function () {
-			let searchMemberDiv = $(this).closest('.card-event').find('.search-member');
-			
-			if (searchMemberDiv.is(':hidden')) {
-			searchMemberDiv.show();
-			$(this).hide();
-			} else {
-			searchMemberDiv.hide();
-			}
-			});
-			});
-			</script>
-			{% endblock %} #}
+				
+				<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+				<script>
+					$(document).ready(function () {
+				$(".clic").click(function () {
+				$(this).find(".open").toggle();
+				});
+				
+				$(document).on('click', '.toggleSearchLink', function () {
+				let searchMemberDiv = $(this).closest('.card-event').find('.search-member');
+				
+				if (searchMemberDiv.is(':hidden')) {
+				searchMemberDiv.show();
+				$(this).hide();
+				} else {
+				searchMemberDiv.hide();
+				}
+				});
+				});
+				</script>
+				{% endblock %} #}

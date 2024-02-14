@@ -3,8 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Event;
-use App\Entity\band;
-use App\Entity\hall;
+use App\Entity\Band;
+use App\Entity\Hall;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

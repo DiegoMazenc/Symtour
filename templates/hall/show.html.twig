@@ -39,7 +39,9 @@
 						<div class="p-3">
 							{% for event in hall.events %}
 								{% if event.status == 3 %}
-									<div class="cardAdminProfil flex justify-between ">
+								<div id="event_{{ event.id }}" class="transition">
+								
+									<div class="cardAdminProfil flex justify-between " >
 										<p>{{ event.date|date('d-m-Y')  }}</p>
 										{% for bandEvent in event.bandEvents %}
 
@@ -48,23 +50,24 @@
 												/
 												{{ bandEvent.band.defineStyle }}</p>
 
-											<div class="flex">
-												<form action="{{ path('app_hall_show', {'id': hall.id}) }}" method="post">
-													<input type="hidden" name="action" value="validate">
-													<input type="hidden" name="bandId" value="{{ bandEvent.band.id }}">
-													<input type="hidden" name="event_id" value="{{ event.id }}">
-													<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
-												</form>
-												<form action="{{ path('app_hall_show', {'id': hall.id}) }}" method="post">
-													<input type="hidden" name="action" value="reject">
-													<input type="hidden" name="bandId" value="{{ bandEvent.band.id }}">
-													<input type="hidden" name="event_id" value="{{ event.id }}">
-													<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
-												</form>
+											 <div class="flex">
+	
+													<button type="submit" class=" bg-green-300 hover:bg-green-500 text-white px-2 py-1 rounded-full text-xs  mx-1 deleteNotif" 
+													data-eventid="{{ event.id }}"
+													data-bandid="{{ bandEvent.band.id }}"
+													data-action="validate"
+													>✓</button>
+
+													<button type="submit" class=" bg-red-300 hover:bg-red-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif"
+													data-eventid="{{ event.id }}"
+													data-bandid="{{ bandEvent.band.id }}"
+													data-action="reject"
+													>X</button>
 											</div>
 										{% endfor %}
 									</div>
 									<hr class="my-3">
+									</div>
 								{% endif %}
 							{% endfor %}
 							<a href="{{ path('app_event_new') }}" class="text-slate-400 hover:text-blue-500 ">
@@ -607,5 +610,40 @@ content.style.transition = '';
 }
 });
 	</script>
+
+
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+$(document).ready(function () {
+    $('.deleteNotif').click(function (event) {
+        event.preventDefault();
+
+        let button = $(this);
+        console.log("pouet");
+        const hallId = {{ hall.id }};
+        let eventId = button.data('eventid');
+        let bandId = button.data('bandid');
+        let action = button.data('action');
+
+        let notification = document.querySelector('#event_' + eventId);
+        notification.classList.add('transition-delete');
+        setTimeout(() => {
+            notification.style.display = "none";
+        }, 300);
+
+        $.ajax({
+            type: 'POST',
+            url: '/hall/' + hallId,
+            data: {
+                action: action,
+                event_id: eventId,
+                bandId: bandId
+            },
+        });
+    });
+});
+
+		</script>
+
 
 {% endblock %}

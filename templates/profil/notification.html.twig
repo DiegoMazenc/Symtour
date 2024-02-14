@@ -1,56 +1,89 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Profil {{ profil.pseudo }}
+	Profil
+	{{ profil.pseudo }}
 {% endblock %}
 
 {% block body %}
-    <div class="user-contain">
-        {% for notification in profil.notifications|reverse %}
-            {% set pageLink = '' %}
-            {% set memberType = '' %}
+	<div class="user-contain">
 
-            {% if notification.receiptPage == "hall" %}
-                {% set pageLink = path(notification.type == "add" ? 'app_hall_members' : 'app_hall_show', {'id': notification.receiptId, 'notification_id': notification.id}) %}
-                {% set memberType = profil.hallMembers|filter(member => member.hall.id == notification.receiptId)|first %}
-            {% elseif notification.receiptPage == "band" %}
-                {% set pageLink = path(notification.type == "add" ? 'app_band_members' : 'app_band_show', {'id': notification.receiptId, 'notification_id': notification.id}) %}
-                {% set memberType = profil.bandMembers|filter(member => member.band.id == notification.receiptId)|first %}
-            {% elseif notification.receiptPage == "profil" %}
-                {% set pageLink = path('app_profil_show', {'id': notification.receiptId, 'notification_id': notification.id}) %}
-            {% endif %}
+		{% for notification in profil.notifications|reverse %}
+			<div id="notification_{{ notification.id }}" class="transition">
+				{% set pageLink = '' %}
+				{% set memberType = '' %}
 
-            {% if notification.status == 1 %}
-                <div class="bg-slate-200 my-3 p-3 w-flex rounded-md border-2 border-slate-300 hover:bg-white hover:border-2 hover:border-slate-300 duration-300">
-            {% else %}
-                <div class="bg-white my-3 w-flex p-3 rounded-md border-2 border-white hover:border-2 hover:border-slate-300 duration-300">
-            {% endif %}
+				{% if notification.receiptPage == "hall" %}
+					{% set pageLink = path(notification.type == "add" ? 'app_hall_members' : 'app_hall_show', {'id': notification.receiptId, 'notification_id': notification.id}) %}
+					{% set memberType = profil.hallMembers|filter(member => member.hall.id == notification.receiptId)|first %}
+				{% elseif notification.receiptPage == "band" %}
+					{% set pageLink = path(notification.type == "add" ? 'app_band_members' : 'app_band_show', {'id': notification.receiptId, 'notification_id': notification.id}) %}
+					{% set memberType = profil.bandMembers|filter(member => member.band.id == notification.receiptId)|first %}
+				{% elseif notification.receiptPage == "profil" %}
+					{% set pageLink = path('app_profil_show', {'id': notification.receiptId, 'notification_id': notification.id}) %}
+				{% endif %}
 
-            <a href="{{ pageLink }}">
-                <div class="flex justify-between items-center">
-                    <div class="flex">
-                    <div class="img-project-db ">
-                        <img src="{{ memberType.band.logo ?? memberType.hall.logo ?? profil.picture }}" alt="" class="w-10 rounded-full mr-3">
-                        </div>   
-                        <div>   
-                            <div class="flex item-center">
-                                <p class="mr-3 text-blue-400 font-semibold">
-                                    {{ memberType.band.name ?? memberType.hall.name ?? profil.pseudo }}
-                                </p>
-                                <p class="text-xs mt-1">{{ notification.date|date('d-m-Y') }}</p>
-                            </div>
-                            <p>{{ notification.message }}</p>
-                        </div>
-                    </div>
-                    
- <form action="{{ path('app_profil_notification', {'id': app.user.profil.id}) }}"  method="post">
-				<input type="hidden" name="id_notif" value="{{ notification.id }}">
-                <button class="bg-slate-200 px-3 pb-1 rounded-full text-white font-bold  hover:bg-slate-500 "> x </button>
-                </form>
-                </div>
-            </a>
-           
-        </div>
-        {% endfor %}
-    </div>
-{% endblock %}
+				{% if notification.status == 1 %}
+					<div class="bg-slate-200 my-3 p-3 w-flex rounded-md border-2 border-slate-300 hover:bg-white hover:border-2 hover:border-slate-300 duration-300">
+					{% else %}
+						<div class="bg-white my-3 w-flex p-3 rounded-md border-2 border-white hover:border-2 hover:border-slate-300 duration-300">
+						{% endif %}
+
+						<div class="flex justify-between items-center">
+							<a href="{{ pageLink }}">
+								<div class="flex">
+									<div class="img-project-db ">
+										<img src="{{ memberType.band.logo ?? memberType.hall.logo ?? profil.picture }}" alt="" class="w-10 rounded-full mr-3">
+									</div>
+									<div>
+										<div class="flex item-center">
+											<p class="mr-3 text-blue-400 font-semibold">
+												{{ memberType.band.name ?? memberType.hall.name ?? profil.pseudo }}
+											</p>
+											<p class="text-xs mt-1">{{ notification.date|date('d-m-Y') }}</p>
+										</div>
+										<p>{{ notification.message }}</p>
+									</div>
+								</div>
+							</a>
+							<button class="bg-slate-200 px-3 pb-1 rounded-full text-white font-bold  hover:bg-slate-500 deleteNotif" data-notifid="{{ notification.id }}">
+								x
+							</button>
+
+						</div>
+
+
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			$(document).ready(function () {
+$('.deleteNotif').click(function (event) {
+event.preventDefault();
+
+let button = $(this);
+
+let profilId = {{ app.user.profil.id }};
+
+let notifId = button.data('notifid');
+console.log(notifId);
+let notification = document.querySelector('#notification_' + notifId)
+notification.classList.add('transition-delete');
+setTimeout(() => {
+notification.style.display = "none";
+}, 300);
+
+$.ajax({
+type: 'POST',
+url: '/profil/' + profilId + '/notification',
+data: {
+id_notif: notifId
+}
+});
+});
+});
+		</script>
+	{% endblock %}
