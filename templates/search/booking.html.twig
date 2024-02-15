@@ -173,38 +173,45 @@ calendar.appendChild(dayElement);
 startPosition = 0;
 
 for (let day = 1; day <= daysInMonth; day++) {
-const dayElement = document.createElement('div');
-dayElement.className = 'day current-month-day';
-dayElement.classList.add('valide-day');
-dayElement.textContent = day;
+    const dayElement = document.createElement('div');
+    dayElement.className = 'day current-month-day';
+    dayElement.classList.add('valide-day');
+    dayElement.textContent = day;
 
-const currentDate = new Date();
-if (day === currentDate.getDate() && currentMonth === currentDate.getMonth() && currentYear === currentDate.getFullYear()) {
-dayElement.classList.add('current-day'); // Add a class for the current day
-}
+    // Ajoutez une condition pour vérifier si le jour est dans le passé
+    if (new Date(currentYear, currentMonth, day) < new Date()) {
+        dayElement.classList.add('other-month-day');
+        dayElement.classList.remove('valide-day');
+    } else {
+        const currentDate = new Date();
+        if (day === currentDate.getDate() && currentMonth === currentDate.getMonth() && currentYear === currentDate.getFullYear()) {
+            dayElement.classList.add('current-day'); // Add a class for the current day
+        }
 
+        // Check if there are events on this day
+        const eventsOnDay = events.filter(event => {
+            const eventDate = new Date(event.date);
+            return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
+        });
 
-// Check if there are events on this day
-const eventsOnDay = events.filter(event => {
-const eventDate = new Date(event.date);
-return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
-});
+        // Process events based on statusDate
+        const eventWithStatus1 = eventsOnDay.find(event => event.statusDate === '1');
+        const eventWithStatus2 = eventsOnDay.find(event => event.statusDate === '2');
+        const eventWithStatus3 = eventsOnDay.filter(event => event.statusDate === '3'); // Utiliser filter pour obtenir tous les événements avec le statut 3
 
-// Process events based on statusDate
-const eventWithStatus1 = eventsOnDay.find(event => event.statusDate === '1');
-const eventWithStatus2 = eventsOnDay.find(event => event.statusDate === '2');
-const eventWithStatus3 = eventsOnDay.filter(event => event.statusDate === '3'); // Utiliser filter pour obtenir tous les événements avec le statut 3
+        if (eventWithStatus1) {
+            dayElement.classList.remove('valide-day');
+            dayElement.classList.add('event-reserved');
+        } else if (eventWithStatus3.length > 0) {
+            dayElement.classList.remove('valide-day');
+            dayElement.classList.add('in-progress');
+            addClickEventListener(dayElement, day, currentMonth, currentYear, eventWithStatus3.length);
+        } else {
+            addClickEventListener(dayElement, day, currentMonth, currentYear, 0);
+        }
+    }
 
-if (eventWithStatus1) {
-dayElement.classList.remove('valide-day');
-dayElement.classList.add('event-reserved');
-} else if (eventWithStatus3.length > 0) {
-dayElement.classList.remove('valide-day');
-dayElement.classList.add('in-progress');
-addClickEventListener(dayElement, day, currentMonth, currentYear, eventWithStatus3.length);
-} else {
-addClickEventListener(dayElement, day, currentMonth, currentYear, 0);
-} calendar.appendChild(dayElement);
+    calendar.appendChild(dayElement);
 }
 
 function addClickEventListener(element, day, month, year, eventCount) {

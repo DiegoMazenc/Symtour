@@ -61,29 +61,28 @@
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script>
 			$(document).ready(function () {
-$('.deleteNotif').click(function (event) {
-event.preventDefault();
+				$('.deleteNotif').click(function (event) {
+					event.preventDefault();
 
-let button = $(this);
+					let button = $(this);
 
-let profilId = {{ app.user.profil.id }};
+					let profilId = {{ app.user.profil.id }};
+					let notifId = button.data('notifid');
+					
+					let notification = document.querySelector('#notification_' + notifId)
+					notification.classList.add('transition-delete');
+					setTimeout(() => {
+						notification.style.display = "none";
+					}, 300);
 
-let notifId = button.data('notifid');
-console.log(notifId);
-let notification = document.querySelector('#notification_' + notifId)
-notification.classList.add('transition-delete');
-setTimeout(() => {
-notification.style.display = "none";
-}, 300);
-
-$.ajax({
-type: 'POST',
-url: '/profil/' + profilId + '/notification',
-data: {
-id_notif: notifId
-}
-});
-});
-});
+					$.ajax({
+						type: 'POST',
+						url: '/profil/' + profilId + '/notification',
+						data: {
+							id_notif: notifId
+						}
+					});
+				});
+			});
 		</script>
 	{% endblock %}
