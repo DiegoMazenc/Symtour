@@ -201,19 +201,47 @@ class Hall implements JsonSerializable
         return $this;
     }
 
+    private ?User $currentUser = null;
 
-    public function jsonSerialize(){
+    // Create a setter method to set the current user
+    public function setCurrentUser(?User $currentUser): static
+    {
+        $this->currentUser = $currentUser;
+
+        return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        $musicCategories = [];
+
+        // Boucle sur les catégories de musique associées à la salle
+        foreach ($this->getMusicCategory() as $musicCategory) {
+            $musicCategories[] = $musicCategory->jsonSerialize();
+        }
+
+        $eventsResp = 0;
+
+        foreach ($this->getEvents() as $event) {
+            if ($event->getStatus() != 3) {
+                $eventsResp++;
+            }
+        }
+
+        // Check if the current user is set
+        $currentUserData = $this->currentUser ? $this->currentUser->jsonSerialize() : null;
+
+      
+
         return [
             "id" => $this->getId(),
             "name" => $this->getName(),
             "logo" => $this->getLogo(),
-            // "hallMembers" => $this->getHallMembers()->getProfile(),
-            // "music_category" => $this->getMusicCategory(),
-            // "events" => $this->getEvents(),
+            "music_categories" => $musicCategories,
             "structure" => $this->getStructure(),
-            // "hallInfo" => $this->getHallInfo(),
-
-       
+            "hallInfo" => $this->getHallInfo()->jsonSerialize(),
+            "rateResp" => $eventsResp > 0 ? round($eventsResp * 100 / count($this->getEvents()), 2) : 0,
+            "currentUser" => $currentUserData,
         ];
     }
 }

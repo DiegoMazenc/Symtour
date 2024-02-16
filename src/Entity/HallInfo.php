@@ -187,5 +187,11 @@ class HallInfo
         return $this;
     }
 
+    public function jsonSerialize() {
+        return [
+            "zipCode" => $this->getZipCode(),
+            "city" => $this->getCity(),
+        ];
+    }
 
 }

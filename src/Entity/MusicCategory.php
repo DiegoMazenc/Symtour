@@ -69,4 +69,14 @@ class MusicCategory
 
         return $this;
     }
+
+    public function jsonSerialize() {
+        return [
+            "id" => $this->getId(),
+            "name" => $this->getCategory(),
+            // ... (autres champs de la catégorie de musique)
+        ];
+    }
+
+    
 }
