@@ -191,6 +191,9 @@ class HallInfo
         return [
             "zipCode" => $this->getZipCode(),
             "city" => $this->getCity(),
+            "country" => $this->getCountry(),
+            "department" => $this->getDepartment(),
+            "region" => $this->getRegion(),
         ];
     }
 

@@ -67,14 +67,3 @@ class ApiController extends AbstractController
 
 
 }
-
-
-
-
-//     #[Route('/api', name: 'app_api', methods: ['POST'])]
-//     public function hall(Request $request, HallRepository $hallRepository): Response
-//     {
-//         $hall = [];
-//         dd($request->request);
-//         return $this->json($hall);
-//     }

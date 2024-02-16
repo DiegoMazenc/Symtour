@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\HallRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
+use JsonSerializable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
+use App\Repository\HallRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: HallRepository::class)]
 class Hall implements JsonSerializable
@@ -220,18 +221,20 @@ class Hall implements JsonSerializable
             $musicCategories[] = $musicCategory->jsonSerialize();
         }
 
-        $eventsResp = 0;
+        $eventAvailable = [];
+        $currentDate = new DateTime(); 
+        foreach ($this->getEvents() as $events){
+            if($events->getStatus() == 1 && $events->getDate() < $currentDate){
+                $eventAvailable[] = $events->getDate();
+            }
+        }
 
+        $eventsResp = 0;
         foreach ($this->getEvents() as $event) {
             if ($event->getStatus() != 3) {
                 $eventsResp++;
             }
         }
-
-        // Check if the current user is set
-        $currentUserData = $this->currentUser ? $this->currentUser->jsonSerialize() : null;
-
-      
 
         return [
             "id" => $this->getId(),
@@ -241,7 +244,8 @@ class Hall implements JsonSerializable
             "structure" => $this->getStructure(),
             "hallInfo" => $this->getHallInfo()->jsonSerialize(),
             "rateResp" => $eventsResp > 0 ? round($eventsResp * 100 / count($this->getEvents()), 2) : 0,
-            "currentUser" => $currentUserData,
+            "date" => $eventAvailable,
+
         ];
     }
 }
