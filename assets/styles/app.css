@@ -18,6 +18,9 @@ background-color: #334155;
 .w-flex{
     width: 48%;
 }
+.w-flex-search{
+    width: 30%;
+}
 
 
 .list-category{
@@ -223,7 +226,7 @@ input, select{
         display: block;
     }
 
-    .w-flex{
+    .w-flex, .w-flex-search{
         width: 100%;
     }
 

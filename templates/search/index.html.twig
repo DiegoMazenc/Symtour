@@ -1,138 +1,189 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 
-	<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
-		{{ form_start(searchForm) }}
-		<div class="relative">
-			{{ form_widget(searchForm.search, {
-				'attr': {
-					'class': 'bg-white',  
-				}
-			}) }}
-			<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewbox="0 0 24 24" class="absolute right-2 top-3"><path fill="black" d="m20.71 19.29l-3.4-3.39A7.92 7.92 0 0 0 19 11a8 8 0 1 0-8 8a7.92 7.92 0 0 0 4.9-1.69l3.39 3.4a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.42M5 11a6 6 0 1 1 6 6a6 6 0 0 1-6-6"/></svg>
-		</div>
-		{{ form_widget(searchForm.submit, {
-				'attr': {
-					'class': 'hidden',  
-				}
-			}) }}
-		{{ form_end(searchForm) }}
-		<hr class="mt-3">
+<div
+	class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
+	{# {{ form_start(searchForm) }}
+					<div class="relative">
+						{{ form_widget(searchForm.search, {
+							'attr': {
+								'class': 'bg-white',  
+							}
+						}) }}
+						<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewbox="0 0 24 24" class="absolute right-2 top-3"><path fill="black" d="m20.71 19.29l-3.4-3.39A7.92 7.92 0 0 0 19 11a8 8 0 1 0-8 8a7.92 7.92 0 0 0 4.9-1.69l3.39 3.4a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.42M5 11a6 6 0 1 1 6 6a6 6 0 0 1-6-6"/></svg>
+					</div>
+					{{ form_widget(searchForm.submit, {
+							'attr': {
+								'class': 'hidden',  
+							}
+						}) }}
+					{{ form_end(searchForm) }}
+					<hr class="mt-3">
+			
+					{{ form_start(filterForm) }}
+					<div class="flex-responsive  justify-between py-3">
+						<div class="form-search">
+							<select id="{{ filterForm.musicCategory.vars.id }}" name="{{ filterForm.musicCategory.vars.full_name }}" class="m-0 w-full bg-white">
+								<option value="" disabled selected>
+									<p class="text-gray-500">Genre Musical</p>
+								</option>
+			
+								{% for music_category in music_categories %}
+									<option value="{{ music_category.category }}">{{ music_category.category }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="form-search">
+							{{ form_widget(filterForm.date, {
+									'attr': {
+										'class' : 'm-0 w-full bg-white'									
+									}
+								}) }}
+						</div>
+						<div class="relative form-search">
+							{{ form_widget(filterForm.city, {
+									'attr': {
+										'class' : 'm-0 w-full bg-white',
+										'placeholder' : "Ville",										
+									}
+								}) }}
+							<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewbox="0 0 256 256" class="absolute right-2 top-3"><path fill="currentColor" d="M128 64a40 40 0 1 0 40 40a40 40 0 0 0-40-40m0 64a24 24 0 1 1 24-24a24 24 0 0 1-24 24m0-112a88.1 88.1 0 0 0-88 88c0 31.4 14.51 64.68 42 96.25a254.19 254.19 0 0 0 41.45 38.3a8 8 0 0 0 9.18 0a254.19 254.19 0 0 0 41.37-38.3c27.45-31.57 42-64.85 42-96.25a88.1 88.1 0 0 0-88-88m0 206c-16.53-13-72-60.75-72-118a72 72 0 0 1 144 0c0 57.23-55.47 105-72 118"/></svg>
+			
+						</div>
+						{{ form_widget(filterForm._token) }}
+						<button type="submit" class=" btn-search ">Appliquer</button>
+					</div>
+					{{ form_end(filterForm, {render_rest: false}) }} #}
+					<div class="relative">
 
-		{{ form_start(filterForm) }}
-		<div class="flex-responsive  justify-between py-3">
-			<div class="form-search">
-				<select id="{{ filterForm.musicCategory.vars.id }}" name="{{ filterForm.musicCategory.vars.full_name }}" class="m-0 w-full bg-white">
-					<option value="" disabled selected>
-						<p class="text-gray-500">Genre Musical</p>
-					</option>
+	<input type="text" id="searchName" class="bg-white" placeholder="Chercher un salle">
+	<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewbox="0 0 24 24" class="absolute right-2 top-4"><path fill="black" d="m20.71 19.29l-3.4-3.39A7.92 7.92 0 0 0 19 11a8 8 0 1 0-8 8a7.92 7.92 0 0 0 4.9-1.69l3.39 3.4a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.42M5 11a6 6 0 1 1 6 6a6 6 0 0 1-6-6"/></svg>
+					</div>
 
-					{% for music_category in music_categories %}
-						<option value="{{ music_category.category }}">{{ music_category.category }}</option>
-					{% endfor %}
-				</select>
-			</div>
-			<div class="form-search">
-				{{ form_widget(filterForm.date, {
-						'attr': {
-							'class' : 'm-0 w-full bg-white'									
-						}
-					}) }}
-			</div>
-			<div class="relative form-search">
-				{{ form_widget(filterForm.city, {
-						'attr': {
-							'class' : 'm-0 w-full bg-white',
-							'placeholder' : "Ville",										
-						}
-					}) }}
-				<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewbox="0 0 256 256" class="absolute right-2 top-3"><path fill="currentColor" d="M128 64a40 40 0 1 0 40 40a40 40 0 0 0-40-40m0 64a24 24 0 1 1 24-24a24 24 0 0 1-24 24m0-112a88.1 88.1 0 0 0-88 88c0 31.4 14.51 64.68 42 96.25a254.19 254.19 0 0 0 41.45 38.3a8 8 0 0 0 9.18 0a254.19 254.19 0 0 0 41.37-38.3c27.45-31.57 42-64.85 42-96.25a88.1 88.1 0 0 0-88-88m0 206c-16.53-13-72-60.75-72-118a72 72 0 0 1 144 0c0 57.23-55.47 105-72 118"/></svg>
+	<div class="flex-responsive">
+					<div class="relative w-flex-search">
 
-			</div>
-			{{ form_widget(filterForm._token) }}
-			<button type="submit" class=" btn-search ">Appliquer</button>
-		</div>
-		{{ form_end(filterForm, {render_rest: false}) }}
+		<input type="text" id="searchGeo" class="bg-white " placeholder="Lieu (Ville, CP, département...)">
+		<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewbox="0 0 256 256" class="absolute right-2 top-4"><path fill="currentColor" d="M128 64a40 40 0 1 0 40 40a40 40 0 0 0-40-40m0 64a24 24 0 1 1 24-24a24 24 0 0 1-24 24m0-112a88.1 88.1 0 0 0-88 88c0 31.4 14.51 64.68 42 96.25a254.19 254.19 0 0 0 41.45 38.3a8 8 0 0 0 9.18 0a254.19 254.19 0 0 0 41.37-38.3c27.45-31.57 42-64.85 42-96.25a88.1 88.1 0 0 0-88-88m0 206c-16.53-13-72-60.75-72-118a72 72 0 0 1 144 0c0 57.23-55.47 105-72 118"/></svg>
+			
+						</div>
+		<select id="searchMusic" class="bg-white w-flex-search">
+			<option value="" disabled selected>
+				<p class="text-gray-500">Genre Musical</p>
+			</option>
 
-		<hr>
-
-		<div id="hallContainer" class="card-container"></div>
+			{% for music_category in music_categories %}
+				<option value="{{ music_category.category }}">{{ music_category.category }}</option>
+			{% endfor %}
+		</select>
+		<input type="date" id="searchDate" class="bg-white w-flex-search">
 	</div>
+	<hr>
+	<div id="hallContainer" class="card-container"></div>
 </div>
 
+
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-
-
-
-
 <script>
 	AOS.init();
-</script>
-
-
-
-
-<script>
- fetch(`/api/search`)
-  .then(response => response.json())
-  .then(data => {
-    const hallContainer = document.getElementById('hallContainer');
-    console.log(data);
-
-    data.forEach(hall => {
-      const cardResult = document.createElement('div');
-      cardResult.classList.add('card-result');
-      cardResult.setAttribute('data-aos', 'fade-up');
-
-      cardResult.innerHTML = `
-        <a href="/path-to-hall-show/${hall.id}">
-          <h4 class="bg-slate-700 text-white p-2 rounded-t-md pl-32 pt-4 pb-1 flex justify-between items-center">
-            <span class="font-bold">${hall.name}</span>
-          </h4>
-
-          <div class="img-hall-search">
-            <img src="${hall.logo}" alt="${hall.name}">
-          </div>
-        </a>
-        <div class="pl-32 flex justify-between">
-          <div>
-            <p class="flex items-center py-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" class="mr-2">
-                <path fill="currentColor" d="M128 16a88.1 88.1 0 0 0-88 88c0 75.3 80 132.17 83.41 134.55a8 8 0 0 0 9.18 0C136 236.17 216 179.3 216 104a88.1 88.1 0 0 0-88-88m0 56a32 32 0 1 1-32 32a32 32 0 0 1 32-32"/>
-              </svg>
-              ${hall.hallInfo.city } ${hall.hallInfo.zipCode !== "" ? `(${hall.hallInfo.zipCode })` : ""}
-            </p>
-            <p class="flex items-center py-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" class="mr-2">
-                <path fill="currentColor" d="M6.27 2.289a2.936 2.936 0 0 0-2.159 2.035A37.876 37.876 0 0 0 4.1 9.842c.045 0 .491-.086.992-.188L6 9.467l.023-2.334c.027-2.711.016-2.652.584-2.938L6.8 4.1H12c5.737 0 5.316-.019 5.64.256c.324.275.308.2.334 2.776L18 9.467l.91.187c.5.1.947.187.992.188a37.876 37.876 0 0 0-.01-5.518a2.927 2.927 0 0 0-2.177-2.037c-.551-.132-10.9-.13-11.442 0m2.515 4.2l-.466 1.862L8 9.637l-.507.475l-.507.474l-2.486.465l-2.485.466v3.754A31.9 31.9 0 0 0 2.071 19l2.415-.9c1.3-.487 2.4-.893 2.45-.9c.069-.014.22.1.577.438l.487.45l.322 1.283l.466 1.861l.145.579h6.14l.145-.579l.466-1.861l.316-1.283l.484-.455c.357-.337.508-.452.577-.438c.051.009 1.154.415 2.45.9l2.418.905a31.9 31.9 0 0 0 .058-3.732v-3.751l-2.487-.466l-2.485-.465l-.507-.474L16 9.637l-.322-1.283l-.466-1.862l-.145-.579H8.93l-.145.579m4.2 5.182c2.541.608 3.471 3.2 1.83 5.091c-2.094 2.419-6.41 1.1-6.428-1.964c-.012-2.149 2.253-3.689 4.6-3.127"/>
-              </svg>
-              ${hall.structure !== "" ? `(${hall.structure })` : "Non précisé"}
-            </p>
-          </div>
-          <div class="text-right p-1 text-sm">
-            <p>Réponse</p>
-            <p>${hall.rateResp}%</p>
-          </div>
-        </div>
-        <div class="list-category flex p-3 mb-6 justify-evenly">
-          ${hall.displayedBands.map(band => `<p class="text-green-500 mx-2">${band}✓</p>`).join('')}
-        </div>
-        <a href="search/booking/${hall.id}">
-          <h4 class="bg-slate-400 hover:bg-teal-500 text-white rounded-b-md text-center py-1 absolute bottom-0 w-full">Réserver</h4>
-        </a>
-      `;
-
-      hallContainer.appendChild(cardResult);
-    });
-  })
-  .catch(error => console.error('Error fetching halls:', error));
-
-
-
-</script>
-
-
-
-
-{% endblock %}
+		
+		 let searchGeo = document.getElementById('searchGeo');
+		 let searchName = document.getElementById('searchName');
+		 let searchMusic = document.getElementById('searchMusic');
+		 let searchDate = document.getElementById('searchDate');
+		 
+	 document.addEventListener('DOMContentLoaded', () => {
+	    const hallContainer = document.getElementById('hallContainer');
+	
+	    const updateDisplayedHalls = () => {
+	    fetch(`/api/search`)
+	      .then(response => response.json())
+	      .then(data => {
+	    let filteredHalls = data.filter(hall => {
+	 	const isNameMatch = hall.name.toLowerCase().includes(searchName.value.toLowerCase());
+	 	const isGeoMatch = (
+	 	  hall.hallInfo.city.toLowerCase().includes(searchGeo.value.toLowerCase()) ||
+	 	  hall.hallInfo.department.toLowerCase().includes(searchGeo.value.toLowerCase()) ||
+	 	  hall.hallInfo.region.toLowerCase().includes(searchGeo.value.toLowerCase()) ||
+	 	  hall.hallInfo.zipCode.toString().includes(searchGeo.value.toLowerCase())
+	 	);
+		const isMusicMatch = hall.music_categories.some(category => category.name.toLowerCase().includes(searchMusic.value.toLowerCase()));
+	   const isDateMatch = hall.eventListe.includes(searchDate.value);
+	
+	         return isNameMatch && isGeoMatch && isMusicMatch && !isDateMatch;
+	    });
+	
+	          hallContainer.innerHTML = '';
+	
+	          filteredHalls.forEach(hall => {
+	            const cardResult = document.createElement('div');
+	            cardResult.classList.add('card-result');
+	            // cardResult.setAttribute('data-aos', 'fade-up');
+	
+	      cardResult.innerHTML = `
+	        <a href="/path-to-hall-show/${hall.id}">
+	          <h4 class="bg-slate-700 text-white p-2 rounded-t-md pl-32 pt-4 pb-1 flex justify-between items-center">
+	            <span class="font-bold">${hall.name}</span>
+	          </h4>
+	
+	          <div class="img-hall-search">
+	            <img src="${hall.logo}" alt="${hall.name}">
+	          </div>
+	        </a>
+	        <div class="pl-32 flex justify-between">
+	          <div>
+	            <p class="flex items-center py-1">
+	              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" class="mr-2">
+	                <path fill="currentColor" d="M128 16a88.1 88.1 0 0 0-88 88c0 75.3 80 132.17 83.41 134.55a8 8 0 0 0 9.18 0C136 236.17 216 179.3 216 104a88.1 88.1 0 0 0-88-88m0 56a32 32 0 1 1-32 32a32 32 0 0 1 32-32"/>
+	              </svg>
+	              ${hall.hallInfo.city } ${hall.hallInfo.zipCode !== "" ? `(${hall.hallInfo.zipCode })` : ""}
+	            </p>
+	            <p class="flex items-center py-1">
+	              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" class="mr-2">
+	                <path fill="currentColor" d="M6.27 2.289a2.936 2.936 0 0 0-2.159 2.035A37.876 37.876 0 0 0 4.1 9.842c.045 0 .491-.086.992-.188L6 9.467l.023-2.334c.027-2.711.016-2.652.584-2.938L6.8 4.1H12c5.737 0 5.316-.019 5.64.256c.324.275.308.2.334 2.776L18 9.467l.91.187c.5.1.947.187.992.188a37.876 37.876 0 0 0-.01-5.518a2.927 2.927 0 0 0-2.177-2.037c-.551-.132-10.9-.13-11.442 0m2.515 4.2l-.466 1.862L8 9.637l-.507.475l-.507.474l-2.486.465l-2.485.466v3.754A31.9 31.9 0 0 0 2.071 19l2.415-.9c1.3-.487 2.4-.893 2.45-.9c.069-.014.22.1.577.438l.487.45l.322 1.283l.466 1.861l.145.579h6.14l.145-.579l.466-1.861l.316-1.283l.484-.455c.357-.337.508-.452.577-.438c.051.009 1.154.415 2.45.9l2.418.905a31.9 31.9 0 0 0 .058-3.732v-3.751l-2.487-.466l-2.485-.465l-.507-.474L16 9.637l-.322-1.283l-.466-1.862l-.145-.579H8.93l-.145.579m4.2 5.182c2.541.608 3.471 3.2 1.83 5.091c-2.094 2.419-6.41 1.1-6.428-1.964c-.012-2.149 2.253-3.689 4.6-3.127"/>
+	              </svg>
+	              ${hall.structure !== "" ? `(${hall.structure })` : "Non précisé"}
+	            </p>
+	          </div>
+	          <div class="text-right p-1 text-sm">
+	            <p>Réponse</p>
+	            <p>${hall.rateResp}%</p>
+	          </div>
+	        </div>
+	        <div class="list-category flex p-3 mb-6 justify-evenly">
+	          ${hall.displayedBands.map(band => `<p class="text-green-500 mx-2">${band}✓</p>`).join('')}
+	        </div>
+	        <a href="search/booking/${hall.id}" class="reserveLink">
+	        <h4 class="bg-slate-400 hover:bg-teal-500 text-white rounded-b-md text-center py-1 absolute bottom-0 w-full">Réserver</h4>
+	   		 </a>
+	      `;
+	
+		 	hallContainer.addEventListener('click', (event) => {
+	    const reserveLink = event.target.closest('.reserveLink');
+	    if (reserveLink) {
+	        event.preventDefault(); // Empêche le comportement par défaut du lien
+	        const searchDateValue = searchDate.value; // Récupérez la valeur de l'input date
+	        window.location.href = `/search/booking/${hall.id}?date=${searchDateValue}`;
+	    }
+	});
+	
+	      	hallContainer.appendChild(cardResult);
+	          });
+	        })
+	        .catch(error => console.error('Error fetching halls:', error));
+	    };
+	
+	    searchName.addEventListener('input', updateDisplayedHalls);
+	    searchGeo.addEventListener('input', updateDisplayedHalls);
+	    searchMusic.addEventListener('change', updateDisplayedHalls);
+	    searchDate.addEventListener('input', updateDisplayedHalls);
+	
+	
+	    updateDisplayedHalls();
+	  });
+	</script>
+	
+	
+	
+	
+	{% endblock %}

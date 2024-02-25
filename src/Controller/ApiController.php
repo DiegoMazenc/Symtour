@@ -31,32 +31,51 @@ class ApiController extends AbstractController
 
         $bandListe = [];
         foreach ($bandMembers as $bandMember) {
-            $bandName = $bandMember->getBand();
-            $bandListe[] = $bandName;
-            
+            if ($bandMember->getStatus() == 'admin' || $bandMember->getStatus() == 'member') {
+                $bandName = $bandMember->getBand();
+                $bandListe[] = $bandName;
+            }
         }
+
         $responseData = [];
 
         foreach ($halls as $hall) {
             $data = $hall->jsonSerialize();
             $data['displayedBands'] = $this->getDisplayedBands($hall, $bandListe);
+
+            $events = $hall->getEvents();
+            $eventListe = [];
+            $nbrEvent = 0;
+            foreach ($events as $event) {
+                $eventDate = $event->getDate();
+                $formattedEventDate = $eventDate->format('Y-m-d');
+                $nbrEvent++;
+                if ($event->getStatus() == 1 && new \DateTime() < $eventDate) {
+                    $eventListe[] = $formattedEventDate;
+                }
+            }
+            $data['eventListe'] = $eventListe;
+            $data['$nbrEvent'] = $nbrEvent;
+
             $responseData[] = $data;
         }
+
         return $this->json($responseData);
     }
 
-    private function getDisplayedBands(Hall $hall, $bandListe) {
+    private function getDisplayedBands(Hall $hall, $bandListe)
+    {
         $displayedBands = [];
         $hallMusics = $hall->getMusicCategory();
 
         $hallMusicsList = [];
-        foreach ($hallMusics as $hallMusic){
+        foreach ($hallMusics as $hallMusic) {
             $hallMusicCat = $hallMusic->getId();
             $hallMusicsList[] = $hallMusicCat;
         }
 
         foreach ($bandListe as $band) {
-            if (in_array($band->getMusicCategory()->getId(), $hallMusicsList)){
+            if (in_array($band->getMusicCategory()->getId(), $hallMusicsList)) {
                 $bandName = $band->getName();
                 $displayedBands[] = $bandName;
             }
