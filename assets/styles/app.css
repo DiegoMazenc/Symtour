@@ -183,6 +183,10 @@ input, select{
     margin-bottom: 15px;
 }
 
+#searchName::placeholder, #searchGeo::placeholder {
+    color: black;
+}
+
 .form-search{
     margin: 0;
     width: 27%;

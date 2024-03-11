@@ -55,7 +55,7 @@ class ApiController extends AbstractController
                 }
             }
             $data['eventListe'] = $eventListe;
-            $data['$nbrEvent'] = $nbrEvent;
+            $data['nbrEvent'] = $nbrEvent;
 
             $responseData[] = $data;
         }

@@ -37,41 +37,33 @@
 					<div class="event-list-db bg-white rounded-md shadow-md w-full mt-3 lg:mt-0">
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes demandes de date</h4>
 						<div class="p-3">
+							{% set anyEvents = false %}
+
 							{% for event in hall.events %}
 								{% if event.status == 3 %}
-								<div id="event_{{ event.id }}" class="transition">
-								
-									<div class="cardAdminProfil flex justify-between " >
-										<p>{{ event.date|date('d-m-Y')  }}</p>
-										{% for bandEvent in event.bandEvents %}
-
-											<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}">{{ bandEvent.band.name }}</a>
-											<p>{{ bandEvent.band.musicCategory.category }}
-												/
-												{{ bandEvent.band.defineStyle }}</p>
-
-											 <div class="flex">
-	
-													<button type="submit" class=" bg-green-300 hover:bg-green-500 text-white px-2 py-1 rounded-full text-xs  mx-1 deleteNotif" 
-													data-eventid="{{ event.id }}"
-													data-bandid="{{ bandEvent.band.id }}"
-													data-action="validate"
-													>✓</button>
-
-													<button type="submit" class=" bg-red-300 hover:bg-red-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif"
-													data-eventid="{{ event.id }}"
-													data-bandid="{{ bandEvent.band.id }}"
-													data-action="reject"
-													>X</button>
-											</div>
-										{% endfor %}
-									</div>
-									<hr class="my-3">
+									{% set anyEvents = true %}
+									<div id="event_{{ event.id }}" class="transition">
+										<div class="cardAdminProfil flex justify-between">
+											<p>{{ event.date|date('d-m-Y') }}</p>
+											{% for bandEvent in event.bandEvents %}
+												<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}">{{ bandEvent.band.name }}</a>
+												<p>{{ bandEvent.band.musicCategory.category }}
+													/
+													{{ bandEvent.band.defineStyle }}</p>
+												<div class="flex">
+													<button type="submit" class="bg-green-300 hover:bg-green-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif" data-eventid="{{ event.id }}" data-bandid="{{ bandEvent.band.id }}" data-action="validate">✓</button>
+													<button type="submit" class="bg-red-300 hover:bg-red-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif" data-eventid="{{ event.id }}" data-bandid="{{ bandEvent.band.id }}" data-action="reject">X</button>
+												</div>
+											{% endfor %}
+										</div>
+										<hr class="my-3">
 									</div>
 								{% endif %}
 							{% endfor %}
-							<a href="{{ path('app_event_new') }}" class="text-slate-400 hover:text-blue-500 ">
-								<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Organiser un nouvel Event</a>
+
+							{% if not anyEvents %}
+								<p>Vous n'avez pas de demande en cours.</p>
+							{% endif %}
 						</div>
 					</div>
 				</div>
@@ -132,7 +124,7 @@
 																	</div>
 																</div>
 															</div>
-															
+
 														</div>
 														<hr>
 													{% endif %}
@@ -213,7 +205,7 @@
 							</div>
 							<hr class="mr-3">
 						{% endfor %}
-						<a href="{{ path('app_hall_member_new') }}" class="text-slate-400 hover:text-blue-500 ">
+						<a href="{{ path('app_hall_members', {'id': hall.id}) }}" class="text-slate-400 hover:text-blue-500 ">
 							<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Ajouter un nouveau membre</a>
 					</div>
 				</div>
@@ -237,9 +229,7 @@ style: '{{ bandEvent.band.defineStyle }}',
 status: '{{ bandEvent.status }}',
 // Ajoutez d'autres propriétés de la bande ici si nécessaire
 },{% endfor %}]
-},
-{% endif %}
-{% endfor %}
+},{% endif %}{% endfor %}
 // Ajoutez d'autres événements au besoin
 ];
 
@@ -312,14 +302,10 @@ const dayElement = document.createElement('div');
 dayElement.className = 'day current-month-day'; // Add a class to style differently
 dayElement.textContent = day;
 
- const currentDate = new Date();
-    if (
-        day === currentDate.getDate() &&
-        currentMonth === currentDate.getMonth() &&
-        currentYear === currentDate.getFullYear()
-    ) {
-        dayElement.classList.add('current-day'); // Add a class for the current day
-    }
+const currentDate = new Date();
+if (day === currentDate.getDate() && currentMonth === currentDate.getMonth() && currentYear === currentDate.getFullYear()) {
+dayElement.classList.add('current-day'); // Add a class for the current day
+}
 
 // Check if there are events on this day
 const eventsOnDay = events.filter(event => {
@@ -328,7 +314,7 @@ return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && e
 });
 
 // Add event styling if there are events
-if (eventsOnDay.length > 0 ) {
+if (eventsOnDay.length > 0) {
 if (eventsOnDay.every(event => event.statusDate == "1")) {
 dayElement.classList.add('event-day-valid');
 } else if (eventsOnDay.every(event => event.statusDate == "3")) {
@@ -502,11 +488,15 @@ modalContent.innerHTML += `
     <div class="flex justify-between items-center">
         <div class="flex p-2 items-center relative">
             <div class="img-project-db border-2 border-slate-500 ">
-				<img src="${band.logo}" alt="">
+				<img src="${
+band.logo
+}" alt="">
 			</div>
 			
             <div>
-                <p class="text-blue-400 font-semibold">${band.name}</p>
+                <p class="text-blue-400 font-semibold">${
+band.name
+}</p>
                 <p>${
 band.music
 }/${
@@ -557,29 +547,29 @@ const arrowRight = document.getElementById('arrow-right');
 // Initialisation de la position à 0
 let currentPosition = 0;
 
-arrowLeft.addEventListener('click', function () { 
+arrowLeft.addEventListener('click', function () {
 currentPosition -= 100;
 updatePosition();
 });
 
-arrowRight.addEventListener('click', function () { 
+arrowRight.addEventListener('click', function () {
 currentPosition += 100;
 updatePosition();
 });
 
-arrowLeft.addEventListener('mouseover', function () { 
+arrowLeft.addEventListener('mouseover', function () {
 arrowLeft.style.cursor = 'pointer';
 });
 
-arrowRight.addEventListener('mouseover', function () { 
+arrowRight.addEventListener('mouseover', function () {
 arrowRight.style.cursor = 'pointer';
 });
 
-arrowLeft.addEventListener('mouseout', function () { 
+arrowLeft.addEventListener('mouseout', function () {
 arrowLeft.style.cursor = 'default';
 });
 
-arrowRight.addEventListener('mouseout', function () { 
+arrowRight.addEventListener('mouseout', function () {
 arrowRight.style.cursor = 'default';
 });
 
@@ -608,38 +598,37 @@ content.style.transition = '';
 	</script>
 
 
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-		<script>
-$(document).ready(function () {
-    $('.deleteNotif').click(function (event) {
-        event.preventDefault();
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function () {
+$('.deleteNotif').click(function (event) {
+event.preventDefault();
 
-        let button = $(this);
-        console.log("pouet");
-        const hallId = {{ hall.id }};
-        let eventId = button.data('eventid');
-        let bandId = button.data('bandid');
-        let action = button.data('action');
+let button = $(this);
+console.log("pouet");
+const hallId = {{ hall.id }};
+let eventId = button.data('eventid');
+let bandId = button.data('bandid');
+let action = button.data('action');
 
-        let notification = document.querySelector('#event_' + eventId);
-        notification.classList.add('transition-delete');
-        setTimeout(() => {
-            notification.style.display = "none";
-        }, 300);
+let notification = document.querySelector('#event_' + eventId);
+notification.classList.add('transition-delete');
+setTimeout(() => {
+notification.style.display = "none";
+}, 300);
 
-        $.ajax({
-            type: 'POST',
-            url: '/hall/' + hallId,
-            data: {
-                action: action,
-                event_id: eventId,
-                bandId: bandId
-            },
-        });
-    });
+$.ajax({
+type: 'POST',
+url: '/hall/' + hallId,
+data: {
+action: action,
+event_id: eventId,
+bandId: bandId
+}
 });
-
-		</script>
+});
+});
+	</script>
 
 
 {% endblock %}

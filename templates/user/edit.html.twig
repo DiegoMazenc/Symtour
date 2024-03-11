@@ -5,14 +5,18 @@
 
 {% block body %}
 
-		<div class="user-contain py-20 bg bg-slate-100">
-			<div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg ">
-			<div class="w-3/5">
-				{{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
-				<hr class="border-2 my-2">
+	<div class="user-contain py-20 bg bg-slate-100">
+		<div class="form-edit bg-white p-10 rounded-xl shadow-lg">
+			<div class="w-flex">
+				{% for message in app.flashes('success') %}
+					<div class="bg-green-100">
+						<p class="text-green-500 font-bold py-2 px-3">{{ message }}</p>
+					</div>
+				{% endfor %}
+				{{ include('user/_password_form.html.twig') }}
 				{{ include('user/_delete_form.html.twig') }}
 			</div>
-			</div>
 		</div>
+	</div>
 
 {% endblock %}

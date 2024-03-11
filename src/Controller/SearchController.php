@@ -53,38 +53,39 @@ class SearchController extends AbstractController
     }
 
     #[Route('/search/booking/{id}', name: 'app_search_booking', methods: ['GET', 'POST'])]
-    public function booking(Request $request, $id,NotificationService $notification, EventRepository $eventRepository, HallRepository $hallRepository, EntityManagerInterface $em): Response
+    public function booking(Request $request, $id, NotificationService $notification, EventRepository $eventRepository, HallRepository $hallRepository, EntityManagerInterface $em): Response
     {
-        
+
         $date = $request->query->get('date');
         $hall = $hallRepository->find($id);
         $dateBooking = $request->request->get('booking_date');
+        $dateTimeBooking = new \DateTime($dateBooking);
+        $formatDateBooking = $dateTimeBooking->format('Y-m-d');
         $bandId = $request->request->get('band_id');
-        
+
         $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
 
         if ($request->isMethod('POST')) {
 
-            // Vous devez remplacer 'Your\Entity\Namespace\Band' par la classe réelle de votre entité Band
             $band = $em->getRepository(Band::class)->find($bandId);
             $bandName = $band->getName();
             $event = new Event();
             $event->setHall($hall)
-                ->setDate(new \DateTime($dateBooking))
+                ->setDate(new \DateTime($formatDateBooking))
                 ->setStatus(3);
 
             $em->persist($event);
             $em->flush();
             $bandEvent = new BandEvent();
             $bandEvent->setBand($band)
-            ->setEvent($event)
-            ->setStatus("validate");
+                ->setEvent($event)
+                ->setStatus("validate");
             $em->persist($bandEvent);
             $em->flush();
 
 
 
-            $notification->addNotificationHall("hall",$bandName, $id, "band", $bandId, "event", $hall, $em);
+            $notification->addNotificationHall("hall", $bandName, $id, "band", $bandId, "event", $hall, $em);
         }
 
         return $this->render('search/booking.html.twig', [

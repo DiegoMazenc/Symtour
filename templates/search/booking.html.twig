@@ -52,7 +52,7 @@
 								<label for="booking_date" class='text-blue-400 font-semibold'>Date Sélectionné :
 									<span id="eventCountDisplay"></span>
 								</label><br>
-								<input type="text" id="booking_date" name="booking_date" value="{{ date }}" required readonly>
+								<input type="text" id="booking_date" name="booking_date" value="{{ date|date('d-m-Y') }}" required readonly>
 								<br>
 
 								<label for="band_id" class='text-blue-400 font-semibold'>Pour quel projet souhaitez-vous réserver ?</label><br>
@@ -216,11 +216,7 @@ for (let day = 1; day <= daysInMonth; day++) {
 
 function addClickEventListener(element, day, month, year, eventCount) {
 element.addEventListener('click', () => {
-const formattedDate = `${year}-${
-(month + 1).toString().padStart(2, '0')
-}-${
-day.toString().padStart(2, '0')
-}`;
+const formattedDate = `${day.toString().padStart(2, '0')}-${(month + 1).toString().padStart(2, '0')}-${year}`;
 document.getElementById('booking_date').value = formattedDate;
 
 // Afficher le nombre d'événements avec le statut 3 au-dessus du formulaire
