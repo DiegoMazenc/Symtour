@@ -32,15 +32,16 @@
 					<h3 class="mb-8">{{ profil.description }}</h3>
 					<h3 class="mb-8">{{ profil.city }}</h3>
 				</infos>
-				
+
 
 			</div>
-			<hr class=" border-black my-5">
+			<hr
+			class=" border-black my-5">
 			{# <div>
-				<div class="bg-white rounded-md shadow-md w-full">
-					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Pages suivies</h4>
-				</div>
-			</div> #}
+										<div class="bg-white rounded-md shadow-md w-full">
+											<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Pages suivies</h4>
+										</div>
+									</div> #}
 			<div class="tab_project flex-responsive w-full justify-between">
 				<div class="my-10 w-flex">
 					<div class="bg-white rounded-md shadow-md w-full">
@@ -50,7 +51,7 @@
 							{% if hallMember.status != "reject"%}
 								<a href="/hall/{{ hallMember.hall.id }}">
 
-									<div class="flex justify-between p-3 hover:bg-slate-100 items-center">
+									<div class="flex justify-between p-3 hover:bg-slate-100 items-start">
 
 										<div class="flex relative">
 
@@ -58,18 +59,20 @@
 												<img src="{{ hallMember.hall.logo}}" alt="">
 											</div>
 											{% set counter = 0 %}
-											{% for notification in app.user.profil.notifications %}
-												{% if notification.status == 1 and notification.receiptId == hallMember.hall.id %}
-													{% set counter = counter + 1 %}
-												{% endif %}
-											{% endfor %}
+												{% set currentDate = date()|date('Y-m-d') %}
+												{% for event in hallMember.hall.events %}
+													{% if event.status == 3 %}
+														{% set counter = counter + 1 %}
+													{% endif %}
+												{% endfor %}
 											{% if counter > 0 %}
 												<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-0 left-9">
 													{{ counter }}
 												</div>
 											{% endif %}
 											<div class="ml-3">
-												<p class="text-blue-400 font-semibold">{{ hallMember.hall.name}} ({{ hallMember.status|capitalize }})</p>
+												<p class="text-blue-400 font-semibold">{{ hallMember.hall.name}}
+													({{ hallMember.status|capitalize }})</p>
 												{% for hallMemberRole in hallMember.hallMemberRoles %}
 													<p>{{ hallMemberRole.roleHall.roleName}}</p>
 												{% endfor %}
@@ -93,8 +96,22 @@
 												</form>
 											</div>
 										{% else %}
-											<p>60 Followers</p>
-											<p>1 message</p>
+											{% set countEvent = 0 %}
+											{% set countInProgress = 0 %}
+											{% set currentDate = date()|date('Y-m-d') %}
+											{% for event in hallMember.hall.events %}
+												{% if event.date|date('Y-m-d') > currentDate and event.status == 1 %}
+													{% set countEvent = countEvent + 1 %}
+												{% endif %}
+												{% if event.date|date('Y-m-d') > currentDate and event.status == 3 %}
+													{% set countInProgress = countInProgress + 1 %}
+												{% endif %}
+											{% endfor %}
+											<div class="flex items-center">
+												{{ countEvent }} <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="#334155" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+													
+											</div>
+
 										{% endif %}
 
 									</div>
@@ -120,15 +137,16 @@
 						{% for bandMember in profil.bandMembers %}
 							{% if bandMember.status == "member" or bandMember.status == "admin" %}
 								<a href="/band/{{ bandMember.band.id }}">
-									<div class="flex justify-between p-3 hover:bg-slate-100 items-center">
+									<div class="flex justify-between p-3 hover:bg-slate-100 items-start">
 										<div class="flex relative">
 											<div class="img-project-db">
 												<img src="{{ bandMember.band.logo}}" alt="">
 											</div>
 											{% if is_granted('profil_edit', profil) %}
 												{% set counter = 0 %}
-												{% for notification in app.user.profil.notifications %}
-													{% if notification.status == 1 and notification.receiptId == bandMember.band.id %}
+												{% set currentDate = date()|date('Y-m-d') %}
+												{% for bandEvent in bandMember.band.bandEvents %}
+													{% if bandEvent.status == "guest" %}
 														{% set counter = counter + 1 %}
 													{% endif %}
 												{% endfor %}
@@ -140,7 +158,8 @@
 											{% endif %}
 
 											<div class="ml-3">
-												<p class="text-blue-400 font-semibold">{{ bandMember.band.name}} ({{ bandMember.status|capitalize }})</p>
+												<p class="text-blue-400 font-semibold">{{ bandMember.band.name}}
+													({{ bandMember.status|capitalize }})</p>
 												{% for BandMemberRole in bandMember.BandMemberRoles %}
 													<p>{{ BandMemberRole.roleBand.roleName|capitalize }}</p>
 												{% endfor %}
@@ -163,8 +182,21 @@
 												</form>
 											</div>
 										{% else %}
-											<p>60 Followers</p>
-											<p>1 message</p>
+											{% set countEvent = 0 %}
+											{% set countInProgress = 0 %}
+											{% set currentDate = date()|date('Y-m-d') %}
+											{% for bandEvent in bandMember.band.bandEvents %}
+												{% if bandEvent.event.date|date('Y-m-d') > currentDate and bandEvent.status == "validate" %}
+													{% set countEvent = countEvent + 1 %}
+												{% endif %}
+												{% if bandEvent.event.date|date('Y-m-d') > currentDate and bandEvent.status == "guest" %}
+													{% set countInProgress = countInProgress + 1 %}
+												{% endif %}
+											{% endfor %}
+											<div class="flex items-center">
+												{{ countEvent }} <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="#334155" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+
+											</div>
 
 										{% endif %}
 
@@ -227,15 +259,12 @@
 								</a>
 							</div>
 						{% endif %}
-						
+
 					</div>
 				</div>
 			</div>
 		</contain>
 	{% endif %}
-
-	
-
 
 
 {% endblock %}

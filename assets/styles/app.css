@@ -309,11 +309,8 @@ input, select{
     background-color: rgb(59, 130, 246);
 }
 
-.checkbox-item {
-    display: flex;
-    align-items: center; 
-    justify-content: space-between;
-    margin: 5px 0;
+.category-validate{
+    
 }
 
 table {

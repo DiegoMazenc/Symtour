@@ -34,12 +34,10 @@
 						<div id="calendrier"></div>
 						{# <div id="calendar-holder"></div> #}
 					</div>
-					
 
-					
-					<div id="eventModal" class="modal  bg-white rounded-md shadow-md lg:absolute" >
-						<div class="modal-content">
-							<!-- Contenu de la modale -->
+
+					<div id="eventModal" class="modal  bg-white rounded-md shadow-md lg:absolute">
+						<div class="modal-content"><!-- Contenu de la modale -->
 							<!-- Ajoutez ici les éléments pour afficher les détails de l'événement -->
 						</div>
 					</div>
@@ -49,42 +47,33 @@
 						</h4>
 						<div class="p-3">
 							{% set anyEvents = false %}
-						
-							{% for bandEvent in band.bandEvents|reverse|slice(0, 4) %}
-							{% set anyEvents = true %}
-								<div class="cardAdminProfil flex justify-between ">
-									<p>{{ bandEvent.event.date|date('d-m-Y')  }}</p>
-									<a href="{{ path('app_hall_show', {'id': bandEvent.event.hall.id}) }}">{{ bandEvent.event.hall.name }}</a>
-									<p>
-										{% if bandEvent.status == "guest" %}
-											<div>
-												<form action="{{ path('app_band_show', {'id': band.id}) }}" method="post">
-													<input type="hidden" name="action" value="validate">
-													<input type="hidden" name="event_id" value="{{ bandEvent.id }}">
-													<input type="hidden" name="hall_id" value="{{ bandEvent.event.hall.id }}">
-													<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
-												</form>
-												<form action="{{ path('app_band_show', {'id': band.id}) }}" method="post">
-													<input type="hidden" name="action" value="reject">
-													<input type="hidden" name="event_id" value="{{ bandEvent.id }}">
-													<input type="hidden" name="hall_id" value="{{ bandEvent.event.hall.id }}">
-													<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
-												</form>
-											</div>
-										
-										{% elseif bandEvent.event.status == 1 %}
-											<span style="color: green;">✓ Validé</span>
-										{% elseif bandEvent.event.status == 2 %}
-											<span style="color: red;">x Refusé</span>
-											
-										{% elseif bandEvent.event.status == 3 %}
-											<span style="color: gray;">... En cours</span>
 
-										{% else %}
-											{{ bandEvent.event.status }}
-										{% endif %}
-									</p>
-								</div><hr class="my-3">
+							{% for bandEvent in band.bandEvents|reverse|slice(0, 4) %}
+								{% set anyEvents = true %}
+								<div id="event_{{ bandEvent.id }}" class="transition">
+
+									<div class="cardAdminProfil flex justify-between ">
+										<p>{{ bandEvent.event.date|date('d-m-Y')  }}</p>
+										<a href="{{ path('app_hall_show', {'id': bandEvent.event.hall.id}) }}">{{ bandEvent.event.hall.name }}</a>
+											{% if bandEvent.status == "guest" %}
+												<div class="flex">
+													<button type="submit" class="bg-green-300 hover:bg-green-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif" data-eventid="{{ bandEvent.id }}" data-hallid="{{ bandEvent.event.hall.id }}" data-action="validate">✓</button>
+													<button type="submit" class="bg-red-300 hover:bg-red-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif" data-eventid="{{ bandEvent.id }}" data-hallid="{{ bandEvent.event.hall.id }}" data-action="reject">X</button>
+												</div>
+											{% elseif bandEvent.event.status == 1 %}
+												<p style="color: green;">✓ Validé</p>
+											{% elseif bandEvent.event.status == 2 %}
+												<p style="color: red;">x Refusé</p>
+
+											{% elseif bandEvent.event.status == 3 %}
+												<p style="color: gray;">... En cours</p>
+
+											{% else %}
+												{{ bandEvent.event.status }}
+											{% endif %}
+									</div>
+								</div>
+								<hr class="my-3">
 
 							{% endfor %}
 							{% if not anyEvents %}
@@ -96,116 +85,71 @@
 					</div>
 				</div>
 			</div>
-			
-				<div class="lg:flex lg:justify-between">
-					<div class="md:w-full lg:w-1/2 lg:mr-3 bg-white rounded-md shadow-md mt-3 ">
-						<div class="flex justify-between item-align bg-slate-700 relative rounded-t-md">
-							<h4 class=" text-white p-2 ">Mes prochains events</h4>
-							<div class="flex absolute right-2 top-2">
-								<div id="arrow-left" class="arrow-left text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10094;</div>
-								<div id="arrow-right" class="arrow-right text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10095;</div>
-							</div>
-						</div>
-						{% set count = 0 %}
-						{% for events in eventCome %}
-							{% if events.status == 1 %}
-								{% set count = count + 1 %}
-							{% endif %}
-						{% endfor %}
-						{% set widthPercentage = count * 100 %}
 
-
-						<div class="event-confirm-db-container">
-								{% if count == 0 %}
-									<div class="card-event-db bg-white ">
-										<p class="text-center p-3">Aucun évènement prévus </p>
-									</div>
-								{% endif %}
-							<div class=" event-confirm-db-content" style="width: {{ widthPercentage }}%">
-								{% for events in eventCome %}
-									{% if events.status == 1 %}
-
-										<div class="card-event-db bg-white ">
-
-											<div class=" bg-slate-500 text-white p-2  items-center flex relative">
-												<div class="img-project-db border-2 border-green-500 ">
-													<img src="{{ events.hall.logo }}" alt="">
-												</div>
-												<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
-													✓
-												</div>
-												<div>
-													<p>{{ events.hall.name }} ({{ events.hall.hallInfo.city }})</p>
-													<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
-												</div>
-											</div>
-											<div class="plateau">
-												{% for bandEvent in events.bandEvents|slice(0, 3) %}
-													{% if bandEvent.status == "validate" %}
-
-														<div class="">
-															<div class=" flex justify-between items-center">
-																<div class="flex p-2 items-center relative">
-																	<div class="img-project-db border-2 border-green-500 ">
-																		<img src="{{ bandEvent.band.logo }}" alt="">
-																	</div>
-																
-																	<div>
-																		<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}" class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</a>
-																		<p>{{ bandEvent.band.musicCategory.category }}
-																			/
-																			{{ bandEvent.band.defineStyle }}</p>
-																	</div>
-																</div>
-															</div>
-														</div>
-														<hr>
-													{% endif %}
-												{% endfor %}
-											</div>
-										</div>
-									{% endif %}
-								{% endfor %}
-							</div>
+			<div class="lg:flex lg:justify-between">
+				<div class="md:w-full lg:w-1/2 lg:mr-3 bg-white rounded-md shadow-md mt-3 ">
+					<div class="flex justify-between item-align bg-slate-700 relative rounded-t-md">
+						<h4 class=" text-white p-2 ">Mes prochains events</h4>
+						<div class="flex absolute right-2 top-2">
+							<div id="arrow-left" class="arrow-left text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10094;</div>
+							<div id="arrow-right" class="arrow-right text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10095;</div>
 						</div>
 					</div>
-					<div class="md:w-full lg:w-1/2 bg-white rounded-md shadow-md mt-3 ">
-						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mon dernier events
-						</h4>
-						<div class=" flex justify-between">
-							{% for events in eventPast|slice(0, 1) %}
+					{% set count = 0 %}
+					{% for events in eventCome %}
+						{% if events.status == 1 %}
+							{% set count = count + 1 %}
+						{% endif %}
+					{% endfor %}
+					{% set widthPercentage = count * 100 %}
+
+
+					<div class="event-confirm-db-container">
+						{% if count == 0 %}
+							<div class="card-event-db bg-white ">
+								<p class="text-center p-3">Aucun évènement prévus
+								</p>
+							</div>
+						{% endif %}
+						<div class=" event-confirm-db-content" style="width: {{ widthPercentage }}%">
+							{% for events in eventCome %}
 								{% if events.status == 1 %}
+
 									<div class="card-event-db bg-white ">
-										<div class="flex bg-slate-500 text-white p-2  items-center">
-												<div class="img-project-db  ">
-													<img src="{{ events.hall.logo }}" alt="">
-												</div>
-												
-												<div>
-													<p>{{ events.hall.name }} ({{ events.hall.hallInfo.city }})</p>
-													<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
-												</div>
+
+										<div class=" bg-slate-500 text-white p-2  items-center flex relative">
+											<div class="img-project-db border-2 border-green-500 ">
+												<img src="{{ events.hall.logo }}" alt="">
+											</div>
+											<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+												✓
+											</div>
+											<div>
+												<p>{{ events.hall.name }}
+													({{ events.hall.hallInfo.city }})</p>
+												<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+											</div>
 										</div>
 										<div class="plateau">
-											{% for bandEvent in events.bandEvents|slice(0, 1) %}
+											{% for bandEvent in events.bandEvents|slice(0, 3) %}
 												{% if bandEvent.status == "validate" %}
 
-													
+													<div class="">
 														<div class=" flex justify-between items-center">
 															<div class="flex p-2 items-center relative">
-																<div class="img-project-db border-2 border-slate-500 ">
+																<div class="img-project-db border-2 border-green-500 ">
 																	<img src="{{ bandEvent.band.logo }}" alt="">
 																</div>
-																
+
 																<div>
-																	<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+																	<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}" class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</a>
 																	<p>{{ bandEvent.band.musicCategory.category }}
 																		/
 																		{{ bandEvent.band.defineStyle }}</p>
 																</div>
 															</div>
 														</div>
-													
+													</div>
 													<hr>
 												{% endif %}
 											{% endfor %}
@@ -216,51 +160,99 @@
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="my-10">
-				<div class="flex justify-between item-align bg-slate-700 relative rounded-t-md">
-					<h4 class=" text-white p-2 ">Membres</h4>				
-				</div>
-				<div class="bg-white rounded-lg shadow-md p-3">
-				
+				<div class="md:w-full lg:w-1/2 bg-white rounded-md shadow-md mt-3 ">
+					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mon dernier events
+					</h4>
+					<div class=" flex justify-between">
+						{% for events in eventPast|slice(0, 1) %}
+							{% if events.status == 1 %}
+								<div class="card-event-db bg-white ">
+									<div class="flex bg-slate-500 text-white p-2  items-center">
+										<div class="img-project-db  ">
+											<img src="{{ events.hall.logo }}" alt="">
+										</div>
 
-					{% for member in band.bandMembers %}
-					{% if member.status == "admin" or member.status == "member" %}
-						<div class="cardAdminProfil flex justify-between ">
-							<div class="flex items-center">
-									<div class="img-member-db">
-										<img src="{{ member.profil.picture }}" alt="">
+										<div>
+											<p>{{ events.hall.name }}
+												({{ events.hall.hallInfo.city }})</p>
+											<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+										</div>
 									</div>
-									<div>
-										<a href="{{ path('app_profil_show', {'id': member.profil.id}) }}" class="text-blue-400 font-semibold">{{ member.profil.pseudo}}
-											{% if member.status == "admin" %}
-												(Admin)
+									<div class="plateau">
+										{% for bandEvent in events.bandEvents|slice(0, 1) %}
+											{% if bandEvent.status == "validate" %}
+
+
+												<div class=" flex justify-between items-center">
+													<div class="flex p-2 items-center relative">
+														<div class="img-project-db border-2 border-slate-500 ">
+															<img src="{{ bandEvent.band.logo }}" alt="">
+														</div>
+
+														<div>
+															<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+															<p>{{ bandEvent.band.musicCategory.category }}
+																/
+																{{ bandEvent.band.defineStyle }}</p>
+														</div>
+													</div>
+												</div>
+
+												<hr>
 											{% endif %}
-										</a>
-										{% for bandMemberRole in member.bandMemberRoles %}
-											
-										<p>{{ bandMemberRole.roleBand.roleName|capitalize}}</p>
 										{% endfor %}
 									</div>
 								</div>
-						</div>
-					<hr class="my-3"> 
-					{% endif %}
-					{% endfor %}
-					<a href="{{ path('app_band_members', {'id': band.id}) }}" class="text-slate-400 hover:text-blue-500 ">
-						<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Ajouter un nouveau membre</a>
+							{% endif %}
+						{% endfor %}
+					</div>
 				</div>
-
 			</div>
 		</div>
+		<div class="my-10">
+			<div class="flex justify-between item-align bg-slate-700 relative rounded-t-md">
+				<h4 class=" text-white p-2 ">Membres</h4>
+			</div>
+			<div class="bg-white rounded-lg shadow-md p-3">
 
+
+				{% for member in band.bandMembers %}
+					{% if member.status == "admin" or member.status == "member" %}
+						<div class="cardAdminProfil flex justify-between ">
+							<div class="flex items-center">
+								<div class="img-member-db">
+									<img src="{{ member.profil.picture }}" alt="">
+								</div>
+								<div>
+									<a href="{{ path('app_profil_show', {'id': member.profil.id}) }}" class="text-blue-400 font-semibold">{{ member.profil.pseudo}}
+										{% if member.status == "admin" %}
+											(Admin)
+										{% endif %}
+									</a>
+									{% for bandMemberRole in member.bandMemberRoles %}
+
+										<p>{{ bandMemberRole.roleBand.roleName|capitalize}}</p>
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+						<hr class="my-3">
+					{% endif %}
+				{% endfor %}
+				<a href="{{ path('app_band_members', {'id': band.id}) }}" class="text-slate-400 hover:text-blue-500 ">
+					<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Ajouter un nouveau membre</a>
+			</div>
+
+		</div>
 	</div>
 
-	<script>
-		const events = [
+</div>
+
+<script>
+	const events = [
 {% for event in eventCome %}
 {% if event.status != 2 %}
-	
+
 
 {
 date: '{{ event.date|date('Y-m-d') }}',
@@ -268,12 +260,12 @@ halls: [
 {
 name: '{{ event.hall.name }}',
 logo: '{{ event.hall.logo }}',
-city: '{{event.hall.hallInfo.city }}',
+city: '{{ event.hall.hallInfo.city }}',
 status: '{{ event.status }}',
 // Ajoutez d'autres propriétés de la bande ici si nécessaire
-}]
-},
-{% endif %}
+}
+]
+},{% endif %}
 {% endfor %}
 // Ajoutez d'autres événements au besoin
 ];
@@ -347,14 +339,10 @@ const dayElement = document.createElement('div');
 dayElement.className = 'day current-month-day'; // Add a class to style differently
 dayElement.textContent = day;
 
- const currentDate = new Date();
-    if (
-        day === currentDate.getDate() &&
-        currentMonth === currentDate.getMonth() &&
-        currentYear === currentDate.getFullYear()
-    ) {
-        dayElement.classList.add('current-day'); // Add a class for the current day
-    }
+const currentDate = new Date();
+if (day === currentDate.getDate() && currentMonth === currentDate.getMonth() && currentYear === currentDate.getFullYear()) {
+dayElement.classList.add('current-day'); // Add a class for the current day
+}
 
 
 // Check if there are events on this day
@@ -365,12 +353,13 @@ return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && e
 
 // Add event styling if there are events
 if (eventsOnDay.length > 0 && eventsOnDay.every(event => event.halls.every(hall => hall.status !== "2"))) {
-    if(eventsOnDay.every(event => event.halls.every(hall => hall.status == "1"))){
-        dayElement.classList.add('event-day-valid');
-    } else {
-        dayElement.classList.add('event-day');
-    }
-    dayElement.addEventListener('click', () => openEventModal(`${currentYear}-${currentMonth + 1}-${day}`));
+if (eventsOnDay.every(event => event.halls.every(hall => hall.status == "1"))) {
+dayElement.classList.add('event-day-valid');
+} else {
+dayElement.classList.add('event-day');
+} dayElement.addEventListener('click', () => openEventModal(`${currentYear}-${
+currentMonth + 1
+}-${day}`));
 }
 calendar.appendChild(dayElement);
 }
@@ -451,25 +440,32 @@ status: hall.status,
 for (const [date, halls] of Object.entries(groupedEvents)) {
 modalContent.innerHTML += `
 <div class="flex justify-between item-align bg-slate-500 relative rounded-t-md text-white p-2 ">
-<p> ${formatDate(date)}</p>
+<p> ${
+formatDate(date)
+}</p>
 <div class="close ml-3 px-1 font-bold bg-slate-700 rounded-full " onclick="closeModal()">&times;</div>
 </div>
-`
-;
+`;
 halls.forEach(hall => {
 if (hall.status == "1") {
 modalContent.innerHTML += `
     <div class="flex justify-between items-center">
         <div class="flex p-2 items-center relative">
             <div class="img-project-db border-2 border-green-500 ">
-				<img src="${hall.logo}" alt="">
+				<img src="${
+hall.logo
+}" alt="">
 			</div>
 			<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
 				✓
 			</div>
             <div>
-                <p class="text-blue-400 font-semibold">${hall.name}</p>
-                <p>${hall.city}</p>
+                <p class="text-blue-400 font-semibold">${
+hall.name
+}</p>
+                <p>${
+hall.city
+}</p>
             </div>
         </div>
     </div>
@@ -479,14 +475,20 @@ modalContent.innerHTML += `
     <div class="flex justify-between items-center">
         <div class="flex p-2 items-center relative">
             <div class="img-project-db border-2 bg-slate-300">
-                <img src="${hall.logo}" alt="">
+                <img src="${
+hall.logo
+}" alt="">
             </div>
             <div class="bg-slate-300 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
                 ⧖
             </div>
             <div>
-                <p class="text-blue-400 font-semibold">${hall.name}</p>
-                <p>${hall.city}</p>
+                <p class="text-blue-400 font-semibold">${
+hall.name
+}</p>
+                <p>${
+hall.city
+}</p>
             </div>
         </div>
     </div>
@@ -503,84 +505,109 @@ console.error (`Aucun détail d'événement trouvé pour la date : ${date}`);
 }
 
 function formatDate(date) {
-    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-    const formattedDate = new Date(date).toLocaleDateString('fr-FR', options);
-    return formattedDate;
+const options = {
+weekday: 'long',
+day: 'numeric',
+month: 'long',
+year: 'numeric'
+};
+const formattedDate = new Date(date).toLocaleDateString('fr-FR', options);
+return formattedDate;
 }
 
 
 function closeModal() {
 document.getElementById('eventModal').style.display = 'none';
 }
-	</script>
-	
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const container = document.querySelector('.event-confirm-db-container');
-            const content = document.querySelector('.event-confirm-db-content');
-            const arrowLeft = document.getElementById('arrow-left');
-            const arrowRight = document.getElementById('arrow-right');
+</script>
 
-            // Initialisation de la position à 0
-            let currentPosition = 0;
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+const container = document.querySelector('.event-confirm-db-container');
+const content = document.querySelector('.event-confirm-db-content');
+const arrowLeft = document.getElementById('arrow-left');
+const arrowRight = document.getElementById('arrow-right');
 
-            arrowLeft.addEventListener('click', function () {
-                // Décrémente la position
-                currentPosition -= 100;
-                updatePosition();
-            });
+// Initialisation de la position à 0
+let currentPosition = 0;
 
-            arrowRight.addEventListener('click', function () {
-                // Incrémente la position
-                currentPosition += 100;
-                updatePosition();
-            });
+arrowLeft.addEventListener('click', function () { // Décrémente la position
+currentPosition -= 100;
+updatePosition();
+});
 
-            arrowLeft.addEventListener('mouseover', function () {
-                // Change le curseur au survol
-                arrowLeft.style.cursor = 'pointer';
-            });
+arrowRight.addEventListener('click', function () { // Incrémente la position
+currentPosition += 100;
+updatePosition();
+});
 
-            arrowRight.addEventListener('mouseover', function () {
-                // Change le curseur au survol
-                arrowRight.style.cursor = 'pointer';
-            });
+arrowLeft.addEventListener('mouseover', function () { // Change le curseur au survol
+arrowLeft.style.cursor = 'pointer';
+});
 
-            arrowLeft.addEventListener('mouseout', function () {
-                // Rétablit le curseur par défaut
-                arrowLeft.style.cursor = 'default';
-            });
+arrowRight.addEventListener('mouseover', function () { // Change le curseur au survol
+arrowRight.style.cursor = 'pointer';
+});
 
-            arrowRight.addEventListener('mouseout', function () {
-                // Rétablit le curseur par défaut
-                arrowRight.style.cursor = 'default';
-            });
+arrowLeft.addEventListener('mouseout', function () { // Rétablit le curseur par défaut
+arrowLeft.style.cursor = 'default';
+});
 
-            function updatePosition() {
-                // Limite la position pour éviter de dépasser le contenu
-                currentPosition = Math.max(0, Math.min(currentPosition, content.scrollWidth - container.clientWidth));
-                
-                // Ajout d'une transition pour une animation fluide
-                content.style.transition = 'left 0.5s ease-in-out';
-                content.style.left = `-${currentPosition}%`;
+arrowRight.addEventListener('mouseout', function () { // Rétablit le curseur par défaut
+arrowRight.style.cursor = 'default';
+});
 
-                // Rend la flèche gauche transparente et non cliquable si à la limite gauche
-                arrowLeft.style.opacity = currentPosition === 0 ? 0.5 : 1;
-                arrowLeft.style.pointerEvents = currentPosition === 0 ? 'none' : 'auto';
+function updatePosition() { // Limite la position pour éviter de dépasser le contenu
+currentPosition = Math.max(0, Math.min(currentPosition, content.scrollWidth - container.clientWidth));
 
-                // Rend la flèche droite transparente et non cliquable si à la limite droite
-                const count = {{ count }};
-                arrowRight.style.opacity = currentPosition >= (count - 1) * 100 ? 0.5 : 1;
-                arrowRight.style.pointerEvents = currentPosition >= (count - 1) * 100 ? 'none' : 'auto';
+// Ajout d'une transition pour une animation fluide
+content.style.transition = 'left 0.5s ease-in-out';
+content.style.left = `-${currentPosition}%`;
 
-                // Réinitialise la transition après l'animation
-                setTimeout(() => {
-                    content.style.transition = '';
-                }, 500);
-            }
-        });
-    </script>
+// Rend la flèche gauche transparente et non cliquable si à la limite gauche
+arrowLeft.style.opacity = currentPosition === 0 ? 0.5 : 1;
+arrowLeft.style.pointerEvents = currentPosition === 0 ? 'none' : 'auto';
 
+// Rend la flèche droite transparente et non cliquable si à la limite droite
+const count = {{ count }};
+arrowRight.style.opacity = currentPosition >= (count - 1) * 100 ? 0.5 : 1;
+arrowRight.style.pointerEvents = currentPosition >= (count - 1) * 100 ? 'none' : 'auto';
 
-{% endblock %}
+// Réinitialise la transition après l'animation
+setTimeout(() => {
+content.style.transition = '';
+}, 500);
+}
+});
+</script>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	$(document).ready(function () {
+$('.deleteNotif').click(function (event) {
+event.preventDefault();
+
+let button = $(this);
+const bandId = {{ band.id }};
+let eventId = button.data('eventid');
+let hallId = button.data('hallid');
+let action = button.data('action');
+
+let notification = document.querySelector('#event_' + eventId);
+notification.classList.add('transition-delete');
+setTimeout(() => {
+notification.style.display = "none";
+}, 300);
+
+$.ajax({
+type: 'POST',
+url: '/band/' + bandId,
+data: {
+action: action,
+event_id: eventId,
+hallId: hallId
+}
+});
+});
+});
+</script>{% endblock %}

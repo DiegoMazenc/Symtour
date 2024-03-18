@@ -10,11 +10,12 @@ use App\Entity\BandInfo;
 use App\Entity\RoleBand;
 use App\Entity\BandEvent;
 use App\Entity\BandMember;
+use App\Form\BandInfoType;
 use App\Form\BandMemberType;
 use App\Form\SearchFormType;
 use App\Form\AddRoleBandType;
 use App\Entity\BandMemberRole;
-use App\Form\BandInfoType;
+use App\Service\AddPhotosService;
 use App\Repository\BandRepository;
 use App\Repository\HallRepository;
 use App\Repository\EventRepository;
@@ -105,7 +106,7 @@ class BandController extends AbstractController
         if ($request->isMethod('POST')) {
             $action = $request->request->get('action');
             $eventId = $request->request->get('event_id');
-            $hallId = $request->request->get('hall_id');
+            $hallId = $request->request->get('hallId');
             $hall = $hallRepository->find((int)$hallId);
 
             if ($action === 'validate') {
@@ -119,7 +120,7 @@ class BandController extends AbstractController
                 $bandEvent->setStatus($status);
                 $em->flush();
 
-                $notification->addNotificationBandToHall("hall", $band->getName(), $hall->getId(), "band", $band->getId(), $status, $hall, $em);
+                $notification->addNotificationBandToHall("hall", $band->getName(), $hallId, "band", $band->getId(), $status, $hall, $em);
             }
         }
         return $this->render('band/show.html.twig', [
@@ -394,8 +395,7 @@ class BandController extends AbstractController
             'eventPast' => $eventPast,
             'bandFind' => $bandFind,
             'dateAdd' => $dateAdd,
-            'filterEvent' => $filterEvent
-
+            'filterEvent' => $filterEvent,
         ]);
     }
 
@@ -434,7 +434,7 @@ class BandController extends AbstractController
 
 
     #[Route('/{id}/edit', name: 'app_band_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Band $band, BandMemberRepository $bandMemberRepository, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Band $band, BandMemberRepository $bandMemberRepository, EntityManagerInterface $entityManager, AddPhotosService $addPhotosService): Response
     {
 
         $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
@@ -454,9 +454,13 @@ class BandController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $img = $form->get('logo')->getData();
+            if ($img) {
+                $addPhotosService->addNewPicture($img, $band);
+            }
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_band_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_band_edit', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
         }
         return $this->render('band/edit.html.twig', [
             'band' => $band,

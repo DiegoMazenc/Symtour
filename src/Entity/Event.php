@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\EventRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\EventRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
@@ -27,6 +28,9 @@ class Event
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: BandEvent::class)]
     private Collection $bandEvents;
+
+    private EntityManagerInterface $em;
+
 
 
     public function getId(): ?int

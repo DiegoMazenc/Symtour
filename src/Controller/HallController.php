@@ -18,6 +18,7 @@ use App\Form\SearchFormType;
 use App\Form\AddRoleHallType;
 use App\Entity\HallMemberRole;
 use App\Form\FilterSearchType;
+use App\Service\AddPhotosService;
 use App\Repository\BandRepository;
 use App\Repository\HallRepository;
 use App\Repository\EventRepository;
@@ -444,7 +445,7 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_hall_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Hall $hall,HallMemberRepository $hallMemberRepository, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Hall $hall,HallMemberRepository $hallMemberRepository, EntityManagerInterface $entityManager, AddPhotosService $addPhotosService): Response
     {
         $form = $this->createForm(HallType::class, $hall);
         $form->handleRequest($request);
@@ -464,6 +465,11 @@ class HallController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $img = $form->get('logo')->getData();
+            if ($img) {
+                $addPhotosService->addNewPicture($img, $hall);
+            }
             $entityManager->flush();
             $this->addFlash('success', 'Vos informations ont été enregistrées avec succès !');
             return $this->redirectToRoute('app_hall_edit', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);

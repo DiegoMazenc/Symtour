@@ -23,6 +23,20 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    public function getEventWhereBandGuest($groupId)
+    {
+        $qb = $this->createQueryBuilder('e')
+    ->leftJoin('e.bandEvents', 'be')
+    ->leftJoin('be.band', 'b')
+    ->andWhere('e.status = 3 OR (e.status = 1 AND b.id = :groupId AND be.status = :guest)')
+    ->setParameters([
+        'groupId' => $groupId,
+        'guest' => 'guest'
+    ]);
+        
+        return $qb->getQuery()->getResult();
+    }
+
     public function getAllEventsByHall(Hall $hall)
     {
         return $this->createQueryBuilder('e')

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Chat;
 use App\Entity\User;
+use App\Service\AddPhotosService;
 use Aws\S3\S3Client;
 use App\Entity\Profil;
 use App\Entity\ChatRoom;
@@ -74,7 +75,7 @@ class ProfilController extends AbstractController
         EntityManagerInterface $em,
         BandRepository $bandRepository
     ): Response {
-        $notification->isRead((int)$request->query->get('notification_id'));
+        $notification->isRead((int) $request->query->get('notification_id'));
 
         if ($request->isMethod('POST')) {
             $action = $request->request->get('action');
@@ -126,14 +127,15 @@ class ProfilController extends AbstractController
     #[Route('/{id}/notification', name: 'app_profil_notification', methods: ['GET', 'POST'])]
     public function notification(Profil $profil, EntityManagerInterface $em, Request $request, NotificationRepository $notificationRepository, TokenInterface $token): Response
     {
-        if(!$this->isGranted('profil_edit', $profil)){
+        if (!$this->isGranted('profil_edit', $profil)) {
             $user = $token->getUser();
             return $this->redirectToRoute('app_profil_notification', ["id" => $user->getProfil()->getId()], Response::HTTP_SEE_OTHER);
 
-        };
+        }
+        ;
         if ($request->isMethod('POST')) {
             $idNotif = $request->request->get('id_notif');
-            $notification = $notificationRepository->find((int)$idNotif);
+            $notification = $notificationRepository->find((int) $idNotif);
             $em->remove($notification);
             $em->flush();
         }
@@ -177,51 +179,23 @@ class ProfilController extends AbstractController
      * @IsGranted("POST_SHOW")
      */
     #[Route('/{id}/edit', name: 'app_profil_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Profil $profil,TokenInterface $token, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function edit(Request $request, Profil $profil, TokenInterface $token, EntityManagerInterface $entityManager, AddPhotosService $addPhotosService): Response
     {
-        if(!$this->isGranted('profil_edit', $profil)){
+        if (!$this->isGranted('profil_edit', $profil)) {
             $user = $token->getUser();
             return $this->redirectToRoute('app_profil_edit', ["id" => $user->getProfil()->getId()], Response::HTTP_SEE_OTHER);
+        }
+        ;
 
-        };
         $form = $this->createForm(ProfilType::class, $profil);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-        $img = $form->get('picture')->getData();
-        if ($img){
-            $originalName = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
-            $nameSlug = $slugger->slug($originalName);
-            $fileName = $nameSlug . '-' . uniqid().'.'.$img->guessExtension();
-            try{
-                $sha256 = hash_file('sha256', $img->getRealPath());
-                $credentials = new Credentials('AKIAZQ3DNS574T63MPNV','2yTo3/9lJ7YFOCb5gAbQ7yGE2m08iy5XyyKy6Ur4');
-
-                $s3 = new S3Client([
-                    'version' => 'latest',
-                    'region'  => 'eu-west-3',
-                    'credentials'  => $credentials
-                ]);
-
-                $s3->putObject([
-                    'Bucket' => 'symtour',
-                    'Key'    => $fileName,
-                    'Body'   => $img,
-                    'SourceFile' => $img->getRealPath(),
-                    'ContentType' => $img->getMimeType(),
-                    'ContentSHA256' => $sha256,
-                    'ACL'    => 'public-read',
-                ]);
-                // dd($s3->getObjectUrl('symtour', $fileName));
-            } catch (S3Exception $e){
-                dd($e->getMessage());
-
+            $img = $form->get('picture')->getData();
+            if ($img) {
+                $addPhotosService->addNewPicture($img, $profil);
             }
-            $profil->setPicture($s3->getObjectUrl('symtour', $fileName));
-
-        }
             $entityManager->flush();
-
             return $this->redirectToRoute('app_profil_show', ["id" => $profil->getId()], Response::HTTP_SEE_OTHER);
         }
 
@@ -255,6 +229,6 @@ class ProfilController extends AbstractController
                 ->htmlTemplate('registration/confirmation_email.html.twig')
         );
         $this->addFlash('warning', 'Email a bien été envoyé!');
-        return $this->redirectToRoute('app_profil_show', ["id" => (int)$id], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_profil_show', ["id" => (int) $id], Response::HTTP_SEE_OTHER);
     }
 }
