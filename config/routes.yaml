@@ -8,3 +8,7 @@ update_notification:
     path: /update-notification/{id}
     controller: App\Controller\ProfilController::updateNotificationStatus
     methods: [GET]
+
+app_login:
+    path: /login
+    controller: App\Controller\SecurityController::login

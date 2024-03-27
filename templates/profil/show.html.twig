@@ -7,216 +7,200 @@
 {% block body %}
 	{% if app.user.profil.id == app.request.attributes.get('id') and app.user.isVerified == 0 %}
 		<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
-			{% for message in app.flashes('warning') %}
-				<div class="">
-					<p>{{ message }}</p>
+			<div class="bg-white p-3">
+				<div class="flex justify-center items-center mb-5">
+					<div class="bg-slate-500 p-2 rounded mr-5">
+						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewbox="0 0 20 20"><path fill="white" d="M19 5.5a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0M14.5 3a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 1 0v-2a.5.5 0 0 0-.5-.5m0 5.125a.625.625 0 1 0 0-1.25a.625.625 0 0 0 0 1.25m0 2.875c1.33 0 2.55-.472 3.5-1.257V14.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 2 14.5V7.373l7.747 4.558a.5.5 0 0 0 .507 0l2.23-1.312A5.485 5.485 0 0 0 14.5 11m-10-7h4.707a5.496 5.496 0 0 0 2.235 6.072L10 10.92L2.015 6.223A2.5 2.5 0 0 1 4.5 4"/></svg>
+					</div>
+					<h3 class="font-bold text-slate-500 text-xl">Vous avez un message !</h3>
 				</div>
-			{% endfor %}
-			<p>veuillez valider votre compte via l'email de confirmation</p>
-			<a href="{{ path("app_resend_confirmation_mail", {id: profil.id}) }}">cliquez ici pour renvoyer le mail de confirmation</a>
+
+				<p class="text-center">Veuillez valider votre compte via
+					<strong>l'email de confirmation</strong>
+				</p>
+				<hr>
+				{% set notMessage = 0 %}
+				{% for message in app.flashes('warning') %}
+					{% set notMessage = notMessage + 1 %}
+
+					<div class="bg-green-100">
+						<p class="text-center text-green-500">{{ message }}</p>
+					</div>
+				{% endfor %}
+				{% if notMessage == 0 %}
+					<p class="text-center">Toujours rien reçu ?</p>
+					<div class="flex justify-center">
+						<a href="{{ path("app_resend_confirmation_mail", {id: profil.id}) }}" class="text-center">
+							<span class="text-blue-500 mr-1 font-bold">Cliquez ici
+							</span>
+							pour renvoyer le mail de confirmation
+						</a>
+					</div>
+				{% endif %}
+			</div>
 		</div>
 	{% elseif app.user.profil.id == app.request.attributes.get('id') and app.user.isVerified == 1 and app.user.profil.pseudo == ''  %}
 		<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
-
-			<p>Félicitation vous êtes bien inscrit, pour accéder aux services, merci de remplir vos informations</p>
-			<a href="/profil/{{ app.user.profil.id}}/edit">Je remplis mes informations</a>
-		</div>
-	{% else %}
-		<contain class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
-			<div class="header-user flex ">
-				<div class="pic_profil">
-					<img src="{{ profil.picture }}" alt="" class="user-img">
-				</div>
-				<infos class="user-infos">
-					<h3 class="font-bold ">{{ profil.pseudo }}</h3>
-					<h3 class="mb-8">{{ profil.description }}</h3>
-					<h3 class="mb-8">{{ profil.city }}</h3>
-				</infos>
-
-
-			</div>
-			<hr
-			class=" border-black my-5">
-			{# <div>
-										<div class="bg-white rounded-md shadow-md w-full">
-											<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Pages suivies</h4>
-										</div>
-									</div> #}
-			<div class="tab_project flex-responsive w-full justify-between">
-				<div class="my-10 w-flex">
-					<div class="bg-white rounded-md shadow-md w-full">
-						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes salles</h4>
-
-						{% for hallMember in profil.hallMembers %}
-							{% if hallMember.status != "reject"%}
-								<a href="/hall/{{ hallMember.hall.id }}">
-
-									<div class="flex justify-between p-3 hover:bg-slate-100 items-start">
-
-										<div class="flex relative">
-
-											<div class="img-project-db">
-												<img src="{{ hallMember.hall.logo}}" alt="">
-											</div>
-											{% set counter = 0 %}
-												{% set currentDate = date()|date('Y-m-d') %}
-												{% for event in hallMember.hall.events %}
-													{% if event.status == 3 %}
-														{% set counter = counter + 1 %}
-													{% endif %}
-												{% endfor %}
-											{% if counter > 0 %}
-												<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-0 left-9">
-													{{ counter }}
-												</div>
-											{% endif %}
-											<div class="ml-3">
-												<p class="text-blue-400 font-semibold">{{ hallMember.hall.name}}
-													({{ hallMember.status|capitalize }})</p>
-												{% for hallMemberRole in hallMember.hallMemberRoles %}
-													<p>{{ hallMemberRole.roleHall.roleName}}</p>
-												{% endfor %}
-											</div>
-										</div>
-
-
-										{% if hallMember.status == "guest" %}
-											<div>
-												<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
-													<input type="hidden" name="action" value="validate">
-													<input type="hidden" name="page" value="hall">
-													<input type="hidden" name="hallMemberId" value="{{ hallMember.id }}">
-													<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
-												</form>
-												<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
-													<input type="hidden" name="action" value="reject">
-													<input type="hidden" name="page" value="hall">
-													<input type="hidden" name="hallMemberId" value="{{ hallMember.id }}">
-													<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
-												</form>
-											</div>
-										{% else %}
-											{% set countEvent = 0 %}
-											{% set countInProgress = 0 %}
-											{% set currentDate = date()|date('Y-m-d') %}
-											{% for event in hallMember.hall.events %}
-												{% if event.date|date('Y-m-d') > currentDate and event.status == 1 %}
-													{% set countEvent = countEvent + 1 %}
-												{% endif %}
-												{% if event.date|date('Y-m-d') > currentDate and event.status == 3 %}
-													{% set countInProgress = countInProgress + 1 %}
-												{% endif %}
-											{% endfor %}
-											<div class="flex items-center">
-												{{ countEvent }} <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="#334155" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
-													
-											</div>
-
-										{% endif %}
-
-									</div>
-								</a>
-								<hr>
-
-							{% endif %}
-
-						{% endfor %}
-						{% if is_granted('profil_edit', profil) %}
-							<div class="p-3">
-								<a href="{{ path('app_hall_new') }}" class="text-slate-400 hover:text-blue-500 ">
-									<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Créer une nouvelle salle</a>
-							</div>
-						{% endif %}
+			<div class="bg-white p-3">
+				<div class="flex justify-center items-center mb-5">
+					<div class="bg-slate-500 p-2 rounded mr-5">
+						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="white" d="m14.53 1.45l-1.08 1.08l1.6 1.6c.22.25.33.54.33.87s-.11.64-.33.86L11.5 9.47l1 1.08l3.63-3.61c.53-.59.79-1.24.79-1.94s-.26-1.36-.79-1.95zm-3.98 2.02L9.47 4.55l.61.56c.22.22.33.52.33.89s-.11.67-.33.89l-.61.56l1.08 1.08l.56-.61c.53-.59.8-1.23.8-1.92c0-.72-.27-1.37-.8-1.97zM21 5.06c-.69 0-1.33.27-1.92.8l-5.63 5.64l1.08 1l5.58-5.56c.25-.25.55-.38.89-.38s.64.13.89.38l.61.61l1.03-1.08l-.56-.61c-.59-.53-1.25-.8-1.97-.8M7 8L2 22l14-5zm12 3.06c-.7 0-1.34.27-1.94.8l-1.59 1.59l1.08 1.08l1.59-1.59c.25-.25.53-.38.86-.38c.33 0 .63.13.88.38l1.62 1.59l1.05-1.03l-1.6-1.64c-.59-.53-1.25-.8-1.95-.8"/></svg>
 					</div>
+					<h3 class="font-bold text-slate-500 text-xl">Welcome Home !</h3>
 				</div>
-				<div class="my-10 w-flex">
-					<div class="bg-white rounded-lg shadow-md  w-full  ">
-						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes projets musicaux</h4>
+
+				<p class="text-center">Félicitation vous êtes bien inscrit ! Pour accéder aux services, <strong>merci de remplir vos informations.</strong>
+				</p>
+				{% set notMessage = 0 %}
+				{% for message in app.flashes('warning') %}
+					{% set notMessage = notMessage + 1 %}
+
+					<div class="bg-green-100">
+						<p class="text-center text-green-500">{{ message }}</p>
+					</div>
+				{% endfor %}
+				{% if notMessage == 0 %}
+					<div class="flex justify-center ">
+								<a href="/profil/{{ app.user.profil.id}}/edit" class="bg-blue-500 text-white font-bold p-3 rounded mt-5">Je remplis mes informations</a>
+
+					</div>
+				{% endif %}
+			</div>
+		</div>
+
+	</div>
+{% else %}
+	<contain class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
+		<div class="header-user flex ">
+			<div class="pic_profil">
+			{% if profil.picture %}
+				<img src="{{ profil.picture }}" alt="" class="user-img">
+				{% else %}
+				<img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="" class="user-img">
+
+			{% endif %}
+			</div>
+			<infos class="user-infos">
+				<h3 class="font-bold ">{{ profil.pseudo }}</h3>
+				<h3 class="mb-8">{{ profil.description }}</h3>
+				<h3 class="mb-8">{{ profil.city }}</h3>
+			</infos>
 
 
-						{% for bandMember in profil.bandMembers %}
-							{% if bandMember.status == "member" or bandMember.status == "admin" %}
-								<a href="/band/{{ bandMember.band.id }}">
-									<div class="flex justify-between p-3 hover:bg-slate-100 items-start">
-										<div class="flex relative">
-											<div class="img-project-db">
-												<img src="{{ bandMember.band.logo}}" alt="">
-											</div>
-											{% if is_granted('profil_edit', profil) %}
-												{% set counter = 0 %}
-												{% set currentDate = date()|date('Y-m-d') %}
-												{% for bandEvent in bandMember.band.bandEvents %}
-													{% if bandEvent.status == "guest" %}
-														{% set counter = counter + 1 %}
-													{% endif %}
-												{% endfor %}
-												{% if counter > 0 %}
-													<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-0 left-9">
-														{{ counter }}
-													</div>
-												{% endif %}
+		</div>
+		<hr
+		class=" border-black my-5">
+		{# <div>
+																		<div class="bg-white rounded-md shadow-md w-full">
+																			<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Pages suivies</h4>
+																		</div>
+																	</div> #}
+		<div class="tab_project flex-responsive w-full justify-between">
+			<div class="my-10 w-flex">
+				<div class="bg-white rounded-md shadow-md w-full">
+					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes salles</h4>
+
+					{% for hallMember in profil.hallMembers %}
+						{% if hallMember.status != "reject"%}
+							<a href="/hall/{{ hallMember.hall.id }}">
+
+								<div class="flex justify-between p-3 hover:bg-slate-100 items-start">
+
+									<div class="flex relative">
+
+										<div class="img-project-db">
+											<img src="{{ hallMember.hall.logo}}" alt="">
+										</div>
+										{% set counter = 0 %}
+										{% set currentDate = date()|date('Y-m-d') %}
+										{% for event in hallMember.hall.events %}
+											{% if event.status == 3 %}
+												{% set counter = counter + 1 %}
 											{% endif %}
-
-											<div class="ml-3">
-												<p class="text-blue-400 font-semibold">{{ bandMember.band.name}}
-													({{ bandMember.status|capitalize }})</p>
-												{% for BandMemberRole in bandMember.BandMemberRoles %}
-													<p>{{ BandMemberRole.roleBand.roleName|capitalize }}</p>
-												{% endfor %}
+										{% endfor %}
+										{% if counter > 0 %}
+											<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-0 left-9">
+												{{ counter }}
 											</div>
+										{% endif %}
+										<div class="ml-3">
+											<p class="text-blue-400 font-semibold">{{ hallMember.hall.name}}
+												({{ hallMember.status|capitalize }})</p>
+											{% for hallMemberRole in hallMember.hallMemberRoles %}
+												<p>{{ hallMemberRole.roleHall.roleName}}</p>
+											{% endfor %}
+										</div>
+									</div>
+
+
+									{% if hallMember.status == "guest" %}
+										<div>
+											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+												<input type="hidden" name="action" value="validate">
+												<input type="hidden" name="page" value="hall">
+												<input type="hidden" name="hallMemberId" value="{{ hallMember.id }}">
+												<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
+											</form>
+											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+												<input type="hidden" name="action" value="reject">
+												<input type="hidden" name="page" value="hall">
+												<input type="hidden" name="hallMemberId" value="{{ hallMember.id }}">
+												<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
+											</form>
+										</div>
+									{% else %}
+										{% set countEvent = 0 %}
+										{% set countInProgress = 0 %}
+										{% set currentDate = date()|date('Y-m-d') %}
+										{% for event in hallMember.hall.events %}
+											{% if event.date|date('Y-m-d') > currentDate and event.status == 1 %}
+												{% set countEvent = countEvent + 1 %}
+											{% endif %}
+											{% if event.date|date('Y-m-d') > currentDate and event.status == 3 %}
+												{% set countInProgress = countInProgress + 1 %}
+											{% endif %}
+										{% endfor %}
+										<div class="flex items-center">
+											{{ countEvent }}
+											<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="#334155" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+
 										</div>
 
-										{% if bandMember.status == "guest" %}
-											<div>
-												<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
-													<input type="hidden" name="action" value="validate">
-													<input type="hidden" name="page" value="band">
-													<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
-													<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
-												</form>
-												<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
-													<input type="hidden" name="action" value="reject">
-													<input type="hidden" name="page" value="band">
-													<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
-													<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
-												</form>
-											</div>
-										{% else %}
-											{% set countEvent = 0 %}
-											{% set countInProgress = 0 %}
+									{% endif %}
+
+								</div>
+							</a>
+							<hr>
+
+						{% endif %}
+
+					{% endfor %}
+					{% if is_granted('profil_edit', profil) %}
+						<div class="p-3">
+							<a href="{{ path('app_hall_new') }}" class="text-slate-400 hover:text-blue-500 ">
+								<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Créer une nouvelle salle</a>
+						</div>
+					{% endif %}
+				</div>
+			</div>
+			<div class="my-10 w-flex">
+				<div class="bg-white rounded-lg shadow-md  w-full  ">
+					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes projets musicaux</h4>
+
+
+					{% for bandMember in profil.bandMembers %}
+						{% if bandMember.status == "member" or bandMember.status == "admin" %}
+							<a href="/band/{{ bandMember.band.id }}">
+								<div class="flex justify-between p-3 hover:bg-slate-100 items-start">
+									<div class="flex relative">
+										<div class="img-project-db">
+											<img src="{{ bandMember.band.logo}}" alt="">
+										</div>
+										{% if is_granted('profil_edit', profil) %}
+											{% set counter = 0 %}
 											{% set currentDate = date()|date('Y-m-d') %}
 											{% for bandEvent in bandMember.band.bandEvents %}
-												{% if bandEvent.event.date|date('Y-m-d') > currentDate and bandEvent.status == "validate" %}
-													{% set countEvent = countEvent + 1 %}
-												{% endif %}
-												{% if bandEvent.event.date|date('Y-m-d') > currentDate and bandEvent.status == "guest" %}
-													{% set countInProgress = countInProgress + 1 %}
-												{% endif %}
-											{% endfor %}
-											<div class="flex items-center">
-												{{ countEvent }} <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="#334155" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
-
-											</div>
-
-										{% endif %}
-
-									</div>
-								</a>
-								<hr>
-
-							{% endif %}
-						{% endfor %}
-						{% for bandMember in profil.bandMembers %}
-							{% if bandMember.status == "guest" and is_granted('profil_edit', profil)%}
-								<a href="/band/{{ bandMember.band.id }}">
-									<div class="flex justify-between p-3 hover:bg-slate-100 items-center">
-										<div class="flex relative">
-											<div class="img-project-db">
-												<img src="{{ bandMember.band.logo}}" alt="">
-											</div>
-											{% set counter = 0 %}
-											{% for notification in app.user.profil.notifications %}
-												{% if notification.status == 1 and notification.receiptId == bandMember.band.id %}
+												{% if bandEvent.status == "guest" %}
 													{% set counter = counter + 1 %}
 												{% endif %}
 											{% endfor %}
@@ -225,14 +209,18 @@
 													{{ counter }}
 												</div>
 											{% endif %}
-											<div class="ml-3">
-												<p class="text-blue-400 font-semibold">{{ bandMember.band.name}}
-													vous invite à les rejoindres</p>
-												{% for BandMemberRole in bandMember.BandMemberRoles %}
-													<p>{{ BandMemberRole.roleBand.roleName}}</p>
-												{% endfor %}
-											</div>
+										{% endif %}
+
+										<div class="ml-3">
+											<p class="text-blue-400 font-semibold">{{ bandMember.band.name}}
+												({{ bandMember.status|capitalize }})</p>
+											{% for BandMemberRole in bandMember.BandMemberRoles %}
+												<p>{{ BandMemberRole.roleBand.roleName|capitalize }}</p>
+											{% endfor %}
 										</div>
+									</div>
+
+									{% if bandMember.status == "guest" %}
 										<div>
 											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
 												<input type="hidden" name="action" value="validate">
@@ -247,24 +235,88 @@
 												<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
 											</form>
 										</div>
-									</div>
-								</a>
-								<hr>
-							{% endif %}
-						{% endfor %}
-						{% if is_granted('profil_edit', profil) %}
-							<div class="p-3">
-								<a href="{{ path('app_band_new') }}" class="text-slate-400 hover:text-blue-500 p-3">
-									<span class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</span>Créer un nouveau groupe
-								</a>
-							</div>
-						{% endif %}
+									{% else %}
+										{% set countEvent = 0 %}
+										{% set countInProgress = 0 %}
+										{% set currentDate = date()|date('Y-m-d') %}
+										{% for bandEvent in bandMember.band.bandEvents %}
+											{% if bandEvent.event.date|date('Y-m-d') > currentDate and bandEvent.status == "validate" %}
+												{% set countEvent = countEvent + 1 %}
+											{% endif %}
+											{% if bandEvent.event.date|date('Y-m-d') > currentDate and bandEvent.status == "guest" %}
+												{% set countInProgress = countInProgress + 1 %}
+											{% endif %}
+										{% endfor %}
+										<div class="flex items-center">
+											{{ countEvent }}
+											<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="#334155" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
 
-					</div>
+										</div>
+
+									{% endif %}
+
+								</div>
+							</a>
+							<hr>
+
+						{% endif %}
+					{% endfor %}
+					{% for bandMember in profil.bandMembers %}
+						{% if bandMember.status == "guest" and is_granted('profil_edit', profil)%}
+							<a href="/band/{{ bandMember.band.id }}">
+								<div class="flex justify-between p-3 hover:bg-slate-100 items-center">
+									<div class="flex relative">
+										<div class="img-project-db">
+											<img src="{{ bandMember.band.logo}}" alt="">
+										</div>
+										{% set counter = 0 %}
+										{% for notification in app.user.profil.notifications %}
+											{% if notification.status == 1 and notification.receiptId == bandMember.band.id %}
+												{% set counter = counter + 1 %}
+											{% endif %}
+										{% endfor %}
+										{% if counter > 0 %}
+											<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-0 left-9">
+												{{ counter }}
+											</div>
+										{% endif %}
+										<div class="ml-3">
+											<p class="text-blue-400 font-semibold">{{ bandMember.band.name}}
+												vous invite à les rejoindres</p>
+											{% for BandMemberRole in bandMember.BandMemberRoles %}
+												<p>{{ BandMemberRole.roleBand.roleName}}</p>
+											{% endfor %}
+										</div>
+									</div>
+									<div>
+										<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+											<input type="hidden" name="action" value="validate">
+											<input type="hidden" name="page" value="band">
+											<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
+											<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
+										</form>
+										<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+											<input type="hidden" name="action" value="reject">
+											<input type="hidden" name="page" value="band">
+											<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
+											<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
+										</form>
+									</div>
+								</div>
+							</a>
+							<hr>
+						{% endif %}
+					{% endfor %}
+					{% if is_granted('profil_edit', profil) %}
+						<div class="p-3">
+							<a href="{{ path('app_band_new') }}" class="text-slate-400 hover:text-blue-500 p-3">
+								<span class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</span>Créer un nouveau groupe
+							</a>
+						</div>
+					{% endif %}
+
 				</div>
 			</div>
-		</contain>
-	{% endif %}
-
-
-{% endblock %}
+		</div>
+	</contain>
+{% endif %}{% endblock %}

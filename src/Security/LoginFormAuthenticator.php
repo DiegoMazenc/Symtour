@@ -48,15 +48,28 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-    {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-            return new RedirectResponse($targetPath);
-        }
+{
+    // Check if the user is authenticated
+    if ($this->isUserAuthenticated($token)) {
+        // Redirect the user to the profile page
         $profil = $this->em->getRepository(Profil::class)->findBy(["IdUser" => $token->getUser()]);
-        
-            return new RedirectResponse($this->urlGenerator->generate('app_profil_show', ["id"=>$profil[0]->getId()]));
-       
+        return new RedirectResponse($this->urlGenerator->generate('app_profil_show', ["id"=>$profil[0]->getId()]));
     }
+
+    // If not authenticated, redirect to the default target path
+    if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+        return new RedirectResponse($targetPath);
+    }
+
+    // If no target path is stored, redirect to a default route
+    return new RedirectResponse($this->urlGenerator->generate('default_route'));
+}
+
+private function isUserAuthenticated(TokenInterface $token): bool
+{
+    // Check if the user has any roles
+    return !$token->getUser()->getRoles() == [];
+}
 
     protected function getLoginUrl(Request $request): string
     {

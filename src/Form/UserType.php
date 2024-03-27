@@ -28,7 +28,20 @@ class UserType extends AbstractType
             "required" => true,
    ])
             // ->add('roles')
-            ->add('password', RepeatedType::class );
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'The password fields must match.',
+                'options' => ['attr' => ['placeholder' => 'mot de passe']], // Correction ici : Remplacement de "mot depasse" par "mot de passe"
+                'required' => true,
+                'first_options'  => [
+                    'label' => false,
+                    'attr' => ['placeholder' => 'Mot de passe'], // Déplacement de 'attr' ici pour spécifier les attributs
+                ],
+                'second_options' => [
+                    'label' => false,
+                    'attr' => ['placeholder' => 'Confirmer mot de passe'], // Déplacement de 'attr' ici pour spécifier les attributs
+                ],
+            ]);
             // ->add('status', ChoiceType::class, [
             //     "required" => true,
             //     "expanded" => true,

@@ -219,6 +219,7 @@ class ProfilController extends AbstractController
     #[Route('/{id}/resend-mail-confirmation', name: 'app_resend_confirmation_mail', methods: ['GET'])]
     public function resendMailConfirmation($id, EmailVerifier $emailVerifier): Response
     {
+        $mailUser = $this->getUser()->getEmail();
         $emailVerifier->sendEmailConfirmation(
             'app_verify_email',
             $this->getUser(),
@@ -228,7 +229,7 @@ class ProfilController extends AbstractController
                 ->subject('Please Confirm your Email')
                 ->htmlTemplate('registration/confirmation_email.html.twig')
         );
-        $this->addFlash('warning', 'Email a bien été envoyé!');
+        $this->addFlash('warning', 'Un nouveau mail de confirmation a été envoyé à '. $mailUser .' !');
         return $this->redirectToRoute('app_profil_show', ["id" => (int) $id], Response::HTTP_SEE_OTHER);
     }
 }
