@@ -67,6 +67,16 @@
     /* Centrer et cacher les parties qui dépassent */
 }
 
+.img-member-nav {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    border-radius: 100%;
+    border: white 1px solid;
+    margin-right: 20px;
+}
+
 .img-member-db {
     position: relative;
     width: 70px;
@@ -144,7 +154,8 @@
     border-radius: 100%;
     margin-right: 20px;
 }
-
+.img-hall-booking img,
+.img-member-nav img,
 .img-member-db img,
 .img-project-db img,
 .img-profil-event img,
@@ -390,6 +401,7 @@ table {
 
 }
 
+
 @media screen and (max-width: 770px) {
 
     .user-contain {
@@ -411,20 +423,27 @@ table {
         text-align: center;
     }
 
-    
-.img-hall-booking {
-    background-color: #ebebeb;
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    overflow: hidden;
-    border-radius: 100%;
-    margin-right: 20px;
-    border: 3px white solid;
-    box-shadow: 0 0 0 3px #334155;
-    top: 10px;
-    left: 10px;
-}
+  
+    /* .user-sidebar{
+        display: absolute;
+    } */
+
+
+
+
+    .img-hall-booking {
+        background-color: #ebebeb;
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        overflow: hidden;
+        border-radius: 100%;
+        margin-right: 20px;
+        border: 3px white solid;
+        box-shadow: 0 0 0 3px #334155;
+        top: 10px;
+        left: 10px;
+    }
 
 }
 
@@ -564,6 +583,19 @@ table {
     background-color: #082f49;
     display: flex;
     justify-content: space-between;
+    z-index: 11;
+}
+
+.phone-sidebar{
+    position: fixed;
+    top: 0%;
+    left: -100%;
+    height: 100%;
+    transition: left 0.3s ease;
+}
+
+.phone-sidebar-visible{
+    left:0;
 }
 
 @media screen and (min-width:770px) {
@@ -571,6 +603,11 @@ table {
         display: none;
     }
 
+    .phone-sidebar{
+        display: none;
+    }
+
+   
 
 }
 

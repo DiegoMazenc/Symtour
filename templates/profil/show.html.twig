@@ -44,12 +44,13 @@
 			<div class="bg-white p-3">
 				<div class="flex justify-center items-center mb-5">
 					<div class="bg-slate-500 p-2 rounded mr-5">
-						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="white" d="m14.53 1.45l-1.08 1.08l1.6 1.6c.22.25.33.54.33.87s-.11.64-.33.86L11.5 9.47l1 1.08l3.63-3.61c.53-.59.79-1.24.79-1.94s-.26-1.36-.79-1.95zm-3.98 2.02L9.47 4.55l.61.56c.22.22.33.52.33.89s-.11.67-.33.89l-.61.56l1.08 1.08l.56-.61c.53-.59.8-1.23.8-1.92c0-.72-.27-1.37-.8-1.97zM21 5.06c-.69 0-1.33.27-1.92.8l-5.63 5.64l1.08 1l5.58-5.56c.25-.25.55-.38.89-.38s.64.13.89.38l.61.61l1.03-1.08l-.56-.61c-.59-.53-1.25-.8-1.97-.8M7 8L2 22l14-5zm12 3.06c-.7 0-1.34.27-1.94.8l-1.59 1.59l1.08 1.08l1.59-1.59c.25-.25.53-.38.86-.38c.33 0 .63.13.88.38l1.62 1.59l1.05-1.03l-1.6-1.64c-.59-.53-1.25-.8-1.95-.8"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewbox="0 0 24 24"><path fill="white" d="m14.53 1.45l-1.08 1.08l1.6 1.6c.22.25.33.54.33.87s-.11.64-.33.86L11.5 9.47l1 1.08l3.63-3.61c.53-.59.79-1.24.79-1.94s-.26-1.36-.79-1.95zm-3.98 2.02L9.47 4.55l.61.56c.22.22.33.52.33.89s-.11.67-.33.89l-.61.56l1.08 1.08l.56-.61c.53-.59.8-1.23.8-1.92c0-.72-.27-1.37-.8-1.97zM21 5.06c-.69 0-1.33.27-1.92.8l-5.63 5.64l1.08 1l5.58-5.56c.25-.25.55-.38.89-.38s.64.13.89.38l.61.61l1.03-1.08l-.56-.61c-.59-.53-1.25-.8-1.97-.8M7 8L2 22l14-5zm12 3.06c-.7 0-1.34.27-1.94.8l-1.59 1.59l1.08 1.08l1.59-1.59c.25-.25.53-.38.86-.38c.33 0 .63.13.88.38l1.62 1.59l1.05-1.03l-1.6-1.64c-.59-.53-1.25-.8-1.95-.8"/></svg>
 					</div>
 					<h3 class="font-bold text-slate-500 text-xl">Welcome Home !</h3>
 				</div>
 
-				<p class="text-center">Félicitation vous êtes bien inscrit ! Pour accéder aux services, <strong>merci de remplir vos informations.</strong>
+				<p class="text-center">Félicitation vous êtes bien inscrit ! Pour accéder aux services,
+					<strong>merci de remplir vos informations.</strong>
 				</p>
 				{% set notMessage = 0 %}
 				{% for message in app.flashes('warning') %}
@@ -61,7 +62,7 @@
 				{% endfor %}
 				{% if notMessage == 0 %}
 					<div class="flex justify-center ">
-								<a href="/profil/{{ app.user.profil.id}}/edit" class="bg-blue-500 text-white font-bold p-3 rounded mt-5">Je remplis mes informations</a>
+						<a href="/profil/{{ app.user.profil.id}}/edit" class="bg-blue-500 text-white font-bold p-3 rounded mt-5">Je remplis mes informations</a>
 
 					</div>
 				{% endif %}
@@ -71,30 +72,39 @@
 	</div>
 {% else %}
 	<contain class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
-		<div class="header-user flex ">
-			<div class="pic_profil">
-			{% if profil.picture %}
-				<img src="{{ profil.picture }}" alt="" class="user-img">
-				{% else %}
-				<img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="" class="user-img">
+		<div class="bg-white rounded-md shadow-md relative">
+			<h4 class="bg-slate-700 text-white p-2 rounded-t-md pl-32 md:pl-40 pt-10 md:pt-4 pb-1 flex justify-between items-center">
+				<span class="font-bold">{{profil.pseudo}}</span>
 
-			{% endif %}
+			</h4>
+			<div class="img-hall-booking">
+				<img src="{{profil.picture}}" alt="{{profil.pseudo}}">
 			</div>
-			<infos class="user-infos">
-				<h3 class="font-bold ">{{ profil.pseudo }}</h3>
-				<h3 class="mb-8">{{ profil.description }}</h3>
-				<h3 class="mb-8">{{ profil.city }}</h3>
-			</infos>
 
+			<div class="pl-5 pt-8 md:pl-40 md:pt-5 pb-5 pr-5 w-full">
+				<div class="flex flex-wrap justify-between">
+					<div class="flex ">
+						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" class="mr-2 mt-1"><path fill="#334155" fill-rule="evenodd" d="M9.213 12.75c-.084.774-.308 1.392-.698 1.94c-.523.731-1.4 1.414-2.85 2.14a.75.75 0 1 0 .67 1.34c1.55-.774 2.673-1.591 3.4-2.61c.741-1.036 1.015-2.203 1.015-3.56V7.5A1.75 1.75 0 0 0 9 5.75H5A1.75 1.75 0 0 0 3.25 7.5V11c0 .966.784 1.75 1.75 1.75zm10 0c-.084.774-.308 1.392-.698 1.94c-.523.731-1.4 1.414-2.85 2.14a.75.75 0 1 0 .67 1.34c1.55-.774 2.673-1.591 3.4-2.61c.741-1.036 1.015-2.203 1.015-3.56V7.5A1.75 1.75 0 0 0 19 5.75h-4a1.75 1.75 0 0 0-1.75 1.75V11c0 .966.784 1.75 1.75 1.75z" clip-rule="evenodd"/></svg>
+						<div>
+							<h3>{{ profil.description ? profil.description : "Non précisé" }}</h3>
+						</div>
+					</div>
 
+				</div>
+				<div class="flex flex-wrap justify-between">
+					<div class="flex ">
+						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 256 256" class="mr-2 mt-1">
+							<path fill="#334155" d="M128 16a88.1 88.1 0 0 0-88 88c0 75.3 80 132.17 83.41 134.55a8 8 0 0 0 9.18 0C136 236.17 216 179.3 216 104a88.1 88.1 0 0 0-88-88m0 56a32 32 0 1 1-32 32a32 32 0 0 1 32-32"/>
+						</svg>
+						<div>
+							<h3>{{ profil.city ? profil.city : "Non précisé" }}</h3>
+						</div>
+					</div>
+
+				</div>
+			</div>
 		</div>
-		<hr
-		class=" border-black my-5">
-		{# <div>
-																		<div class="bg-white rounded-md shadow-md w-full">
-																			<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Pages suivies</h4>
-																		</div>
-																	</div> #}
+
 		<div class="tab_project flex-responsive w-full justify-between">
 			<div class="my-10 w-flex">
 				<div class="bg-white rounded-md shadow-md w-full">
