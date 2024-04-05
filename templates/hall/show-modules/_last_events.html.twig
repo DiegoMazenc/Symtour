@@ -1,0 +1,32 @@
+{% for events in eventPast|slice(0, 1) %}
+	<div class="card-event-db ">
+		<div class="flex bg-slate-500 text-white p-2  items-center">
+			<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+			<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+		</div>
+		<div class="plateau">
+			{% for bandEvent in events.bandEvents|slice(0, 3) %}
+				{% if bandEvent.status == "validate" %}
+
+					<div class="clic">
+						<div class=" flex justify-between items-center">
+							<div class="flex p-2 items-center relative">
+								<div class="img-project-db border-2 border-slate-500 ">
+									<img src="{{ bandEvent.band.logo }}" alt="">
+								</div>
+
+								<div>
+									<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+									<p>{{ bandEvent.band.musicCategory.category }}
+										/
+										{{ bandEvent.band.defineStyle }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<hr>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+{% endfor %}

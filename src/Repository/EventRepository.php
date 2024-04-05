@@ -109,6 +109,49 @@ class EventRepository extends ServiceEntityRepository
         ->getResult();
     }
 
+    public function getPastEventsByHallForShow(Hall $hall)
+    {
+        return $this->createQueryBuilder('e')
+        ->addSelect('hall', 'bandEvents')
+        ->leftJoin('e.hall', 'hall')    
+        ->leftJoin('e.bandEvents', 'bandEvents')    
+        ->andWhere('hall.id = :id')
+        ->andWhere('e.status = :status')
+        ->andWhere('e.date < CURRENT_DATE()')
+        ->setParameter('id', $hall->getId())
+        ->setParameter('status', 1)
+        ->orderBy('e.date', 'DESC')    
+        ->getQuery()
+        ->getResult();
+    }
+
+    public function getAllEventsByBand(Band $band)
+    {
+        $eventIds = $this->createQueryBuilder('e')
+        ->select('e.id')
+        ->leftJoin('e.bandEvents', 'bandEvents')  
+        ->andWhere('bandEvents.band = :id')
+        ->setParameter('id', $band->getId())
+        ->getQuery()
+        ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
+    $eventIds = array_column($eventIds, 'id');
+
+    if (empty($eventIds)) {
+        return [];
+    }
+
+    return $this->createQueryBuilder('e')
+        ->addSelect('hall', 'bandEvents')
+        ->leftJoin('e.hall', 'hall')    
+        ->leftJoin('e.bandEvents', 'bandEvents')  
+        ->andWhere('e.id IN (:eventIds)')
+        ->setParameter('eventIds', $eventIds)
+        ->orderBy('e.date', 'DESC')    
+        ->getQuery()
+        ->getResult();
+    }
+
     public function getComeEventsByBand(Band $band)
     {
        

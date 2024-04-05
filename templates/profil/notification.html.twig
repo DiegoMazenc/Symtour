@@ -33,7 +33,7 @@
 							<a href="{{ pageLink }}">
 								<div class="flex">
 									<div class="img-project-db ">
-										<img src="{{ memberType.band.logo ?? memberType.hall.logo ?? profil.picture }}" alt="" class="w-10 rounded-full mr-3">
+										<img src="{{ memberType.band.logo ?? memberType.hall.logo ?? profil.picture }}" alt="" >
 									</div>
 									<div>
 										<div class="flex item-center">
@@ -42,11 +42,11 @@
 											</p>
 											<p class="text-xs mt-1">{{ notification.date|date('d-m-Y') }}</p>
 										</div>
-										<p>{{ notification.message }}</p>
+										<p class="text-xs md:text-base">{{ notification.message }}</p>
 									</div>
 								</div>
 							</a>
-							<button class="bg-slate-200 px-3 pb-1 rounded-full text-white font-bold  hover:bg-slate-500 deleteNotif" data-notifid="{{ notification.id }}">
+							<button class="bg-slate-200 px-2 pb-1 rounded-full text-white font-bold  hover:bg-slate-500 deleteNotif" data-notifid="{{ notification.id }}">
 								x
 							</button>
 

@@ -1,0 +1,19 @@
+{% for member in hall.hallMembers %}
+	<div class="cardAdminProfil flex justify-between items-center">
+		<div class="flex items-center">
+			<div class=" img-member-db">
+				<img src="{{ member.profile.picture }}" alt="{{ member.profile.pseudo }}">
+			</div>
+			<div>
+				<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">{{ member.profile.pseudo}}</a>
+				<div class="flex">
+					{% for hallMemberRole in member.hallMemberRoles %}
+						<p class="ml-3">{{ hallMemberRole.roleHall.roleName}}</p>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+		<p>{{ member.dateCreate|date('d-m-Y')  }}</p>
+	</div>
+	<hr class="mr-3">
+{% endfor %}

@@ -101,6 +101,7 @@ class BandController extends AbstractController
     ): Response {
         $eventCome = $eventRepository->getComeEventsByBand($band);
         $eventPast = $eventRepository->getPastEventsByBand($band);
+        $allEvent = $eventRepository->getAllEventsByBand($band);
         $notification->isRead((int)$request->query->get('notification_id'));
 
         if ($request->isMethod('POST')) {
@@ -126,7 +127,8 @@ class BandController extends AbstractController
         return $this->render('band/show.html.twig', [
             'band' => $band,
             'eventCome' => $eventCome,
-            'eventPast' => $eventPast
+            'eventPast' => $eventPast,
+            'allEvent' => $allEvent
         ]);
     }
 

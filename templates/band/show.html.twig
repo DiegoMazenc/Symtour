@@ -184,7 +184,7 @@
 											</div>
 											<div>
 												<p>{{ events.hall.name }}
-													({{ events.hall.bandInfo.city }})</p>
+													({{ events.hall.hallInfo.city }})</p>
 												<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
 											</div>
 										</div>
@@ -312,7 +312,7 @@
 
 <script>
 	const events = [
-{% for event in eventCome %}
+{% for event in allEvent %}
 {% if event.status != 2 %}
 
 
@@ -322,7 +322,7 @@ halls: [
 {
 name: '{{ event.hall.name }}',
 logo: '{{ event.hall.logo }}',
-city: '{{ event.hall.bandInfo.city }}',
+city: '{{ event.hall.hallInfo.city }}',
 status: '{{ event.status }}',
 // Ajoutez d'autres propriétés de la bande ici si nécessaire
 }

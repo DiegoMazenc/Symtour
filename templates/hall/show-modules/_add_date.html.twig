@@ -1,0 +1,29 @@
+<div class="p-3">
+	{% set anyEvents = false %}
+
+	{% for event in hall.events %}
+		{% if event.status == 3 %}
+			{% set anyEvents = true %}
+			<div id="event_{{ event.id }}" class="transition">
+				<div class="cardAdminProfil flex justify-between">
+					<p>{{ event.date|date('d-m-Y') }}</p>
+					{% for bandEvent in event.bandEvents %}
+						<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}">{{ bandEvent.band.name }}</a>
+						<p>{{ bandEvent.band.musicCategory.category }}
+							/
+							{{ bandEvent.band.defineStyle }}</p>
+						<div class="flex">
+							<button type="submit" class="bg-green-300 hover:bg-green-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif" data-eventid="{{ event.id }}" data-bandid="{{ bandEvent.band.id }}" data-action="validate">✓</button>
+							<button type="submit" class="bg-red-300 hover:bg-red-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif" data-eventid="{{ event.id }}" data-bandid="{{ bandEvent.band.id }}" data-action="reject">X</button>
+						</div>
+					{% endfor %}
+				</div>
+				<hr class="my-3">
+			</div>
+		{% endif %}
+	{% endfor %}
+
+	{% if not anyEvents %}
+		<p>Vous n'avez pas de demande en cours.</p>
+	{% endif %}
+</div>

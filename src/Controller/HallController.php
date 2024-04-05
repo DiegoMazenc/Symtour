@@ -114,7 +114,7 @@ class HallController extends AbstractController
         }
 
         $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
-        $eventPast = $eventRepository->getPastEventsByHall($hall);
+        $eventPast = $eventRepository->getPastEventsByHallForShow($hall);
         $eventAll = $eventRepository->getAllEventsByHall($hall);
 
         $notification->isRead((int)$request->query->get('notification_id'));
@@ -126,14 +126,6 @@ class HallController extends AbstractController
 
             if ($action === 'validate') {
                 $status = 1;
-
-                // $chatRoom = new ChatRoom();
-
-                // $chatRoom->setEvent($em->getRepository(Event::class)->find($eventId))
-                // ->setDateCreate(new \DateTime());
-                // $em->persist($chatRoom);
-                // $em->flush();
-
             } elseif ($action === 'reject') {
                 $status = 2;
             } else {
@@ -149,11 +141,36 @@ class HallController extends AbstractController
             $notification->addNotificationBand("band", $hall->getName(), $bandId, "hall", $hall->getId(), "response", $band, $status, $em);
         }
 
+        $eventsData = [];
+    foreach ($eventAll as $event) {
+        // Ignorer les événements avec un statut de 2 (rejeté)
+        if ($event->getStatus() != 2) {
+            $eventData = [
+                'date' => $event->getDate()->format('Y-m-d'),
+                'statusDate' => $event->getStatus(),
+                'bands' => [],
+            ];
+
+            foreach ($event->getBandEvents() as $bandEvent) {
+                $bandData = [
+                    'name' => $bandEvent->getBand()->getName(),
+                    'logo' => $bandEvent->getBand()->getLogo(),
+                    'music' => $bandEvent->getBand()->getMusicCategory()->getCategory(),
+                    'style' => $bandEvent->getBand()->getDefineStyle(),
+                    'status' => $bandEvent->getStatus(),
+                ];
+                $eventData['bands'][] = $bandData;
+            }
+
+            $eventsData[] = $eventData;
+        }
+    }
         return $this->render('hall/show.html.twig', [
             'hall' => $hall,
             'eventCome' => $eventCome,
             'eventPast' => $eventPast,
-            'eventAll' => $eventAll
+            'eventAll' => $eventAll,
+            'eventsData' => json_encode($eventsData),
         ]);
     }
 
