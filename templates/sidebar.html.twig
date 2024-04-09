@@ -1,4 +1,4 @@
-{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.profil.pseudo != "" %}
 	<div
 		class="user-sidebar bg-sky-950 h-screen text-white">
 		{# <h4>Notifications</h4> #}
@@ -208,10 +208,4 @@
 
 	</div>
 {% endif %}
-<script>
-	document.getElementById('gererBtn').addEventListener('click', function () {
-console.log('clic')
-let sousNav = document.getElementById('sousNav');
-sousNav.style.display = (sousNav.style.display === 'none' || sousNav.style.display === '') ? 'block' : 'none';
-});
-</script>
+

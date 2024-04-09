@@ -26,14 +26,14 @@ class EventRepository extends ServiceEntityRepository
     public function getEventWhereBandGuest($groupId)
     {
         $qb = $this->createQueryBuilder('e')
-    ->leftJoin('e.bandEvents', 'be')
-    ->leftJoin('be.band', 'b')
-    ->andWhere('e.status = 3 OR (e.status = 1 AND b.id = :groupId AND be.status = :guest)')
-    ->setParameters([
-        'groupId' => $groupId,
-        'guest' => 'guest'
-    ]);
-        
+            ->leftJoin('e.bandEvents', 'be')
+            ->leftJoin('be.band', 'b')
+            ->andWhere('e.status = 3 OR (e.status = 1 AND b.id = :groupId AND be.status = :guest)')
+            ->setParameters([
+                'groupId' => $groupId,
+                'guest' => 'guest'
+            ]);
+
         return $qb->getQuery()->getResult();
     }
 
@@ -41,25 +41,25 @@ class EventRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('e')
             ->addSelect('hall', 'bandEvents')
-            ->leftJoin('e.hall', 'hall')    
-            ->leftJoin('e.bandEvents', 'bandEvents')  
+            ->leftJoin('e.hall', 'hall')
+            ->leftJoin('e.bandEvents', 'bandEvents')
             ->andWhere('hall.id = :id')
             ->setParameter('id', $hall->getId())
-            ->orderBy('e.date', 'DESC')    
+            ->orderBy('e.date', 'DESC')
             ->getQuery()
             ->getResult();
     }
-    
+
     public function getComeEventsByHall(Hall $hall)
     {
         return $this->createQueryBuilder('e')
             ->addSelect('hall', 'bandEvents')
-            ->leftJoin('e.hall', 'hall')    
-            ->leftJoin('e.bandEvents', 'bandEvents')  
+            ->leftJoin('e.hall', 'hall')
+            ->leftJoin('e.bandEvents', 'bandEvents')
             ->andWhere('hall.id = :id')
             ->andWhere('e.date >= CURRENT_DATE()')
             ->setParameter('id', $hall->getId())
-            ->orderBy('e.date', 'DESC')    
+            ->orderBy('e.date', 'DESC')
             ->getQuery()
             ->getResult();
     }
@@ -75,22 +75,22 @@ class EventRepository extends ServiceEntityRepository
             ->setParameter('hall', $hall)
             ->setParameter('eId', $event->getId())
             ->setParameter('date', $formattedDate)
-            ->orderBy('e.date', 'DESC')    
+            ->orderBy('e.date', 'DESC')
             ->getQuery()
             ->getResult();
-    
+
     }
 
     public function getComeEventsByHallAsc(Hall $hall)
     {
         return $this->createQueryBuilder('e')
             ->addSelect('hall', 'bandEvents')
-            ->leftJoin('e.hall', 'hall')    
-            ->leftJoin('e.bandEvents', 'bandEvents')  
+            ->leftJoin('e.hall', 'hall')
+            ->leftJoin('e.bandEvents', 'bandEvents')
             ->andWhere('hall.id = :id')
             ->andWhere('e.date >= CURRENT_DATE()')
             ->setParameter('id', $hall->getId())
-            ->orderBy('e.date', 'ASC')    
+            ->orderBy('e.date', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -98,117 +98,149 @@ class EventRepository extends ServiceEntityRepository
     public function getPastEventsByHall(Hall $hall)
     {
         return $this->createQueryBuilder('e')
-        ->addSelect('hall', 'bandEvents')
-        ->leftJoin('e.hall', 'hall')    
-        ->leftJoin('e.bandEvents', 'bandEvents')    
-        ->andWhere('hall.id = :id')
-        ->andWhere('e.date < CURRENT_DATE()')
-        ->setParameter('id', $hall->getId())
-        ->orderBy('e.date', 'DESC')    
-        ->getQuery()
-        ->getResult();
+            ->addSelect('hall', 'bandEvents')
+            ->leftJoin('e.hall', 'hall')
+            ->leftJoin('e.bandEvents', 'bandEvents')
+            ->andWhere('hall.id = :id')
+            ->andWhere('e.date < CURRENT_DATE()')
+            ->setParameter('id', $hall->getId())
+            ->orderBy('e.date', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     public function getPastEventsByHallForShow(Hall $hall)
     {
         return $this->createQueryBuilder('e')
-        ->addSelect('hall', 'bandEvents')
-        ->leftJoin('e.hall', 'hall')    
-        ->leftJoin('e.bandEvents', 'bandEvents')    
-        ->andWhere('hall.id = :id')
-        ->andWhere('e.status = :status')
-        ->andWhere('e.date < CURRENT_DATE()')
-        ->setParameter('id', $hall->getId())
-        ->setParameter('status', 1)
-        ->orderBy('e.date', 'DESC')    
-        ->getQuery()
-        ->getResult();
+            ->addSelect('hall', 'bandEvents')
+            ->leftJoin('e.hall', 'hall')
+            ->leftJoin('e.bandEvents', 'bandEvents')
+            ->andWhere('hall.id = :id')
+            ->andWhere('e.status = :status')
+            ->andWhere('e.date < CURRENT_DATE()')
+            ->setParameter('id', $hall->getId())
+            ->setParameter('status', 1)
+            ->orderBy('e.date', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     public function getAllEventsByBand(Band $band)
     {
         $eventIds = $this->createQueryBuilder('e')
-        ->select('e.id')
-        ->leftJoin('e.bandEvents', 'bandEvents')  
-        ->andWhere('bandEvents.band = :id')
-        ->setParameter('id', $band->getId())
-        ->getQuery()
-        ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+            ->select('e.id')
+            ->leftJoin('e.bandEvents', 'bandEvents')
+            ->andWhere('bandEvents.band = :id')
+            ->setParameter('id', $band->getId())
+            ->getQuery()
+            ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
-    $eventIds = array_column($eventIds, 'id');
+        $eventIds = array_column($eventIds, 'id');
 
-    if (empty($eventIds)) {
-        return [];
-    }
+        if (empty($eventIds)) {
+            return [];
+        }
 
-    return $this->createQueryBuilder('e')
-        ->addSelect('hall', 'bandEvents')
-        ->leftJoin('e.hall', 'hall')    
-        ->leftJoin('e.bandEvents', 'bandEvents')  
-        ->andWhere('e.id IN (:eventIds)')
-        ->setParameter('eventIds', $eventIds)
-        ->orderBy('e.date', 'DESC')    
-        ->getQuery()
-        ->getResult();
+        return $this->createQueryBuilder('e')
+            ->addSelect('hall', 'bandEvents')
+            ->leftJoin('e.hall', 'hall')
+            ->leftJoin('e.bandEvents', 'bandEvents')
+            ->andWhere('e.id IN (:eventIds)')
+            ->setParameter('eventIds', $eventIds)
+            ->orderBy('e.date', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     public function getComeEventsByBand(Band $band)
     {
-       
 
-            $eventIds = $this->createQueryBuilder('e')
+
+        $eventIds = $this->createQueryBuilder('e')
             ->select('e.id')
-            ->leftJoin('e.bandEvents', 'bandEvents')  
+            ->leftJoin('e.bandEvents', 'bandEvents')
             ->andWhere('bandEvents.band = :id')
             ->andWhere('e.date >= CURRENT_DATE()')
             ->setParameter('id', $band->getId())
             ->getQuery()
             ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-    
+
         $eventIds = array_column($eventIds, 'id');
-    
+
         if (empty($eventIds)) {
             return [];
         }
-    
+
         return $this->createQueryBuilder('e')
             ->addSelect('hall', 'bandEvents')
-            ->leftJoin('e.hall', 'hall')    
-            ->leftJoin('e.bandEvents', 'bandEvents')  
+            ->leftJoin('e.hall', 'hall')
+            ->leftJoin('e.bandEvents', 'bandEvents')
             ->andWhere('e.id IN (:eventIds)')
             ->setParameter('eventIds', $eventIds)
-            ->orderBy('e.date', 'DESC')    
+            ->orderBy('e.date', 'DESC')
             ->getQuery()
-            ->getResult();    
+            ->getResult();
     }
 
 
     public function getPastEventsByBand(Band $band)
     {
-       
 
-            $eventIds = $this->createQueryBuilder('e')
+
+        $eventIds = $this->createQueryBuilder('e')
             ->select('e.id')
-            ->leftJoin('e.bandEvents', 'bandEvents')  
+            ->leftJoin('e.bandEvents', 'bandEvents')
             ->andWhere('bandEvents.band = :id')
             ->andWhere('e.date < CURRENT_DATE()')
             ->setParameter('id', $band->getId())
             ->getQuery()
             ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-    
+
         $eventIds = array_column($eventIds, 'id');
-    
+
         if (empty($eventIds)) {
             return [];
         }
-    
+
         return $this->createQueryBuilder('e')
             ->addSelect('hall', 'bandEvents')
-            ->leftJoin('e.hall', 'hall')    
-            ->leftJoin('e.bandEvents', 'bandEvents')  
+            ->leftJoin('e.hall', 'hall')
+            ->leftJoin('e.bandEvents', 'bandEvents')
             ->andWhere('e.id IN (:eventIds)')
             ->setParameter('eventIds', $eventIds)
-            ->orderBy('e.date', 'DESC')    
+            ->orderBy('e.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getPastEventsByBandForShow(Band $band)
+    {
+
+
+        $eventIds = $this->createQueryBuilder('e')
+            ->select('e.id')
+            ->leftJoin('e.bandEvents', 'bandEvents')
+            ->andWhere('bandEvents.band = :id')
+            ->andWhere('e.date < CURRENT_DATE()')
+            ->setParameter('id', $band->getId())
+            ->getQuery()
+            ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
+        $eventIds = array_column($eventIds, 'id');
+
+        if (empty($eventIds)) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('e')
+            ->addSelect('hall', 'bandEvents')
+            ->leftJoin('e.hall', 'hall')
+            ->leftJoin('e.bandEvents', 'bandEvents')
+            ->andWhere('e.id IN (:eventIds)')
+            ->andWhere('e.status = :status')
+            ->setParameter('eventIds', $eventIds)
+            ->setParameter('status', 1)
+            ->orderBy('e.date', 'DESC')
             ->getQuery()
             ->getResult();
     }

@@ -1,0 +1,41 @@
+{% for events in eventPast|slice(0, 1) %}
+	{% if events.status == 1 %}
+		<div class="card-event-db bg-white ">
+			<div class="flex bg-slate-500 text-white p-2  items-center">
+				<div class="img-project-db  ">
+					<img src="{{ events.hall.logo }}" alt="">
+				</div>
+
+				<div>
+					<p>{{ events.hall.name }}
+						({{ events.hall.hallInfo.city }})</p>
+					<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+				</div>
+			</div>
+			<div class="plateau">
+				{% for bandEvent in events.bandEvents|slice(0, 1) %}
+					{% if bandEvent.status == "validate" %}
+
+
+						<div class=" flex justify-between items-center">
+							<div class="flex p-2 items-center relative">
+								<div class="img-project-db border-2 border-slate-500 ">
+									<img src="{{ bandEvent.band.logo }}" alt="">
+								</div>
+
+								<div>
+									<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+									<p>{{ bandEvent.band.musicCategory.category }}
+										/
+										{{ bandEvent.band.defineStyle }}</p>
+								</div>
+							</div>
+						</div>
+
+						<hr>
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+	{% endif %}
+{% endfor %}

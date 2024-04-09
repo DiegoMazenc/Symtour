@@ -162,6 +162,42 @@ class NotificationService
         $em->flush();
     }
 
+    public function addNotificationBandToBand($receipt, $ProfilName, $idReceipt, $sender, $idSender, $type, $band, $em)
+    {
+
+        $uniqueProfiles = [];
+    
+        foreach ($band->getBandMembers() as $bandMember) {
+            $profil = $bandMember->getProfil();
+            $uniqueProfiles[$profil->getId()] = $profil;
+        }
+    
+        foreach ($uniqueProfiles as $profil) {
+            $notification = new Notification;
+       
+
+       
+            $message = "$ProfilName vous invite à un évènement";
+        
+
+        $notification
+            ->setMessage($message)
+            ->setStatus(1)
+            ->setDate(new \DateTime())
+            ->setReceiptPage($receipt)
+            ->setReceiptId($idReceipt)
+            ->setSenderPage($sender)
+            ->setSenderId($idSender)
+            ->setType($type)
+            ->setProfil($profil);
+    
+            $em->persist($notification);
+        }
+    
+        $em->flush();
+    }
+
+
     public function addNotificationBandToHall($receipt, $ProfilName, $idReceipt, $sender, $idSender, $type, $hall, $em)
     {
 

@@ -42,6 +42,7 @@ security:
         - { path: ^/hall, roles: ROLE_USER }
         - { path: ^/band, roles: ROLE_USER }
         - { path: ^/search, roles: ROLE_USER }
+        - { path: ^/user/new, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/user, roles: ROLE_USER }
 
 when@test:

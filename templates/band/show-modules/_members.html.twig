@@ -1,0 +1,23 @@
+{% for member in band.bandMembers %}
+	{% if member.status == "admin" or member.status == "member" %}
+		<div class="cardAdminProfil flex justify-between ">
+			<div class="flex items-center">
+				<div class="img-member-db">
+					<img src="{{ member.profil.picture }}" alt="">
+				</div>
+				<div>
+					<a href="{{ path('app_profil_show', {'id': member.profil.id}) }}" class="text-blue-400 font-semibold">{{ member.profil.pseudo}}
+						{% if member.status == "admin" %}
+							(Admin)
+						{% endif %}
+					</a>
+					{% for bandMemberRole in member.bandMemberRoles %}
+
+						<p>{{ bandMemberRole.roleBand.roleName|capitalize}}</p>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+		<hr class="my-3">
+	{% endif %}
+{% endfor %}

@@ -1,0 +1,30 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	$(document).ready(function () {
+$('.deleteNotif').click(function (event) {
+event.preventDefault();
+
+let button = $(this);
+const bandId = {{ band.id }};
+let eventId = button.data('eventid');
+let hallId = button.data('hallid');
+let action = button.data('action');
+
+let notification = document.querySelector('#event_' + eventId);
+notification.classList.add('transition-delete');
+setTimeout(() => {
+notification.style.display = "none";
+}, 300);
+
+$.ajax({
+type: 'POST',
+url: '/band/' + bandId,
+data: {
+action: action,
+event_id: eventId,
+hallId: hallId
+}
+});
+});
+});
+</script>

@@ -1,0 +1,308 @@
+<script>
+    const events = {{ eventsData | raw }}
+
+    console.log(events)
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendar = document.getElementById('calendrier');
+        const prevMonthButton = document.getElementById('prevMonth');
+        const nextMonthButton = document.getElementById('nextMonth');
+        const monthYearHeader = document.getElementById('monthYearHeader');
+
+        let currentDate = new Date();
+
+        // Replace this with logic to fetch events from your Symfony backend
+
+        // Function to render the calendar
+        function renderCalendar() {
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            const daysInCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Update month and year header
+            monthYearHeader.textContent = `${
+                getMonthName(currentMonth)
+            } ${currentYear}`;
+
+            // Clear previous content
+            calendar.innerHTML = '';
+
+            // Create header row with day names
+            const dayNames = [
+                'Lun',
+                'Mar',
+                'Mer',
+                'Jeu',
+                'Ven',
+                'Sam',
+                'Dim'
+            ]; // L'ordre commence par le lundi
+            dayNames.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'day';
+                dayHeader.textContent = day;
+                calendar.appendChild(dayHeader);
+            });
+
+            // Create days of the month
+            const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInPreviousMonth = new Date(currentYear, currentMonth, 0).getDate();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Calculate the position of the first day in the grid
+            let startPosition = (firstDayOfMonth - 1 + 7) % 7;
+
+            // Fill in the days of the previous month
+            for (let day = daysInPreviousMonth - startPosition + 1; day <= daysInPreviousMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'day previous-month-day'; // Add a class to style differently
+                dayElement.textContent = day;
+                calendar.appendChild(dayElement);
+            }
+
+            // Reset startPosition for the days of the current month
+            startPosition = 0;
+
+            // Fill in the days of the current month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'day current-month-day'; // Add a class to style differently
+                dayElement.textContent = day;
+
+                const currentDate = new Date();
+                if (day === currentDate.getDate() && currentMonth === currentDate.getMonth() && currentYear === currentDate.getFullYear()) {
+                    dayElement.classList.add('current-day'); // Add a class for the current day
+                }
+
+                // Check if there are events on this day
+                const eventsOnDay = events.filter(event => {
+                    const eventDate = new Date(event.date);
+                    return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
+                });
+
+                // Add event styling if there are events
+                if (eventsOnDay.length > 0 && eventsOnDay.every(event => event.halls.every(hall => hall.status !== "2"))) {
+                    if (eventsOnDay.every(event => event.halls.every(hall => hall.status == "1"))) {
+                        dayElement.classList.add('event-day-valid');
+                    } else {
+                        dayElement.classList.add('event-day');
+                    }
+                    dayElement.addEventListener('click', () => openEventModal(`${currentYear}-${
+                        currentMonth + 1
+                    }-${day}`));
+                }
+                calendar.appendChild(dayElement);
+            }
+
+            // Fill in the remaining days of the grid with the next month
+            const remainingDays = 35 - startPosition - daysInMonth; // 42 is the maximum number of days in a grid
+            for (let day = 1; day <= remainingDays; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'day next-month-day'; // Add a class to style differently
+                dayElement.textContent = day;
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        // Helper function to get month name
+        function getMonthName(month) {
+            const monthNames = [
+                'Janvier',
+                'Février',
+                'Mars',
+                'Avril',
+                'Mai',
+                'Juin',
+                'Juillet',
+                'Août',
+                'Septembre',
+                'Octobre',
+                'Novembre',
+                'Décembre'
+            ];
+            return monthNames[month];
+        }
+
+        // Event listeners for navigation buttons
+        prevMonthButton.addEventListener('click', function () {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        });
+
+        nextMonthButton.addEventListener('click', function () {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        });
+
+        // Initial render
+        renderCalendar();
+    });
+
+    function openEventModal(date) {
+        const formattedDate = date.replace(/-(\d)-/g, '-0$1-').replace(/-(\d{1})$/g, '-0$1');
+        const eventsOnSelectedDate = events.filter(event => event.date === formattedDate);
+
+        if (eventsOnSelectedDate.length > 0) {
+            const modalContent = document.querySelector('#eventModal .modal-content');
+            modalContent.innerHTML = '<div class="close hidden" onclick="closeModal()">&times;</div>';
+
+            // Utilisez un objet pour regrouper les groupes par date
+            const groupedEvents = {};
+
+            // Bouclez sur les événements pour les regrouper par date
+            eventsOnSelectedDate.forEach(eventDetails => {
+                if (!groupedEvents[eventDetails.date]) {
+                    groupedEvents[eventDetails.date] = [];
+                }
+                // Utilisez eventDetails.bands comme un tableau d'objets pour chaque groupe
+                eventDetails.halls.forEach(hall => {
+                    groupedEvents[eventDetails.date].push({
+                        name: hall.name,
+                        logo: hall.logo,
+                        city: hall.city,
+                        status: hall.status,
+                        // Ajoutez d'autres détails de groupe ici si nécessaire
+                    });
+                });
+            });
+
+            // Bouclez sur les groupes regroupés et ajoutez-les à la modale
+            for (const [date, halls] of Object.entries(groupedEvents)) {
+                modalContent.innerHTML += `
+<div class="flex justify-between item-align bg-slate-500 relative rounded-t-md text-white p-2 ">
+<p> ${
+                    formatDate(date)
+                }</p>
+<div class="close ml-3 px-1 font-bold bg-slate-700 rounded-full " onclick="closeModal()">&times;</div>
+</div>
+`;
+                halls.forEach(hall => {
+                    if (hall.status == "1") {
+                        modalContent.innerHTML += `
+<div class="flex justify-between items-center">
+<div class="flex p-2 items-center relative">
+<div class="img-project-db border-2 border-green-500 ">
+<img src="${
+                            hall.logo
+                        }" alt="">
+</div>
+<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+✓
+</div>
+<div>
+<p class="text-blue-400 font-semibold">${
+                            hall.name
+                        }</p>
+<p>${
+                            hall.city
+                        }</p>
+</div>
+</div>
+</div>
+`;
+                    } else if (hall.status == "3") {
+                        modalContent.innerHTML += `
+<div class="flex justify-between items-center">
+<div class="flex p-2 items-center relative">
+<div class="img-project-db border-2 bg-slate-300">
+<img src="${
+                            hall.logo
+                        }" alt="">
+</div>
+<div class="bg-slate-300 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+⧖
+</div>
+<div>
+<p class="text-blue-400 font-semibold">${
+                            hall.name
+                        }</p>
+<p>${
+                            hall.city
+                        }</p>
+</div>
+</div>
+</div>
+`;
+                    }
+                });
+            }
+
+            // Affichez la modale
+            document.getElementById('eventModal').style.display = 'block';
+        } else { // Aucun événement trouvé pour la date sélectionnée
+            console.error(`Aucun détail d'événement trouvé pour la date : ${date}`);
+        }
+    }
+
+    function formatDate(date) {
+        const options = {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        };
+        const formattedDate = new Date(date).toLocaleDateString('fr-FR', options);
+        return formattedDate;
+    }
+
+    function closeModal() {
+        document.getElementById('eventModal').style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const container = document.querySelector('.event-confirm-db-container');
+        const content = document.querySelector('.event-confirm-db-content');
+        const arrowLeft = document.getElementById('arrow-left');
+        const arrowRight = document.getElementById('arrow-right');
+
+        // Initialisation de la position à 0
+        let currentPosition = 0;
+
+        arrowLeft.addEventListener('click', function () { // Décrémente la position
+            currentPosition -= 100;
+            updatePosition();
+        });
+
+        arrowRight.addEventListener('click', function () { // Incrémente la position
+            currentPosition += 100;
+            updatePosition();
+        });
+
+        arrowLeft.addEventListener('mouseover', function () { // Change le curseur au survol
+            arrowLeft.style.cursor = 'pointer';
+        });
+
+        arrowRight.addEventListener('mouseover', function () { // Change le curseur au survol
+            arrowRight.style.cursor = 'pointer';
+        });
+
+        arrowLeft.addEventListener('mouseout', function () { // Rétablit le curseur par défaut
+            arrowLeft.style.cursor = 'default';
+        });
+
+        arrowRight.addEventListener('mouseout', function () { // Rétablit le curseur par défaut
+            arrowRight.style.cursor = 'default';
+        });
+
+        function updatePosition() { // Limite la position pour éviter de dépasser le contenu
+            currentPosition = Math.max(0, Math.min(currentPosition, content.scrollWidth - container.clientWidth));
+
+            // Ajout d'une transition pour une animation fluide
+            content.style.transition = 'left 0.5s ease-in-out';
+            content.style.left = `-${currentPosition}%`;
+
+            // Rend la flèche gauche transparente et non cliquable si à la limite gauche
+            arrowLeft.style.opacity = currentPosition === 0 ? 0.5 : 1;
+            arrowLeft.style.pointerEvents = currentPosition === 0 ? 'none' : 'auto';
+
+            // Rend la flèche droite transparente et non cliquable si à la limite droite
+            const count = {{ count }};
+            arrowRight.style.opacity = currentPosition >= (count - 1) * 100 ? 0.5 : 1;
+            arrowRight.style.pointerEvents = currentPosition >= (count - 1) * 100 ? 'none' : 'auto';
+
+            // Réinitialise la transition après l'animation
+            setTimeout(() => {
+                content.style.transition = '';
+            }, 500);
+        }
+    });
+</script>

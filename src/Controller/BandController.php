@@ -100,8 +100,8 @@ class BandController extends AbstractController
         NotificationService $notification
     ): Response {
         $eventCome = $eventRepository->getComeEventsByBand($band);
-        $eventPast = $eventRepository->getPastEventsByBand($band);
-        $allEvent = $eventRepository->getAllEventsByBand($band);
+        $eventPast = $eventRepository->getPastEventsByBandForShow($band);
+        $eventAll = $eventRepository->getAllEventsByBand($band);
         $notification->isRead((int)$request->query->get('notification_id'));
 
         if ($request->isMethod('POST')) {
@@ -124,11 +124,33 @@ class BandController extends AbstractController
                 $notification->addNotificationBandToHall("hall", $band->getName(), $hallId, "band", $band->getId(), $status, $hall, $em);
             }
         }
+
+        $eventsData = [];
+        foreach ($eventAll as $event) {
+            // Ignorer les événements avec un statut de 2 (rejeté)
+            if ($event->getStatus() != 2) {
+                $eventData = [
+                    'date' => $event->getDate()->format('Y-m-d'),
+                    'halls' => [
+                        [
+                            'name' => $event->getHall()->getName(),
+                            'logo' => $event->getHall()->getLogo(),
+                            'city' => $event->getHall()->getHallInfo()->getCity(),
+                            'status' => $event->getStatus(),
+                        ]
+                    ],
+                ];
+    
+                $eventsData[] = $eventData;
+            }
+        }
+        
         return $this->render('band/show.html.twig', [
             'band' => $band,
             'eventCome' => $eventCome,
             'eventPast' => $eventPast,
-            'allEvent' => $allEvent
+            'allEvent' => $eventAll,
+            'eventsData' => json_encode($eventsData),
         ]);
     }
 
@@ -346,7 +368,7 @@ class BandController extends AbstractController
                 $em->persist($bandEvent);
                 $em->flush();
 
-                $notification->addNotificationHallToBand("band", $band->getName(), $bandGuest->getId(), "band", $band->getId(), "guest", $band, $em);
+                $notification->addNotificationBandToBand("band", $band->getName(), $bandGuest->getId(), "band", $band->getId(), "guest", $bandGuest, $em);
 
                 return $this->redirectToRoute('app_band_event', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
             }

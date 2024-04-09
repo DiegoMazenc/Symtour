@@ -1,0 +1,55 @@
+<div class="event-confirm-db-container">
+						{% if count == 0 %}
+							<div class="card-event-db bg-white ">
+								<p class="text-center p-3">Aucun évènement prévus
+								</p>
+							</div>
+						{% endif %}
+						<div class=" event-confirm-db-content" style="width: {{ widthPercentage }}%">
+							{% for events in eventCome %}
+								{% if events.status == 1 %}
+
+									<div class="card-event-db bg-white ">
+
+										<div class=" bg-slate-500 text-white p-2  items-center flex relative">
+											<div class="img-project-db border-2 border-green-500 ">
+												<img src="{{ events.hall.logo }}" alt="">
+											</div>
+											<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+												✓
+											</div>
+											<div>
+												<p>{{ events.hall.name }}
+													({{ events.hall.hallInfo.city }})</p>
+												<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+											</div>
+										</div>
+										<div class="plateau">
+											{% for bandEvent in events.bandEvents|slice(0, 3) %}
+												{% if bandEvent.status == "validate" %}
+
+													<div class="">
+														<div class=" flex justify-between items-center">
+															<div class="flex p-2 items-center relative">
+																<div class="img-project-db border-2 border-green-500 ">
+																	<img src="{{ bandEvent.band.logo }}" alt="">
+																</div>
+
+																<div>
+																	<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}" class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</a>
+																	<p>{{ bandEvent.band.musicCategory.category }}
+																		/
+																		{{ bandEvent.band.defineStyle }}</p>
+																</div>
+															</div>
+														</div>
+													</div>
+													<hr>
+												{% endif %}
+											{% endfor %}
+										</div>
+									</div>
+								{% endif %}
+							{% endfor %}
+						</div>
+					</div>
