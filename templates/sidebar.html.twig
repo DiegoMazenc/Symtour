@@ -1,4 +1,4 @@
-{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.profil.pseudo != "" %}
+{% if is_granted('IS_AUTHENTICATED') and app.user.profil.pseudo != "" %}
 	<div
 		class="user-sidebar bg-sky-950 h-screen text-white">
 		{# <h4>Notifications</h4> #}

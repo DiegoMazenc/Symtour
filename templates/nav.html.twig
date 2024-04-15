@@ -12,6 +12,8 @@
 				</div>
 			</a>
 			<ul class="flex items-center hidden space-x-8 lg:flex">
+				{% if is_granted('IS_AUTHENTICATED') %}
+
 				<li class="hover-nav-rechercher  inline-flex ">
 					<div class=" item-content-nav">
 						<a href="{{ path('app_search') }}" aria-label="About us" title="About us" class="inline-flex items-center justify-center">
@@ -21,7 +23,6 @@
 					</div>
 				</li>
 
-				{% if is_granted('IS_AUTHENTICATED_FULLY') %}
 					<li class="hover-nav-profile  inline-flex ">
 						<div class=" item-content-nav">
 							<a href="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" class="inline-flex items-center justify-center" aria-label="Sign up" title="My Account">

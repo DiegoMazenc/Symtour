@@ -213,7 +213,7 @@ class ProfilController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_profil_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/{id}/resend-mail-confirmation', name: 'app_resend_confirmation_mail', methods: ['GET'])]
