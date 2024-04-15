@@ -28,20 +28,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            // ->add('plainPassword', RepeatedType::class, [
-            //     'type' => PasswordType::class,
-            //     'invalid_message' => 'The password fields must match.',
-            //     'options' => ['attr' => ['placeholder' => 'mot de passe']], // Correction ici : Remplacement de "mot depasse" par "mot de passe"
-            //     'required' => true,
-            //     'first_options'  => [
-            //         'label' => false,
-            //         'attr' => ['placeholder' => 'Mot de passe'], // Déplacement de 'attr' ici pour spécifier les attributs
-            //     ],
-            //     'second_options' => [
-            //         'label' => false,
-            //         'attr' => ['placeholder' => 'Confirmer mot de passe'], // Déplacement de 'attr' ici pour spécifier les attributs
-            //     ],
-            // ])
+
             ->add('plainPassword', RepeatedType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
