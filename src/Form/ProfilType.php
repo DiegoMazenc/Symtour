@@ -21,21 +21,28 @@ class ProfilType extends AbstractType
                 'attr' => [
                     'class' => 'inputForm',
                 ],
+                'label' => 'Pays *'
             ])
             ->add('city', TextType::class, [
                 'attr' => [
                     'class' => 'inputForm',
                 ],
+                'label' => 'Ville *'
+
             ])
             ->add('zip_code', TextType::class, [
                 'attr' => [
                     'class' => 'inputForm',
                 ],
+                'label' => 'Code postal *'
+
             ])
             ->add('description', TextType::class, [
                 'attr' => [
                     'class' => 'inputForm',
                 ],
+                'label' => 'Description *'
+
             ])
             ->add('picture', FileType::class, [
                 'attr' => [
@@ -59,6 +66,8 @@ class ProfilType extends AbstractType
                 'attr' => [
                     'class' => 'inputForm',
                 ],
+                'label' => 'Pseudo *'
+
             ])
             
         ;

@@ -155,8 +155,12 @@ class UserController extends AbstractController
             $entityManager->remove($user);
     
             $entityManager->flush();
+            $this->addFlash(
+               'success',
+               'Votre profil à bien été supprimé, Bonne continuation !'
+            );
         }
     
-        return $this->redirectToRoute('app_user_new', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
     }
 }

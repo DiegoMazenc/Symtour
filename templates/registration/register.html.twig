@@ -7,8 +7,7 @@
 	{% for flash_error in app.flashes('verify_email_error') %}
 		<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
 	{% endfor %}
-
-	<div class="form-login-container  bg-slate-100 w-full">
+	<div class="form-login-container md:h-screen bg-slate-100 w-full">
 		<div class="intro-login">
 			<div class="flex w-4/6 items-center">
 				<div class="mr-5">
@@ -42,28 +41,31 @@
 				</div>
 			</div>
 		</div>
+		<div class="form-login">
+			<div class=" bg-white rounded-lg shadow-md p-5">
+				<h1 class="font-bold text-slate-700 text-xl">Inscription</h1>
+				{{ form_errors(registrationForm) }}
 
-		<div class="form-login bg-white rounded-lg shadow-md">
-			<h1 class="font-bold text-slate-700 text-xl">Inscription</h1>
-			{{ form_errors(registrationForm) }}
-
-			{{ form_start(registrationForm) }}
-
-			{{ form_widget(registrationForm.email, {
+				{{ form_start(registrationForm) }}
+				<div class="text-start">
+					{{ form_row(registrationForm.email, {
                         'attr': {
                             'placeholder': 'Votre Email'
                         }
                     })  }}
 
-			{{ form_widget(registrationForm.plainPassword) }}
-			<div class="flex">
-				{{ form_row(registrationForm.agreeTerms) }}
-				<p class="ml-2">J'accepte les
-					<a href="{{ path('app_cgu') }}" class="text-blue-500">Conditions Générales D'utilisation</a>.</p>
+					{{ form_row(registrationForm.plainPassword) }}
+				</div>
+				<div class="flex">
+					{{ form_row(registrationForm.agreeTerms) }}
+					<p class="ml-2">J'accepte les
+						<a href="{{ path('app_cgu') }}" class="text-blue-400 underline hover:text-blue-600 hover:no-underline">Conditions Générales D'utilisation</a>.</p>
+				</div>
+				<button class="rounded-lg p-2 bg-blue-700 w-full mt-3 text-white" id="inscriptionForm">{{ button_label|default('Inscription') }}</button>
+				{{ form_end(registrationForm) }}
 			</div>
-			<button class="rounded-lg p-2 bg-blue-700 w-full mt-3 text-white" id="inscriptionForm">{{ button_label|default('Inscription') }}</button>
-			{{ form_end(registrationForm) }}
 		</div>
+
 	</div>
 
 

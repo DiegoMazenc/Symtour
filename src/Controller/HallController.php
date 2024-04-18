@@ -31,6 +31,7 @@ use App\Repository\HallMemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\HallMemberRoleRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -61,6 +62,10 @@ class HallController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if($form->getData()->getLogo() == null){
+                 $hall->setLogo('/assets/img/profil_hall.png');
+
+            }
             $entityManager->persist($hall);
             $entityManager->flush();
             $hallMember = new HallMember();
@@ -86,7 +91,7 @@ class HallController extends AbstractController
             $entityManager->persist($hallMemberRole);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_hall_info_edit', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_hall_infos', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('hall/new.html.twig', [
@@ -96,19 +101,19 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_hall_show', methods: ['GET', 'POST'])]
-    public function show(Hall $hall, BandRepository $bandRepository,HallMemberRepository $hallMemberRepository, EventRepository $eventRepository, Request $request, EntityManagerInterface $em, NotificationService $notification): Response
+    public function show(Hall $hall, BandRepository $bandRepository, HallMemberRepository $hallMemberRepository, EventRepository $eventRepository, Request $request, EntityManagerInterface $em, NotificationService $notification): Response
     {
 
         $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
         $canAccess = false;
-        
+
         foreach ($allHallMembers as $hallMember) {
             if ($this->isGranted('hall_member', $hallMember)) {
                 $canAccess = true;
-                break; 
+                break;
             }
         }
-        
+
         if (!$canAccess) {
             return $this->redirectToRoute('app_search_booking', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
         }
@@ -117,7 +122,7 @@ class HallController extends AbstractController
         $eventPast = $eventRepository->getPastEventsByHallForShow($hall);
         $eventAll = $eventRepository->getAllEventsByHall($hall);
 
-        $notification->isRead((int)$request->query->get('notification_id'));
+        $notification->isRead((int) $request->query->get('notification_id'));
         if ($request->isMethod('POST')) {
             $action = $request->request->get('action');
             $eventId = $request->request->get('event_id');
@@ -142,29 +147,29 @@ class HallController extends AbstractController
         }
 
         $eventsData = [];
-    foreach ($eventAll as $event) {
-        // Ignorer les événements avec un statut de 2 (rejeté)
-        if ($event->getStatus() != 2) {
-            $eventData = [
-                'date' => $event->getDate()->format('Y-m-d'),
-                'statusDate' => $event->getStatus(),
-                'bands' => [],
-            ];
-
-            foreach ($event->getBandEvents() as $bandEvent) {
-                $bandData = [
-                    'name' => $bandEvent->getBand()->getName(),
-                    'logo' => $bandEvent->getBand()->getLogo(),
-                    'music' => $bandEvent->getBand()->getMusicCategory()->getCategory(),
-                    'style' => $bandEvent->getBand()->getDefineStyle(),
-                    'status' => $bandEvent->getStatus(),
+        foreach ($eventAll as $event) {
+            // Ignorer les événements avec un statut de 2 (rejeté)
+            if ($event->getStatus() != 2) {
+                $eventData = [
+                    'date' => $event->getDate()->format('Y-m-d'),
+                    'statusDate' => $event->getStatus(),
+                    'bands' => [],
                 ];
-                $eventData['bands'][] = $bandData;
-            }
 
-            $eventsData[] = $eventData;
+                foreach ($event->getBandEvents() as $bandEvent) {
+                    $bandData = [
+                        'name' => $bandEvent->getBand()->getName(),
+                        'logo' => $bandEvent->getBand()->getLogo(),
+                        'music' => $bandEvent->getBand()->getMusicCategory()->getCategory(),
+                        'style' => $bandEvent->getBand()->getDefineStyle(),
+                        'status' => $bandEvent->getStatus(),
+                    ];
+                    $eventData['bands'][] = $bandData;
+                }
+
+                $eventsData[] = $eventData;
+            }
         }
-    }
         return $this->render('hall/show.html.twig', [
             'hall' => $hall,
             'eventCome' => $eventCome,
@@ -188,18 +193,18 @@ class HallController extends AbstractController
         HallMemberRoleRepository $hallMemberRoleRepository,
         HallRepository $hallRepository
     ): Response {
-        $notification->isRead((int)$request->query->get('notification_id'));
+        $notification->isRead((int) $request->query->get('notification_id'));
 
         $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
         $canAccess = false;
-        
+
         foreach ($allHallMembers as $hallMember) {
             if ($this->isGranted('hall_member', $hallMember)) {
                 $canAccess = true;
-                break; 
+                break;
             }
         }
-        
+
         if (!$canAccess) {
             return $this->redirectToRoute('app_search_booking', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
         }
@@ -238,7 +243,7 @@ class HallController extends AbstractController
 
             $hallMemberRole = new HallMemberRole();
             $hallMemberRole->setHallMember($hallMember)
-            ->setRoleHall($roleEntity);
+                ->setRoleHall($roleEntity);
             $em->persist($hallMemberRole);
 
             $em->flush();
@@ -253,9 +258,9 @@ class HallController extends AbstractController
             foreach ($request->request->all() as $key => $value) {
                 if (strpos($key, 'role_') !== false) {
                     $idRole = $value;
-                    $role = $roleHallRepository->find((int)$idRole);
+                    $role = $roleHallRepository->find((int) $idRole);
                     $idMemberRoleHall = $request->request->get("idMemberRoleHall_" . substr($key, 5));
-                    $MemberRoleHall = $hallMemberRoleRepository->find((int)$idMemberRoleHall);
+                    $MemberRoleHall = $hallMemberRoleRepository->find((int) $idMemberRoleHall);
 
                     if ($MemberRoleHall) {
                         $MemberRoleHall->setRoleHall($role);
@@ -265,23 +270,23 @@ class HallController extends AbstractController
 
                 if ($request->request->has("deleteRole_" . substr($key, 5))) {
                     $idMemberRoleHallToDelete = $request->request->get("idMemberRoleHall_" . substr($key, 5));
-                    $memberRoleToDelete = $hallMemberRoleRepository->find((int)$idMemberRoleHallToDelete);
+                    $memberRoleToDelete = $hallMemberRoleRepository->find((int) $idMemberRoleHallToDelete);
                     if ($memberRoleToDelete) {
                         $em->remove($memberRoleToDelete);
                         $em->flush();
                     } else {
-                        
+
                     }
                 }
             }
 
             $status = $request->request->get('status');
-            $hallMember = $hallMemberRepository->find((int)$member);
+            $hallMember = $hallMemberRepository->find((int) $member);
 
             if ($hallMember) {
                 $hall = $hallMember->getHall();
                 $countAdmin = $hallMemberRepository->countAdmin($hall, 'admin');
-            
+
                 if ($status != "admin" && $countAdmin < 2) {
                     $this->addFlash('denied', 'Vous devez élire un nouvel Admin !');
                 } else {
@@ -292,7 +297,7 @@ class HallController extends AbstractController
             }
 
             $newRole = $request->request->get('newRole');
-            $role = $roleHallRepository->find((int)$newRole);
+            $role = $roleHallRepository->find((int) $newRole);
 
             if ($newRole != "1") {
                 $newMemberRoleHall = new HallMemberRole;
@@ -308,19 +313,19 @@ class HallController extends AbstractController
             if ($request->request->has("deleteMember")) {
                 $idMember = $request->request->get('idMember');
                 $member = $hallMemberRepository->find($idMember);
-            
+
                 if ($member) {
                     $hallMemberRoles = $hallMemberRoleRepository->findBy(['hall_member' => $member]);
-            
+
                     foreach ($hallMemberRoles as $hallMemberRole) {
                         $em->remove($hallMemberRole);
                     }
-            
+
                     $em->flush();
-            
+
                     $em->remove($member);
                     $em->flush();
-            
+
                 }
             }
         }
@@ -342,22 +347,21 @@ class HallController extends AbstractController
         HallMemberRepository $hallMemberRepository,
         Request $request,
         NotificationService $notification,
-        BandRepository $bandRepository, 
-        EventRepository $eventRepository, 
+        BandRepository $bandRepository,
+        EventRepository $eventRepository,
         EntityManagerInterface $em
-        ): Response
-    {
+    ): Response {
 
         $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
         $canAccess = false;
-        
+
         foreach ($allHallMembers as $hallMember) {
             if ($this->isGranted('hall_member', $hallMember)) {
                 $canAccess = true;
-                break; 
+                break;
             }
         }
-        
+
         if (!$canAccess) {
             return $this->redirectToRoute('app_search_booking', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
         }
@@ -462,21 +466,21 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_hall_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Hall $hall,HallMemberRepository $hallMemberRepository, EntityManagerInterface $entityManager, AddPhotosService $addPhotosService): Response
+    public function edit(Request $request, Hall $hall, HallMemberRepository $hallMemberRepository, EntityManagerInterface $entityManager, AddPhotosService $addPhotosService): Response
     {
         $form = $this->createForm(HallType::class, $hall);
         $form->handleRequest($request);
 
         $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
         $canAccess = false;
-        
+
         foreach ($allHallMembers as $hallMember) {
             if ($this->isGranted('hall_member', $hallMember)) {
                 $canAccess = true;
-                break; 
+                break;
             }
         }
-        
+
         if (!$canAccess) {
             return $this->redirectToRoute('app_search_booking', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
         }
@@ -500,23 +504,22 @@ class HallController extends AbstractController
 
     #[Route('/{id}/infos', name: 'app_hall_infos', methods: ['GET', 'POST'])]
     public function infos(
-        Request $request, 
-        Hall $hall, 
+        Request $request,
+        Hall $hall,
         HallMemberRepository $hallMemberRepository,
-        HallInfoRepository $hallInfoRepository, 
+        HallInfoRepository $hallInfoRepository,
         EntityManagerInterface $em
-        ): Response
-    {
+    ): Response {
         $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
         $canAccess = false;
-        
+
         foreach ($allHallMembers as $hallMember) {
             if ($this->isGranted('hall_member', $hallMember)) {
                 $canAccess = true;
-                break; 
+                break;
             }
         }
-        
+
         if (!$canAccess) {
             return $this->redirectToRoute('app_search_booking', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
         }
@@ -531,7 +534,7 @@ class HallController extends AbstractController
 
             return $this->redirectToRoute('app_hall_infos', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
 
-        } 
+        }
 
         return $this->render('hall/infos.html.twig', [
             'hall' => $hall,
@@ -540,18 +543,18 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}/event-delete', name: 'app_hall_event_delete', methods: ['POST'])]
-    public function deleteEvent(Request $request,HallMemberRepository $hallMemberRepository, Hall $hall, BandEventRepository $bandEventRepository, EntityManagerInterface $entityManager): Response
+    public function deleteEvent(Request $request, HallMemberRepository $hallMemberRepository, Hall $hall, BandEventRepository $bandEventRepository, EntityManagerInterface $entityManager): Response
     {
         $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
         $canAccess = false;
-        
+
         foreach ($allHallMembers as $hallMember) {
             if ($this->isGranted('hall_member', $hallMember)) {
                 $canAccess = true;
-                break; 
+                break;
             }
         }
-        
+
         if (!$canAccess) {
             return $this->redirectToRoute('app_search_booking', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
         }
@@ -572,29 +575,47 @@ class HallController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'app_hall_delete', methods: ['POST'])]
-    public function delete(Request $request,HallMemberRepository $hallMemberRepository, Hall $hall, EntityManagerInterface $entityManager): Response
-    {
+    #[Route('/{id}/delete', name: 'app_hall_delete', methods: ['GET', 'POST'])]
+    public function delete(
+        Security $security,
+        Request $request,
+        HallMemberRepository $hallMemberRepository,
+        HallMemberRoleRepository $hallMemberRoleRepository,
+        HallInfoRepository $hallInfoRepository,
+        Hall $hall,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $user = $security->getUser();
+
         $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
+        $hallInfo = $hallInfoRepository->find($hall);
         $canAccess = false;
-        
+
         foreach ($allHallMembers as $hallMember) {
             if ($this->isGranted('hall_member', $hallMember)) {
                 $canAccess = true;
-                break; 
+                break;
             }
         }
-        
-        if (!$canAccess) {
-            return $this->redirectToRoute('app_search_booking', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
-        }
-        
 
-        if ($this->isCsrfTokenValid('delete' . $hall->getId(), $request->request->get('_token'))) {
+        if (!$canAccess) {
+            $this->addFlash(
+               'error',
+               'Vous n\'avez pas les droits pour fermer cette Salle'
+            );
+            return $this->redirectToRoute('app_hall_edit', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
+        } else {
+            foreach ($allHallMembers as $hallmember) {
+                $roleMember = $hallMemberRoleRepository->findOneBy(['hall_member' => $hallmember->getId()]);
+                $entityManager->remove($roleMember);
+                $entityManager->remove($hallmember);
+            }
+            $entityManager->remove($hallInfo);
             $entityManager->remove($hall);
             $entityManager->flush();
+            return $this->redirectToRoute('app_profil_show', ["id" => $user->getId()], Response::HTTP_SEE_OTHER);
+
         }
 
-        return $this->redirectToRoute('app_hall_index', [], Response::HTTP_SEE_OTHER);
     }
 }

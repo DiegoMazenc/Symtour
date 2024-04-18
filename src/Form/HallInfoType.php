@@ -21,12 +21,15 @@ class HallInfoType extends AbstractType
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'Code Postal *',
+
         ])
         ->add('city', TextType::class, [
             'label' => false,
             'attr' => [
                 'class' => 'inputForm hidden',
             ],
+
         ])
         ->add('nbrStreet', TextType::class, [
             'label' => 'N°',
@@ -38,37 +41,51 @@ class HallInfoType extends AbstractType
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'Rue *',
+
         ])
         ->add('department', TextType::class, [
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'Départmeent *',
+
         ])
         ->add('region', TextType::class, [
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'Région *',
+
         ])
         ->add('country', TextType::class, [
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'Pays *',
+
         ])
         ->add('email', EmailType::class, [
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'E-mail *',
+
         ])
         ->add('phone', TelType::class, [
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'Téléphone',
+
             'required' => false,
         ])
         ->add('website', TextType::class, [
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'Site Internet',
+
             'required' => false,
         ])
         ;

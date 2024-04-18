@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<title>
 			{% block title %}Welcome!
 			{% endblock %}
@@ -15,19 +15,15 @@
 
 
 	</head>
-	<body>
-		{% include 'nav.html.twig' %}
-		<div class="user-dashboard  flex bg-sky-950 ">
-		
-			<div class="hidden md:block">
-			{% include 'sidebar.html.twig' %}
+	<body  class="bg-slate-100 ">
+			{% include 'nav.html.twig' %}
+			<div class="user-dashboard  flex bg-sky-950 ">
+				<div class="hidden md:block">
+					{% include 'sidebar.html.twig' %}
+				</div>
+				{% block body %}{% endblock %}
+				{% include 'bottombar.html.twig' %}
 			</div>
-			{% block body %}{% endblock %}
-
-			{% include 'bottombar.html.twig' %}
-
-
-		</div>
 
 			{% block javascripts %}
 				{{ encore_entry_script_tags('app') }}
@@ -38,8 +34,6 @@
 
 
 			{% endblock %}
-			{% include 'footer.html.twig' %}
-
-
-		</body>
-	</html>
+				{% include 'footer.html.twig' %}
+	</body>
+</html>

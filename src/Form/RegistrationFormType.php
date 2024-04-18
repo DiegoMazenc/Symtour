@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
@@ -18,7 +19,9 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
+            ->add('email', EmailType::class,[
+                'label' => "Votre E-mail *",
+            ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'label' => false,
@@ -47,11 +50,11 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
                 'first_options' => [
-                    'label' => false,
+                    'label' => "Mot de passe *",
                     'attr' => ['placeholder' => 'Mot de passe'], // Déplacement de 'attr' ici pour spécifier les attributs
                 ],
                 'second_options' => [
-                    'label' => false,
+                    'label' => "Confirmer le mot de passe *",
                     'attr' => ['placeholder' => 'Confirmer mot de passe'], // Déplacement de 'attr' ici pour spécifier les attributs
                 ],
             ])

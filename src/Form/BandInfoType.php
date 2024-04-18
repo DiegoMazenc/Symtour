@@ -18,7 +18,11 @@ class BandInfoType extends AbstractType
         ->add('zipCode', TextType::class, [
             'attr' => [
                 'class' => 'inputForm',
+                'placeholder' => 'Choisissez un code postal pour remplir automatiquement vos infos'
             ],
+            'label' => 'Code Postal *',
+
+
         ])
         ->add('city', TextType::class, [
             'label' => false,
@@ -30,32 +34,44 @@ class BandInfoType extends AbstractType
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'Département *',
+
         ])
         ->add('region', TextType::class, [
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'Région *',
+
         ])
         ->add('country', TextType::class, [
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'Pays *',
+
         ])
         ->add('email', EmailType::class, [
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'E-mail *',
+
         ])
         ->add('phone', TelType::class, [
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'Téléphone',
+
             'required' => false,
         ])
         ->add('website', TextType::class, [
             'attr' => [
                 'class' => 'inputForm',
             ],
+            'label' => 'Site Internet',
+
             'required' => false,
         ])
         ;

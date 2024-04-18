@@ -208,12 +208,16 @@ class ProfilController extends AbstractController
     #[Route('/{id}', name: 'app_profil_delete', methods: ['POST'])]
     public function delete(Request $request, Profil $profil, EntityManagerInterface $entityManager): Response
     {
+
         if ($this->isCsrfTokenValid('delete' . $profil->getId(), $request->request->get('_token'))) {
             $entityManager->remove($profil);
             $entityManager->flush();
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_profil_edit', ["id" => $profil->getId()], Response::HTTP_SEE_OTHER);
+
+
     }
 
     #[Route('/{id}/resend-mail-confirmation', name: 'app_resend_confirmation_mail', methods: ['GET'])]

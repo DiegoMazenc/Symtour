@@ -58,6 +58,7 @@ class RegistrationController extends AbstractController
             
             $profil = new Profil();
             $profil->setIdUser($user);
+            $profil->setPicture('/assets/img/profil_user.png');
             $entityManager->persist($profil);
             $entityManager->flush();
 

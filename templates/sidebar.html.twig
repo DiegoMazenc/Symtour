@@ -1,4 +1,4 @@
-{% if is_granted('IS_AUTHENTICATED') and app.user.profil.pseudo != "" %}
+{% if is_granted('IS_AUTHENTICATED')  %}
 	<div
 		class="user-sidebar bg-sky-950 h-screen text-white">
 		{# <h4>Notifications</h4> #}
@@ -8,7 +8,7 @@
 					<div class=" img-member-nav">
 						<img src="{{ app.user.profil.picture }}" alt="{{ app.user.profil.pseudo }}">
 					</div>
-					{{ app.user.profil.pseudo }}
+					{{ app.user.profil.pseudo ? app.user.profil.pseudo : 'Mon profil'}}
 					{% if app.request.pathInfo matches '/^\\/profil\\/[0-9]+$/' %}
 						<div class="triangle"></div>
 					{% endif %}

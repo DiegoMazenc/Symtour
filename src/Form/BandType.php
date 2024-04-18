@@ -20,7 +20,9 @@ class BandType extends AbstractType
             ->add('name', TextType::class, [
                 'attr' => [
                     'class' => 'inputForm',
+                    'placeholder' => 'ex : Queen, Johnny Hallyday'
                 ],
+                'label' => 'Nom de projet'
             ])
             ->add('logo',  FileType::class, [
                 'attr' => [
@@ -43,7 +45,11 @@ class BandType extends AbstractType
             ->add('define_style', TextType::class, [
                 'attr' => [
                     'class' => 'inputForm',
+                    'placeholder' => 'ex : Alternatif, Garage, ...'
+
                 ],
+                'label' => 'Sous style musicale'
+
             ])
             ->add('music_category', EntityType::class, [
                 'class' => MusicCategory::class,
@@ -51,6 +57,8 @@ class BandType extends AbstractType
                 'attr' => [
                     'class' => 'inputForm',
                 ],
+                'label' => 'Catégorie musicale principale'
+
             ]);
     }
 

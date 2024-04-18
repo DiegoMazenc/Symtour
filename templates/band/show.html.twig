@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Band
-{% endblock %}
+{% block title %}Band{% endblock %}
 
 {% block body %}
 	{% set isAdmin = false %}
@@ -54,8 +53,7 @@
 					{% include "band/show-modules/_come_events.html.twig" %}
 				</div>
 				<div class="md:w-full lg:w-1/2 bg-white rounded-md shadow-md mt-3 ">
-					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Dernier events
-					</h4>
+					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Dernier events</h4>
 					<div class=" flex justify-between">
 						{% include "band/show-modules/_last_events.html.twig" %}
 					</div>

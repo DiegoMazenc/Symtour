@@ -20,7 +20,10 @@ class HallType extends AbstractType
             ->add('name', TextType::class, [
                 'attr' => [
                     'class' => 'inputForm',
+                    'placeholder' => 'ex : l\'Olympia'
                 ],
+                'label' => 'Nom de la Salle',
+                
             ])
             ->add('logo',  FileType::class, [
                 'attr' => [
@@ -43,7 +46,11 @@ class HallType extends AbstractType
             ->add('structure', TextType::class, [
             'attr' => [
                 'class' => 'inputForm',
+                'placeholder' => 'ex : Bar Live, Salle de concert, ...'
+
             ],
+            'label' => 'Type de structure'
+
         ])
             ->add('music_category', EntityType::class, [
                 'class' => MusicCategory::class,

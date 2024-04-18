@@ -28,6 +28,7 @@ use App\Repository\BandMemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\BandMemberRoleRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,7 +55,10 @@ class BandController extends AbstractController
         $form = $this->createForm(BandType::class, $band);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // dd($form);
+            if($form->getData()->getLogo() == null){
+                $band->setLogo('/assets/img/profil_band.png');
+
+           }
             $entityManager->persist($band);
             $entityManager->flush();
             $bandMember = new BandMember();
@@ -531,28 +535,47 @@ class BandController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'app_band_delete', methods: ['POST'])]
-    public function delete(Request $request, Band $band, BandMemberRepository $bandMemberRepository, EntityManagerInterface $entityManager): Response
-    {
+    #[Route('/{id}/delete', name: 'app_band_delete', methods: ['GET', 'POST'])]
+    public function delete(
+        Security $security,
+        Request $request,
+            BandMemberRepository $bandMemberRepository,
+            BandMemberRoleRepository $bandMemberRoleRepository,
+            BandInfoRepository $bandInfoRepository,
+            Band $band,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $user = $security->getUser();
+
         $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
+        $bandInfo = $bandInfoRepository->findOneBy(['bandId' => $band->getId()]);
         $canAccess = false;
 
         foreach ($allBandMembers as $bandMember) {
-            if ($this->isGranted('band_member_edit', $bandMember)) {
+            if ($this->isGranted('band_member', $bandMember)) {
                 $canAccess = true;
                 break;
             }
         }
 
         if (!$canAccess) {
-            return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
-        }
-
-        if ($this->isCsrfTokenValid('delete' . $band->getId(), $request->request->get('_token'))) {
+            $this->addFlash(
+               'error',
+               'Vous n\'avez pas les droits pour supprimer ce groupe'
+            );
+            return $this->redirectToRoute('app_band_edit', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
+        } else {
+            foreach ($allBandMembers as $bandMember) {
+                $roleMember = $bandMemberRoleRepository->findOneBy(['band_member' => $bandMember->getId()]);
+                $entityManager->remove($roleMember);
+                $entityManager->remove($bandMember);
+            }
+            $entityManager->remove($bandInfo);
             $entityManager->remove($band);
             $entityManager->flush();
+            return $this->redirectToRoute('app_profil_show', ["id" => $user->getId()], Response::HTTP_SEE_OTHER);
+
         }
 
-        return $this->redirectToRoute('app_band_index', [], Response::HTTP_SEE_OTHER);
     }
 }

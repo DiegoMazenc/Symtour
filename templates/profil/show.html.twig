@@ -6,7 +6,7 @@
 
 {% block body %}
 	{% if app.user.profil.id == app.request.attributes.get('id') and app.user.isVerified == 0 %}
-		<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
+		<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100 h-screen">
 			<div class="bg-white p-3">
 				<div class="flex justify-center items-center mb-5">
 					<div class="bg-slate-500 p-2 rounded mr-5">
@@ -40,7 +40,7 @@
 			</div>
 		</div>
 	{% elseif app.user.profil.id == app.request.attributes.get('id') and app.user.isVerified == 1 and app.user.profil.pseudo == ''  %}
-		<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
+		<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100 h-screen">
 			<div class="bg-white p-3">
 				<div class="flex justify-center items-center mb-5">
 					<div class="bg-slate-500 p-2 rounded mr-5">

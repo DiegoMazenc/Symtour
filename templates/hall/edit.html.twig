@@ -18,7 +18,12 @@
 						<p class="text-green-500 font-bold py-2 px-3">{{ message }}</p>
 					</div>
 				{% endfor %}
+
 				{{ include('hall/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+				<div class="flex items-center justify-center">
+					<a href="{{ path('app_hall_delete', {'id': hall.id}) }}" class="text-center w-full  border-2 border-red-200 hover:border-red-500 hover:bg-red-300 rounded-lg p-2 duration-300" onclick="return confirm('Voulez-vous vraiment supprimer cette salle ?')">Fermer La salle</a>
+				</div>
+
 			</div>
 		</div>
 	</div>
