@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User index
+{% endblock %}
+
+{% block body %}
+	<div class="user-contain h-screen">
+<a href="{{ path('app_admin_index')}}" class="text-slate-700 flex mb-3">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="none" stroke="#3c3e5d" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 12H4m0 0l6-6m-6 6l6 6"/></svg>
+			Retour</a>
+		<h1>Retour</h1>
+
+
+		<table class="table w-full">
+    <thead>
+        <tr>
+            <th class="px-4 py-2 text-start">Id</th>
+            <th class="px-4 py-2 text-start">Pseudo</th>
+            <th class="px-4 py-2 text-start">Email</th>
+            <th class="px-4 py-2 text-start">Roles</th>
+            <th class="px-4 py-2 text-start">Validé</th>
+            <th class="px-4 py-2 text-start">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+            <tr>
+                <td class="border px-4 py-2">{{ user.id }}</td>
+                <td class="border px-4 py-2">{{ user.profil ? (user.profil.pseudo ? user.profil.pseudo : '') : ''}}</td>
+                <td class="border px-4 py-2">{{ user.email }}</td>
+                <td class="border px-4 py-2">
+                    {{ 'ROLE_ADMIN' in user.roles ? 'ADMIN' : 'USER' }}
+                </td>
+                <td class="border px-4 py-2">{{ user.isVerified ? "oui" : 'non' }}</td>
+                <td class="border px-4 py-2">
+                    {% if user.profil %}
+                        <a class="text-blue-500 hover:text-blue-700" href="{{ path('app_profil_show', {'id': user.profil.id}) }}">show</a>
+                    {% endif %}
+                    <a class="text-blue-500 hover:text-blue-700" href="{{ path('app_admin_user_edit', {'id': user.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td class="border px-4 py-2" colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+	</div>
+{% endblock %}

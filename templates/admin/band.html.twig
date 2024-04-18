@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Band index
+{% endblock %}
+
+{% block body %}
+	<div class="user-contain min-h-screen">
+
+		<h1>Band index</h1>
+
+		<table class="table w-full">
+			<thead>
+				<tr>
+					<th class="px-4 py-2 text-start">Id</th>
+					<th class="px-4 py-2 text-start">Name</th>
+					<th class="px-4 py-2 text-start">Catégorie Musicale</th>
+					<th class="px-4 py-2 text-start">Define_style</th>
+					<th class="px-4 py-2 text-start">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for band in bands %}
+					<tr>
+						<td class="border px-4 py-2">{{ band.id }}</td>
+						<td class="border px-4 py-2">{{ band.name }}</td>
+						<td class="border px-4 py-2">{{ band.musicCategory.category }}</td>
+						<td class="border px-4 py-2">{{ band.defineStyle }}</td>
+						<td class="border px-4 py-2">
+							<a class="text-blue-500 hover:text-blue-700" href="{{ path('app_band_show', {'id': band.id}) }}">show</a>
+							<a class="text-blue-500 hover:text-blue-700" href="{{ path('app_admin_band_edit', {'id': band.id}) }}">edit</a>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td class="border px-4 py-2" colspan="5">no records found</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+{% endblock %}

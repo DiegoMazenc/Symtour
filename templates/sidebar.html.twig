@@ -3,6 +3,17 @@
 		class="user-sidebar bg-sky-950 h-screen text-white">
 		{# <h4>Notifications</h4> #}
 		<ul class="nav-side-bar pt-5">
+{% if is_granted('ROLE_ADMIN')  %}
+			<a href="/admin">
+				<li>
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="mr-2"><path fill="white" d="M12 23C6.443 21.765 2 16.522 2 11V5l10-4l10 4v6c0 5.524-4.443 10.765-10 12M4 6v5a10.58 10.58 0 0 0 8 10a10.58 10.58 0 0 0 8-10V6l-8-3Z"/><circle cx="12" cy="8.5" r="2.5" fill="white"/><path fill="white" d="M7 15a5.782 5.782 0 0 0 5 3a5.782 5.782 0 0 0 5-3c-.025-1.896-3.342-3-5-3c-1.667 0-4.975 1.104-5 3"/></svg>
+			Administration
+				</li>
+			</a>
+			<hr>
+					{% endif %}
+
+		
 			<a href="/profil/{{ app.user.profil.id }}">
 				<li>
 					<div class=" img-member-nav">

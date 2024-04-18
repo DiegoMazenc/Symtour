@@ -38,6 +38,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
+    public const ROLES = ['ROLE_USER', 'ROLE_ADMIN'];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,7 +76,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        return array_unique($roles);
+        return ($roles);
     }
 
     public function setRoles(array $roles): static
@@ -143,6 +145,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function getIsVerified(): bool
     {
         return $this->isVerified;
     }

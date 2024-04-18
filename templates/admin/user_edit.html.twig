@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User index
+{% endblock %}
+
+{% block body %}
+
+	<div class="user-contain min-h-screen">
+		<a href="{{ path('app_admin_user')}}" class="text-slate-700 flex mb-3">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="none" stroke="#3c3e5d" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 12H4m0 0l6-6m-6 6l6 6"/></svg>
+			Liste Utilisateurs</a>
+		<div class="bg-white rounded-md shadow-md relative">
+			<h4 class="bg-slate-700 text-white p-2 rounded-t-md pl-32 md:pl-40 pt-10 md:pt-4 pb-1 flex justify-between items-center">
+				<span class="font-bold">{{user.profil.pseudo}}</span>
+
+			</h4>
+			<div class="img-hall-booking">
+				<img src="{{user.profil.picture}}" alt="{{user.profil.pseudo}}">
+			</div>
+			<div class="flex">
+				<div class="pl-5 pt-8 md:pl-40 md:pt-5 pb-5 pr-5 w-full">
+					<div class="flex flex-wrap justify-between">
+						<h3>ID User:
+							<strong class="text-slate-700">{{ user.id }}</strong>
+						</h3>
+
+					</div>
+					<div class="flex flex-wrap justify-between">
+						<h3>Role:
+							<strong class="text-slate-700">{{ user.roles ? user.roles|json_encode : '' }}</strong>
+						</h3>
+					</div>
+
+				</div>
+				<div class="pl-5 pt-8 md:pl-40 md:pt-5 pb-5 pr-5 w-full">
+
+					<div class="flex flex-wrap justify-between">
+						<h3>ID Profil :<strong class="text-slate-700">{{ user.profil.id }}</strong>
+						</h3>
+					</div>
+					<div class="flex flex-wrap justify-between">
+						<h3>Est Vérifié :
+							<strong class="text-slate-700">{{ user.isVerified ? "oui" : 'non' }}</strong>
+						</h3>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<h4 class="title-option">
+			<span>
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" class="mr-3"><path fill="white" fill-rule="evenodd" d="M8 7a4 4 0 1 1 8 0a4 4 0 0 1-8 0m0 6a5 5 0 0 0-5 5a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3a5 5 0 0 0-5-5z" clip-rule="evenodd"/></svg>
+			</span>Information table User</h4>
+
+		{{ form_start(formUser) }}
+		{{ form_widget(formUser.email, {
+                        'attr': {
+                            'placeholder': 'Votre Email'
+                        }
+                    }) }}
+		{{ form_label(formUser.roles) }}
+		{# Afficher le libellé du champ #}
+		{{ form_widget(formUser.roles) }}
+		{# Afficher le champ lui-même #}
+		{{ form_errors(formUser.roles) }}
+
+		<button type="submit" class="rounded-lg p-2 bg-blue-700 w-full mt-3 text-white">Valider</button>
+		{{ form_end(formUser) }}
+		{{ form_start(formProfil) }}
+		<h4 class="title-option">
+			<span>
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" class="mr-3"><path fill="white" fill-rule="evenodd" d="M8 7a4 4 0 1 1 8 0a4 4 0 0 1-8 0m0 6a5 5 0 0 0-5 5a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3a5 5 0 0 0-5-5z" clip-rule="evenodd"/></svg>
+			</span>Mon profil</h4>
+
+		{{ form_row(formProfil.pseudo) }}
+		{{ form_row(formProfil.picture) }}
+		{{ form_row(formProfil.description) }}
+		{{ form_row(formProfil.zip_code) }}
+		{{ form_row(formProfil.city) }}
+		{{ form_row(formProfil.country) }}
+
+		<button class="btnFormAccess">Enregistrer</button>
+
+		{{ form_end(formProfil ) }}
+
+	</div>
+{% endblock %}

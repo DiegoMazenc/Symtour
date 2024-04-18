@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body %}
-	<div class="user-contain h-screen">
+	<div class="user-contain min-h-screen">
 
 		{% for notification in profil.notifications|reverse %}
 			<div id="notification_{{ notification.id }}" class="transition">

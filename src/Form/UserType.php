@@ -16,7 +16,7 @@ use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 
 class UserType extends AbstractType
 {
-    public function __construct( private ProfilRepository $profil)
+    public function __construct(private ProfilRepository $profil)
     {
 
     }
@@ -24,16 +24,17 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('email', EmailType::class, [
-            "required" => true,
-   ])
+            ->add('email', EmailType::class, [
+                "required" => true,
+            ])
+
             // ->add('roles')
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
                 'options' => ['attr' => ['placeholder' => 'mot de passe']], // Correction ici : Remplacement de "mot depasse" par "mot de passe"
                 'required' => true,
-                'first_options'  => [
+                'first_options' => [
                     'label' => false,
                     'attr' => ['placeholder' => 'Mot de passe'], // Déplacement de 'attr' ici pour spécifier les attributs
                 ],
@@ -42,25 +43,25 @@ class UserType extends AbstractType
                     'attr' => ['placeholder' => 'Confirmer mot de passe'], // Déplacement de 'attr' ici pour spécifier les attributs
                 ],
             ]);
-            // ->add('status', ChoiceType::class, [
-            //     "required" => true,
-            //     "expanded" => true,
-            //     "multiple" => false,
+        // ->add('status', ChoiceType::class, [
+        //     "required" => true,
+        //     "expanded" => true,
+        //     "multiple" => false,
 
-                // Liaison avec le construct
-                // 'choice_loader' => new CallbackChoiceLoader(function (): array{
-                //     return $this->profil->findAll();
-                // })
+        // Liaison avec le construct
+        // 'choice_loader' => new CallbackChoiceLoader(function (): array{
+        //     return $this->profil->findAll();
+        // })
 
-                // Ajouter des choix
-                // 'choices' => [
-                //     "Sélectionner" => "",
-                //     "active" => "active",
-                //     "inactive" => "inactive",
-                //     "dead" => "dead",
+        // Ajouter des choix
+        // 'choices' => [
+        //     "Sélectionner" => "",
+        //     "active" => "active",
+        //     "inactive" => "inactive",
+        //     "dead" => "dead",
 
-                // ]
-                // ]);
+        // ]
+        // ]);
 
     }
 
