@@ -26,9 +26,7 @@ class HallInfoType extends AbstractType
         ])
         ->add('city', TextType::class, [
             'label' => false,
-            'attr' => [
-                'class' => 'inputForm hidden',
-            ],
+            
 
         ])
         ->add('nbrStreet', TextType::class, [

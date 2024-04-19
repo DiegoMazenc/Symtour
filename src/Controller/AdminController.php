@@ -3,18 +3,31 @@
 namespace App\Controller;
 
 use App\Entity\Band;
+use App\Entity\Hall;
 use App\Entity\User;
-use App\Form\BandInfoType;
 use App\Form\BandType;
+use App\Form\HallType;
 use App\Form\UserType;
 use App\Form\ProfilType;
-use App\Repository\BandRepository;
+use App\Form\BandInfoType;
 
+use App\Form\HallInfoType;
+use App\Repository\BandRepository;
+use App\Repository\EventRepository;
 use App\Repository\HallRepository;
 use App\Repository\UserRepository;
 use App\Repository\ProfilRepository;
+use App\Repository\BandInfoRepository;
+use App\Repository\HallInfoRepository;
+use App\Repository\BandEventRepository;
+use App\Repository\BandMemberRepository;
+use App\Repository\HallMemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Proxies\__CG__\App\Entity\BandEvent;
+use App\Repository\BandMemberRoleRepository;
+use App\Repository\HallMemberRoleRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -105,6 +118,41 @@ class AdminController extends AbstractController
         ]);
     }
 
+    #[Route('/user/{id}/delete', name: 'app_admin_user_delete', methods: ['GET', 'POST'])]
+    public function userDelete(Request $request, User $user, EntityManagerInterface $entityManager, Security $security): Response
+    {
+
+        $user->getProfil() ? $profil = $user->getProfil() : $profil = null;
+
+        if ($profil) {
+
+            foreach ($profil->getBandMembers() as $member) {
+                foreach ($member->getBandMemberRoles() as $role) {
+                    $entityManager->remove($role);
+                }
+                $entityManager->remove($member);
+            }
+
+            foreach ($profil->getNotifications() as $notif) {
+                $entityManager->remove($notif);
+            }
+
+            foreach ($profil->getHallMembers() as $member) {
+                foreach ($member->getHallMemberRoles() as $role) {
+                    $entityManager->remove($role);
+                }
+                $entityManager->remove($member);
+            }
+
+            $entityManager->remove($profil);
+        }
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_admin_user', [], Response::HTTP_SEE_OTHER);
+    }
+
 
     #[Route('/band', name: 'app_admin_band', methods: ['GET', 'POST'])]
     public function band(BandRepository $bandRepository): Response
@@ -122,7 +170,7 @@ class AdminController extends AbstractController
         $formBand->handleRequest($request);
 
         if ($formBand->isSubmitted() && $formBand->isValid()) {
-    
+
             $em->persist($band);
             $em->flush();
 
@@ -133,7 +181,7 @@ class AdminController extends AbstractController
         $formBandInfo->handleRequest($request);
 
         if ($formBandInfo->isSubmitted() && $formBandInfo->isValid()) {
-    
+
             $em->persist($band);
             $em->flush();
 
@@ -147,6 +195,35 @@ class AdminController extends AbstractController
 
         ]);
     }
+    #[Route('/band/{id}/delete', name: 'app_admin_band_delete', methods: ['GET', 'POST'])]
+    public function bandDelete(
+        Security $security,
+        Request $request,
+        BandMemberRepository $bandMemberRepository,
+        BandMemberRoleRepository $bandMemberRoleRepository,
+        BandInfoRepository $bandInfoRepository,
+        BandEventRepository $bandEventRepository,
+        Band $band,
+        EntityManagerInterface $entityManager
+    ): Response {
+
+        $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
+        $bandEvents = $bandEventRepository->findBy(['band' => $band->getId()]);
+        $bandInfo = $bandInfoRepository->findOneBy(['bandId' => $band->getId()]);
+
+        foreach ($allBandMembers as $bandMember) {
+            $roleMember = $bandMemberRoleRepository->findOneBy(['band_member' => $bandMember->getId()]);
+            $entityManager->remove($roleMember);
+            $entityManager->remove($bandMember);
+        }
+        foreach ($bandEvents as $event) {
+            $entityManager->remove($event);
+        }
+        $entityManager->remove($bandInfo);
+        $entityManager->remove($band);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_admin_band', [], Response::HTTP_SEE_OTHER);
+    }
 
     #[Route('/hall', name: 'app_admin_hall', methods: ['GET', 'POST'])]
     public function hall(HallRepository $hallRepository): Response
@@ -159,11 +236,72 @@ class AdminController extends AbstractController
 
 
     #[Route('/hall/{id}/edit', name: 'app_admin_hall_edit', methods: ['GET', 'POST'])]
-    public function hallEdit(HallRepository $hallRepository): Response
+    public function hallEdit(HallRepository $hallRepository, Hall $hall, Request $request, FormFactoryInterface $formFactory, EntityManagerInterface $em): Response
     {
-        $halls = $hallRepository->findAll();
+        $formHall = $formFactory->create(HallType::class, $hall);
+        $formHall->handleRequest($request);
+
+        if ($formHall->isSubmitted() && $formHall->isValid()) {
+
+            $em->persist($hall);
+            $em->flush();
+
+            return $this->redirectToRoute('app_admin_hall_edit', ['id' => $hall->getId()]);
+        }
+
+        $formHallInfo = $formFactory->create(HallInfoType::class, $hall->getHallInfo());
+        $formHallInfo->handleRequest($request);
+
+        if ($formHallInfo->isSubmitted() && $formHallInfo->isValid()) {
+
+            $em->persist($hall);
+            $em->flush();
+
+            return $this->redirectToRoute('app_admin_hall_edit', ['id' => $hall->getId()]);
+        }
+
         return $this->render('admin/hall_edit.html.twig', [
-            'halls' => $halls
+            'hall' => $hall,
+            'formHall' => $formHall,
+            'formHallInfo' => $formHallInfo
+
         ]);
+    }
+
+    #[Route('/hall/{id}/delete', name: 'app_admin_hall_delete', methods: ['GET', 'POST'])]
+    public function hallDelete(
+        Security $security,
+        Request $request,
+        HallMemberRepository $hallMemberRepository,
+        HallMemberRoleRepository $hallMemberRoleRepository,
+        HallInfoRepository $hallInfoRepository,
+        EventRepository $eventRepository,
+        BandEventRepository $bandEventRepository,
+        Hall $hall,
+        EntityManagerInterface $entityManager
+    ): Response {
+
+        $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
+        $hallInfo = $hallInfoRepository->find($hall);
+        $events = $eventRepository->findBy(['hall' => $hall]);
+
+        foreach ($events as $event) {
+            $bandEvents = $bandEventRepository->findBy(['event' => $event]);
+            foreach ($bandEvents as $bandEvent) {
+                $entityManager->remove($bandEvent);
+            }
+            $entityManager->remove($event);
+        }
+
+        foreach ($allHallMembers as $hallmember) {
+            $roleMember = $hallMemberRoleRepository->findOneBy(['hall_member' => $hallmember->getId()]);
+            $entityManager->remove($roleMember);
+            $entityManager->remove($hallmember);
+        }
+        $entityManager->remove($hallInfo);
+        $entityManager->remove($hall);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_admin_hall', [], Response::HTTP_SEE_OTHER);
+
     }
 }

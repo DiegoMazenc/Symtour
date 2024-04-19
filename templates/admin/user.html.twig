@@ -5,46 +5,52 @@
 
 {% block body %}
 	<div class="user-contain h-screen">
-<a href="{{ path('app_admin_index')}}" class="text-slate-700 flex mb-3">
-			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="none" stroke="#3c3e5d" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 12H4m0 0l6-6m-6 6l6 6"/></svg>
-			Retour</a>
-		<h1>Retour</h1>
+		<a href="{{ path('app_admin_index')}}" class="text-slate-700 flex mb-3 bg-white p-2 border border-slate-700 rounded ">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" class="mr-3"><path fill="none" stroke="#3c3e5d" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 12H4m0 0l6-6m-6 6l6 6"/></svg>
+			Retour vers l'administration</a>
 
+		<div class="bg-white rounded">
+			<h4 class="title-option">
 
-		<table class="table w-full">
-    <thead>
-        <tr>
-            <th class="px-4 py-2 text-start">Id</th>
-            <th class="px-4 py-2 text-start">Pseudo</th>
-            <th class="px-4 py-2 text-start">Email</th>
-            <th class="px-4 py-2 text-start">Roles</th>
-            <th class="px-4 py-2 text-start">Validé</th>
-            <th class="px-4 py-2 text-start">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for user in users %}
-            <tr>
-                <td class="border px-4 py-2">{{ user.id }}</td>
-                <td class="border px-4 py-2">{{ user.profil ? (user.profil.pseudo ? user.profil.pseudo : '') : ''}}</td>
-                <td class="border px-4 py-2">{{ user.email }}</td>
-                <td class="border px-4 py-2">
-                    {{ 'ROLE_ADMIN' in user.roles ? 'ADMIN' : 'USER' }}
-                </td>
-                <td class="border px-4 py-2">{{ user.isVerified ? "oui" : 'non' }}</td>
-                <td class="border px-4 py-2">
-                    {% if user.profil %}
-                        <a class="text-blue-500 hover:text-blue-700" href="{{ path('app_profil_show', {'id': user.profil.id}) }}">show</a>
-                    {% endif %}
-                    <a class="text-blue-500 hover:text-blue-700" href="{{ path('app_admin_user_edit', {'id': user.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td class="border px-4 py-2" colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+				Liste des Utilisateurs
+			</h4>
+
+			<div class="p-3">
+				<table class="table w-full">
+					<thead>
+						<tr>
+							<th class="px-4 py-2 text-start">Id</th>
+							<th class="px-4 py-2 text-start">Pseudo</th>
+							<th class="px-4 py-2 text-start">Email</th>
+							<th class="px-4 py-2 text-start">Roles</th>
+							<th class="px-4 py-2 text-start">Validé</th>
+							<th class="px-4 py-2 text-start">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for user in users %}
+							<tr>
+								<td class="border px-4 py-2">{{ user.id }}</td>
+								<td class="border px-4 py-2">{{ user.profil ? (user.profil.pseudo ? user.profil.pseudo : '') : ''}}</td>
+								<td class="border px-4 py-2">{{ user.email }}</td>
+								<td class="border px-4 py-2">
+									{{ 'ROLE_ADMIN' in user.roles ? 'ADMIN' : 'USER' }}
+								</td>
+								<td class="border px-4 py-2">{{ user.isVerified ? "oui" : 'non' }}</td>
+								<td class="border px-4 py-2 flex">
+									<a class="border-2 border-blue-300 rounded mr-2" href="{{ path('app_user_show', {'id': user.id}) }}"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 16 16"><path fill="#009dff" d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2m6.854-1h4.146a.25.25 0 0 1 .25.25v4.146a.25.25 0 0 1-.427.177L13.03 4.03L9.28 7.78a.751.751 0 0 1-1.042-.018a.751.751 0 0 1-.018-1.042l3.75-3.75l-1.543-1.543A.25.25 0 0 1 10.604 1"/></svg></a>
+									<a class="border-2 border-slate-300 rounded mr-2 " href="{{ path('app_admin_user_edit', {'id': user.id}) }}"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24"><path fill="#495d69" d="m18.988 2.012l3 3L19.701 7.3l-3-3zM8 16h3l7.287-7.287l-3-3L8 13z"/><path fill="#495d69" d="M19 19H8.158c-.026 0-.053.01-.079.01c-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .896-2 2v14c0 1.104.897 2 2 2h14a2 2 0 0 0 2-2v-8.668l-2 2z"/></svg></a>
+									<a class="border-2 border-red-300 rounded" href="{{ path('app_admin_user_delete', {'id': user.id}) }}" onclick="return confirm('Voulez-vous vraiment supprimer cette salle ?')"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24"><path fill="#d10000" d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z"/></svg></a>
+								</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td class="border px-4 py-2" colspan="5">no records found</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 {% endblock %}

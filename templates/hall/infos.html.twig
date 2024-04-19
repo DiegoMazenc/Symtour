@@ -35,7 +35,8 @@ Edit Hall Infos
                         </select>
 
 				</div>
-                {{ form_row(form.city) }}
+                {{ form_row(form.city, {'attr': {'class': 'inputForm hidden'}}) }}
+
                 <div class="w-full flex justify-between">
                     <div class="w-1/6 mr-2">
                         {{ form_row(form.nbrStreet) }}

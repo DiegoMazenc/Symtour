@@ -582,6 +582,8 @@ class HallController extends AbstractController
         HallMemberRepository $hallMemberRepository,
         HallMemberRoleRepository $hallMemberRoleRepository,
         HallInfoRepository $hallInfoRepository,
+        EventRepository $eventRepository,
+        BandEventRepository $bandEventRepository,
         Hall $hall,
         EntityManagerInterface $entityManager
     ): Response {
@@ -590,6 +592,9 @@ class HallController extends AbstractController
         $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
         $hallInfo = $hallInfoRepository->find($hall);
         $canAccess = false;
+        $events = $eventRepository->findBy(['hall' => $hall]);
+
+       
 
         foreach ($allHallMembers as $hallMember) {
             if ($this->isGranted('hall_member', $hallMember)) {
@@ -605,6 +610,13 @@ class HallController extends AbstractController
             );
             return $this->redirectToRoute('app_hall_edit', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
         } else {
+            foreach ($events as $event) {
+                $bandEvents = $bandEventRepository->findBy(['event' => $event]);
+                foreach ($bandEvents as $bandEvent) {
+                    $entityManager->remove($bandEvent);
+                }
+                $entityManager->remove($event);
+            }
             foreach ($allHallMembers as $hallmember) {
                 $roleMember = $hallMemberRoleRepository->findOneBy(['hall_member' => $hallmember->getId()]);
                 $entityManager->remove($roleMember);

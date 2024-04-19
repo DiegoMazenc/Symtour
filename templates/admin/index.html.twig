@@ -1,13 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit BandMember{% endblock %}
+{% block title %}Edit BandMember
+{% endblock %}
 
 {% block body %}
 	<div class="user-contain min-h-screen">
 
-<p>{{ coucou }}</p>
-<a href="{{ path('app_admin_user')}}">Utilisateurs</a>
-<a href="{{ path('app_admin_band')}}">Bands</a>
-<a href="{{ path('app_admin_hall')}}">Halls</a>
-</div>
+		<div class="bg-white rounded">
+			<h4 class="title-option font-bold text-xl">
+
+				Administration
+			</h4>
+
+			<div class="p-3">
+				<a href="{{ path('app_admin_user')}}" class="text-slate-700 flex mb-3 bg-white p-2 border border-slate-700 rounded justify-between ">Gérer les Utilisateurs <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 12 12"><path fill="#3c3e5d" d="M1.5 6a.75.75 0 0 1 .75-.75h5.94L6.22 3.28a.75.75 0 0 1 1.06-1.06l3.25 3.25a.75.75 0 0 1 0 1.06L7.28 9.78a.75.75 0 0 1-1.06-1.06l1.97-1.97H2.25A.75.75 0 0 1 1.5 6"/></svg></a>
+				<a href="{{ path('app_admin_band')}}" class="text-slate-700 flex mb-3 bg-white p-2 border border-slate-700 rounded justify-between ">Gérer les projets musicaux <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 12 12"><path fill="#3c3e5d" d="M1.5 6a.75.75 0 0 1 .75-.75h5.94L6.22 3.28a.75.75 0 0 1 1.06-1.06l3.25 3.25a.75.75 0 0 1 0 1.06L7.28 9.78a.75.75 0 0 1-1.06-1.06l1.97-1.97H2.25A.75.75 0 0 1 1.5 6"/></svg></a>
+				<a href="{{ path('app_admin_hall')}}" class="text-slate-700 flex mb-3 bg-white p-2 border border-slate-700 rounded justify-between ">Gérer les salles <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 12 12"><path fill="#3c3e5d" d="M1.5 6a.75.75 0 0 1 .75-.75h5.94L6.22 3.28a.75.75 0 0 1 1.06-1.06l3.25 3.25a.75.75 0 0 1 0 1.06L7.28 9.78a.75.75 0 0 1-1.06-1.06l1.97-1.97H2.25A.75.75 0 0 1 1.5 6"/></svg></a>
+			</div>
+		</div>
+	</div>
 {% endblock %}

@@ -5,7 +5,9 @@
 
 {% block body %}
 	<div class="user-contain min-h-screen">
-
+<a href="{{ path('app_admin_band')}}" class="text-slate-700 flex mb-3 bg-white p-2 border border-slate-700 rounded ">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24 " class="mr-3"><path fill="none" stroke="#3c3e5d" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 12H4m0 0l6-6m-6 6l6 6"/></svg>
+			Retour à la liste projets musicaux</a>
 		<div class="bg-white rounded-md shadow-md relative">
 			<h1 class="bg-slate-700 text-white p-2 rounded-t-md pl-32 md:pl-40 pt-10 md:pt-4 pb-1 flex justify-between items-center">
 				<span class="font-bold">{{band.name}}</span>
@@ -17,6 +19,9 @@
 
 			<div class="pl-5 pt-8 md:pl-40 md:pt-5 pb-5 pr-5 w-full">
 				<div class="flex flex-wrap justify-between">
+					<div class=" mb-2 mr">
+							<p>Id :
+								{{ band.id }}</p>
 					<div class="flex mb-2 mr">
 						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" class="mr-2 mt-1"><path fill="#334155" fill-rule="evenodd" d="M17.316 4.052a.99.99 0 0 0-.9.14c-.262.19-.416.495-.416.82v8.566a4.573 4.573 0 0 0-2-.464c-1.99 0-4 1.342-4 3.443c0 2.1 2.01 3.443 4 3.443c1.99 0 4-1.342 4-3.443V6.801c.538.5 1 1.219 1 2.262c0 .56.448 1.013 1 1.013s1-.453 1-1.013c0-1.905-.956-3.18-1.86-3.942a6.391 6.391 0 0 0-1.636-.998a4 4 0 0 0-.166-.063l-.013-.005l-.005-.002h-.002zM4 5.012c-.552 0-1 .454-1 1.013c0 .56.448 1.013 1 1.013h9c.552 0 1-.453 1-1.013c0-.559-.448-1.012-1-1.012H4Zm0 4.051c-.552 0-1 .454-1 1.013c0 .56.448 1.013 1 1.013h9c.552 0 1-.454 1-1.013c0-.56-.448-1.013-1-1.013zm0 4.05c-.552 0-1 .454-1 1.014c0 .559.448 1.012 1 1.012h4c.552 0 1-.453 1-1.012c0-.56-.448-1.013-1-1.013z" clip-rule="evenodd"/></svg>
 						<div>
@@ -24,6 +29,8 @@
 							<p>{{ band.defineStyle ? band.defineStyle : "Non précisé" }}</p>
 						</div>
 					</div>
+					</div>
+
 					<div class="flex mb-2 mr">
 						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 256 256" class="mr-2 mt-1">
 							<path fill="#334155" d="M128 16a88.1 88.1 0 0 0-88 88c0 75.3 80 132.17 83.41 134.55a8 8 0 0 0 9.18 0C136 236.17 216 179.3 216 104a88.1 88.1 0 0 0-88-88m0 56a32 32 0 1 1-32 32a32 32 0 0 1 32-32"/>
@@ -71,18 +78,18 @@
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" class="mr-3"><path fill="currentColor" d="M11 14c1 0 2.05.16 3.2.44c-.81.87-1.2 1.89-1.2 3.06c0 .89.25 1.73.78 2.5H3v-2c0-1.19.91-2.15 2.74-2.88C7.57 14.38 9.33 14 11 14m0-2c-1.08 0-2-.39-2.82-1.17C7.38 10.05 7 9.11 7 8c0-1.08.38-2 1.18-2.82C9 4.38 9.92 4 11 4c1.11 0 2.05.38 2.83 1.18C14.61 6 15 6.92 15 8c0 1.11-.39 2.05-1.17 2.83c-.78.78-1.72 1.17-2.83 1.17m7.5-2H22v2h-2v5.5a2.5 2.5 0 0 1-2.5 2.5a2.5 2.5 0 0 1-2.5-2.5a2.5 2.5 0 0 1 2.5-2.5c.36 0 .69.07 1 .21z"/></svg>
 				</span>
 				Mon projet</h4>
-		<div class=" p-3">
-			{{ form_row(formBand.name) }}
-			<hr class="my-5 border-1">
+			<div class=" p-3">
+				{{ form_row(formBand.name) }}
+				<hr class="my-5 border-1">
 
-			{{ form_row(formBand.logo) }}
+				{{ form_row(formBand.logo) }}
 
-			{{ form_row(formBand.music_category) }}
+				{{ form_row(formBand.music_category) }}
 
-			{{ form_row(formBand.define_style) }}
+				{{ form_row(formBand.define_style) }}
 
-			<button class="btnFormAccess">Enregistrer</button>
-		</div>
+				<button class="btnFormAccess">Enregistrer</button>
+			</div>
 			{{ form_end(formBand) }}
 
 			{{ include('band/_delete_form.html.twig') }}
@@ -90,89 +97,97 @@
 		</div>
 		<div class="bg-white rounded">
 
-         {{ form_start(formBandInfo) }}
+			{{ form_start(formBandInfo) }}
 
-                <h4 class="title-option">
-                    <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                        <path fill="white" d="M12 2C7.589 2 4 5.589 4 9.995C3.971 16.44 11.696 21.784 12 22c0 0 8.029-5.56 8-12c0-4.411-3.589-8-8-8m0 12c-2.21 0-4-1.79-4-4s1.79-4 4-4s4 1.79 4 4s-1.79 4-4 4"/>
-                    </svg></span> Mon Adresse
-                </h4>
-		<div class=" p-3">
+			<h4 class="title-option">
+				<span>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24">
+						<path fill="white" d="M12 2C7.589 2 4 5.589 4 9.995C3.971 16.44 11.696 21.784 12 22c0 0 8.029-5.56 8-12c0-4.411-3.589-8-8-8m0 12c-2.21 0-4-1.79-4-4s1.79-4 4-4s4 1.79 4 4s-1.79 4-4 4"/>
+					</svg>
+				</span>
+				Mon Adresse
+			</h4>
+			<div class=" p-3">
 
-                {{ form_row(formBandInfo.zipCode) }}
-                <div>
-						<label for="cityOption">Ville *</label><br>
-						<select name="cityOption" id="cityOption" class="inputForm">
-                        </select>
-						<div id="zipCodeWarning" class="text-red-500"></div>
+				{{ form_row(formBandInfo.zipCode) }}
+				<div>
+					<label for="cityOption">Ville *</label><br>
+					<select name="cityOption" id="cityOption" class="inputForm"></select>
+					<div id="zipCodeWarning" class="text-red-500"></div>
 
 				</div>
-                {{ form_row(formBandInfo.city) }}
-                <div id="zipCodeWarning" class="text-red-500"></div>
+				{{ form_row(formBandInfo.city) }}
+				<div id="zipCodeWarning" class="text-red-500"></div>
 
 
-                {{ form_row(formBandInfo.department) }}
-                {{ form_row(formBandInfo.region) }}
-                {{ form_row(formBandInfo.country) }}
-		</div>
+				{{ form_row(formBandInfo.department) }}
+				{{ form_row(formBandInfo.region) }}
+				{{ form_row(formBandInfo.country) }}
+			</div>
 
-				<h4 class="title-option"><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="white" d="M16.36 14c.08-.66.14-1.32.14-2c0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2c0-.68.06-1.35.16-2h4.68c.09.65.16 1.32.16 2c0 .68-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.923 7.923 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8.008 8.008 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2c0 .68.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.65 15.65 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg></span>Mes Coordonnées</h4>
-		<div class=" p-3">
-					
+			<h4 class="title-option">
+				<span>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="white" d="M16.36 14c.08-.66.14-1.32.14-2c0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2c0-.68.06-1.35.16-2h4.68c.09.65.16 1.32.16 2c0 .68-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.923 7.923 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8.008 8.008 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2c0 .68.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.65 15.65 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg>
+				</span>Mes Coordonnées</h4>
+			<div class=" p-3">
+
 				{{ form_row(formBandInfo.email) }}
-                {{ form_row(formBandInfo.phone) }}
-                {{ form_row(formBandInfo.website) }}
+				{{ form_row(formBandInfo.phone) }}
+				{{ form_row(formBandInfo.website) }}
 
-					<hr>
-					
-                    <button class="btnFormAccess">Enregistrer</button>
-		</div>
+				<hr>
 
-                {{ form_end(formBandInfo) }}
+				<button class="btnFormAccess">Enregistrer</button>
+			</div>
+
+			{{ form_end(formBandInfo) }}
 		</div>
 
 		<div class="bg-white rounded">
 
-				<h4 class="title-option"><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="white" d="M16.36 14c.08-.66.14-1.32.14-2c0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2c0-.68.06-1.35.16-2h4.68c.09.65.16 1.32.16 2c0 .68-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.923 7.923 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8.008 8.008 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2c0 .68.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.65 15.65 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg></span>Membres du projet</h4>
-		<div class=" p-3">
+			<h4 class="title-option">
+				<span>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="white" d="M16.36 14c.08-.66.14-1.32.14-2c0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2c0-.68.06-1.35.16-2h4.68c.09.65.16 1.32.16 2c0 .68-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.923 7.923 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8.008 8.008 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2c0 .68.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.65 15.65 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg>
+				</span>Membres du projet</h4>
+			<div class=" p-3">
 
-        <table class="table w-full ">
+				<table class="table w-full ">
 
-			<thead>
-				<tr>
-					<th class="px-4 py-2 text-start">Id</th>
-					<th class="px-4 py-2 text-start">Pseudo</th>
-					<th class="px-4 py-2 text-start">Status</th>
-					<th class="px-4 py-2 text-start">Roles</th>
-					<th class="px-4 py-2 text-start">Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for member in band.bandMembers %}
-                {% if member.status != "reject" %}
-                    
-					<tr>
-						<td class="border px-4 py-2">{{ member.id }}</td>
-						<td class="border px-4 py-2">{{ member.profil.pseudo }}</td>
-						<td class="border px-4 py-2">{{ member.status }}</td>
-						<td class="border px-4 py-2">
-                        {% for BandMemberRole in member.BandMemberRoles %}
-							<p>{{ BandMemberRole.roleBand.roleName|capitalize }}</p>
+					<thead>
+						<tr>
+							<th class="px-4 py-2 text-start">Id</th>
+							<th class="px-4 py-2 text-start">Pseudo</th>
+							<th class="px-4 py-2 text-start">Status</th>
+							<th class="px-4 py-2 text-start">Roles</th>
+							<th class="px-4 py-2 text-start">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for member in band.bandMembers %}
+							{% if member.status != "reject" %}
+
+								<tr>
+									<td class="border px-4 py-2">{{ member.id }}</td>
+									<td class="border px-4 py-2">{{ member.profil.pseudo }}</td>
+									<td class="border px-4 py-2">{{ member.status }}</td>
+									<td class="border px-4 py-2">
+										{% for BandMemberRole in member.BandMemberRoles %}
+											<p>{{ BandMemberRole.roleBand.roleName|capitalize }}</p>
+										{% endfor %}
+									</td>
+									<td class="border px-4 py-2">
+										<a class="text-blue-500 hover:text-blue-700" href="{{ path('app_profil_show', {'id': member.profil.id}) }}">show</a>
+										<a class="text-blue-500 hover:text-blue-700" href="{{ path('app_admin_user_edit', {'id': member.profil.IdUser.id}) }}">edit</a>
+									</td>
+								</tr>
+							{% endif %}
+
 						{% endfor %}
-                        </td>
-						<td class="border px-4 py-2">
-							<a class="text-blue-500 hover:text-blue-700" href="{{ path('app_profil_show', {'id': member.profil.id}) }}">show</a>
-							<a class="text-blue-500 hover:text-blue-700" href="{{ path('app_admin_user_edit', {'id': member.profil.IdUser.id}) }}">edit</a>
-						</td>
-					</tr>
-                {% endif %}
-				
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
-	</div>
-
+					</tbody>
+				</table>
+			</div>
+		</div>
+<a href="{{ path('app_admin_band_delete', {'id': band.id}) }}"  class="mt-3 flex justify-center text-center w-full  border-2 border-red-200 hover:border-red-500 hover:bg-red-300 rounded-lg p-2 duration-300" onclick="return confirm('Voulez-vous vraiment supprimer ce projet ?')">Supprimer</a>
 	</div>
 
 {% endblock %}

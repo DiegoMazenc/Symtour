@@ -542,14 +542,20 @@ class BandController extends AbstractController
             BandMemberRepository $bandMemberRepository,
             BandMemberRoleRepository $bandMemberRoleRepository,
             BandInfoRepository $bandInfoRepository,
+        BandEventRepository $bandEventRepository,
+
             Band $band,
         EntityManagerInterface $entityManager
     ): Response {
-        $user = $security->getUser();
 
+        $user = $security->getUser();
         $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
         $bandInfo = $bandInfoRepository->findOneBy(['bandId' => $band->getId()]);
+        $bandEvents = $bandEventRepository->findBy(['band' => $band->getId()]);
+
         $canAccess = false;
+
+        if($this->isGranted('ROLE_ADMIN')){$canAccess = true;}
 
         foreach ($allBandMembers as $bandMember) {
             if ($this->isGranted('band_member', $bandMember)) {
@@ -558,7 +564,7 @@ class BandController extends AbstractController
             }
         }
 
-        if (!$canAccess) {
+        if (!$canAccess ) {
             $this->addFlash(
                'error',
                'Vous n\'avez pas les droits pour supprimer ce groupe'
@@ -569,6 +575,9 @@ class BandController extends AbstractController
                 $roleMember = $bandMemberRoleRepository->findOneBy(['band_member' => $bandMember->getId()]);
                 $entityManager->remove($roleMember);
                 $entityManager->remove($bandMember);
+            }
+            foreach ($bandEvents as $event) {
+                $entityManager->remove($event);
             }
             $entityManager->remove($bandInfo);
             $entityManager->remove($band);
