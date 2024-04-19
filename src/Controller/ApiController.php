@@ -7,7 +7,7 @@ use App\Entity\Hall;
 use App\Repository\BandRepository;
 use App\Repository\HallRepository;
 use App\Repository\BandMemberRepository;
-use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
