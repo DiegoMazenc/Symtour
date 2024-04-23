@@ -2,7 +2,7 @@
 	<div class="cardAdminProfil flex justify-between items-center">
 		<div class="flex items-center">
 			<div class=" img-member-db">
-				<img src="{{ member.profile.picture }}" alt="{{ member.profile.pseudo }}">
+				<img src="{{ member.profile.picture }}" alt="photo de profil de {{ member.profile.pseudo }}">
 			</div>
 			<div>
 				<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">{{ member.profile.pseudo}}</a>

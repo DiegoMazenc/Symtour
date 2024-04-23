@@ -12,9 +12,9 @@
 	<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
 		{% include "band/show-modules/_header.html.twig" %}
 		{# dashboard #}
-		<div class="tab_project">
+		<container class="tab_project">
 			{% if isAdmin %}
-				<div class="my-3">
+				<section class="my-3">
 					<div class="lg:flex lg:relative">
 						<div class=" calendar bg-slate-700  text-white p-5 rounded-md lg:mr-3 mb-3 lg:mb-0">
 							<div class="flex justify-between pb-3">
@@ -32,9 +32,9 @@
 						</div>
 						{% include "band/show-modules/_add_date.html.twig" %}
 					</div>
-				</div>
+				</section>
 			{% endif %}
-			<div class="lg:flex lg:justify-between">
+			<section class="lg:flex lg:justify-between">
 				<div class="md:w-full lg:w-1/2 lg:mr-3 bg-white rounded-md shadow-md mt-3 ">
 					<div class="flex justify-between item-align bg-slate-700 relative rounded-t-md">
 						<h4 class=" text-white p-2 ">Prochains events</h4>
@@ -58,9 +58,9 @@
 						{% include "band/show-modules/_last_events.html.twig" %}
 					</div>
 				</div>
-			</div>
-		</div>
-		<div class="my-10">
+			</section>
+		</container>
+		<section class="my-10">
 			<div class="flex justify-between item-align bg-slate-700 relative rounded-t-md">
 				<h4 class=" text-white p-2 ">Membres</h4>
 			</div>
@@ -71,7 +71,7 @@
 						<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Ajouter un nouveau membre</a>
 				{% endif %}
 			</div>
-		</div>
+		</section>
 	</div>
 
 </div>

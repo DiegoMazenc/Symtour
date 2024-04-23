@@ -1,4 +1,4 @@
-<div class="bg-blue-one">
+<nav class="bg-blue-one">
 	<div class="px-4 py-2 mx-auto sm:max-w-xl md:max-w-full lg:max-w-full md:px-24 lg:px-4">
 		<div class="relative flex items-center justify-between">
 			<a href="/" aria-label="Company" title="Company" class="inline-flex items-center">
@@ -14,14 +14,14 @@
 			<ul class="flex items-center hidden space-x-8 lg:flex">
 				{% if is_granted('IS_AUTHENTICATED') %}
 
-				<li class="hover-nav-rechercher  inline-flex ">
-					<div class=" item-content-nav">
-						<a href="{{ path('app_search') }}" aria-label="About us" title="About us" class="inline-flex items-center justify-center">
-							<p class="text-white ml-2">Rechercher</p>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21l-4.343-4.343m0 0A8 8 0 1 0 5.343 5.343a8 8 0 0 0 11.314 11.314"/></svg>
-						</a>
-					</div>
-				</li>
+					<li class="hover-nav-rechercher  inline-flex ">
+						<div class=" item-content-nav">
+							<a href="{{ path('app_search') }}" aria-label="About us" title="About us" class="inline-flex items-center justify-center">
+								<p class="text-white ml-2">Rechercher</p>
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21l-4.343-4.343m0 0A8 8 0 1 0 5.343 5.343a8 8 0 0 0 11.314 11.314"/></svg>
+							</a>
+						</div>
+					</li>
 
 					<li class="hover-nav-profile  inline-flex ">
 						<div class=" item-content-nav">
@@ -47,9 +47,7 @@
 						Connexion
 					</a>
 				{% endif %}
-			</li>
-		</ul>
-
-
+			</ul>
+		</div>
 	</div>
-</div></div></div>
+</nav>

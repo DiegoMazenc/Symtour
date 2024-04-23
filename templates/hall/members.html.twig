@@ -30,7 +30,7 @@
 							<div class="cardAdminProfil flex justify-between">
 								<div class="flex items-center">
 									<div class="img-member-db">
-										<img src="{{ member.profile.picture }}" alt="">
+										<img src="{{ member.profile.picture }}" alt="photo de profil de {{ member.profile.pseudo }}">
 									</div>
 									<div>
 										<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">{{ member.profile.pseudo}}
@@ -142,7 +142,7 @@
 						<div class="flex items-center justify-between bg-slate-100 border-1 border-slate-300 rounded-md p-2 my-2">
 							<div class="flex items-center">
 								<div class="img-member-db">
-									<img src="{{ profil.picture }}" alt="{{ profil.pseudo }}">
+									<img src="{{ profil.picture }}" alt="photo de profil de {{ profil.pseudo }}">
 								</div>
 								<a href="{{ path('app_profil_show', {'id': profil.id}) }}" class="text-blue-400 font-semibold">{{ profil.pseudo}}</a>
 							</div>
@@ -190,7 +190,7 @@
 						<div class="cardAdminProfil flex justify-between items-center">
 							<div class="flex items-center">
 								<div class="img-member-db">
-									<img src="{{ member.profile.picture }}" alt="">
+									<img src="{{ member.profile.picture }}" alt="photo de profil de {{ member.profile.pseudo }}">
 								</div>
 								<div>
 									<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">{{ member.profile.pseudo}}</a>

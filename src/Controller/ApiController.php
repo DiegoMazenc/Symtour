@@ -4,11 +4,9 @@
 namespace App\Controller;
 
 use App\Entity\Hall;
-use App\Repository\BandRepository;
 use App\Repository\HallRepository;
 use App\Repository\BandMemberRepository;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +22,7 @@ class ApiController extends AbstractController
 
 
     #[Route('/api/search', name: 'app_api_search', methods: ['GET'])]
-    public function index(HallRepository $hallRepository, BandMemberRepository $BandMemberRepository): JsonResponse
+    public function searchApi(HallRepository $hallRepository, BandMemberRepository $BandMemberRepository): JsonResponse
     {
         $halls = $hallRepository->findAll();
         $bandMembers = $this->security->getUser()->getProfil()->getBandMembers();
@@ -49,9 +47,10 @@ class ApiController extends AbstractController
             foreach ($events as $event) {
                 $eventDate = $event->getDate();
                 $formattedEventDate = $eventDate->format('Y-m-d');
-                $nbrEvent++;
+                $nbrEvent += $event->getStatus() == 1 ? 1 : 0;
                 if ($event->getStatus() == 1 && new \DateTime() < $eventDate) {
                     $eventListe[] = $formattedEventDate;
+
                 }
             }
             $data['eventListe'] = $eventListe;

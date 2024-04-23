@@ -45,3 +45,4 @@ passwordInput.addEventListener('input', function () {
         progress.classList.remove('segment-yellow', 'segment-orange', 'segment-green');
     }
 });
+
