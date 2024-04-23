@@ -55,17 +55,21 @@ class HallController extends AbstractController
     }
 
     #[Route('/new', name: 'app_hall_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, TokenInterface $token): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, TokenInterface $token, AddPhotosService $addPhotosService): Response
     {
         $hall = new Hall();
         $form = $this->createForm(HallType::class, $hall);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if($form->getData()->getLogo() == null){
-                 $hall->setLogo('/assets/img/profil_hall.png');
-
+            
+            $img = $form->get('logo')->getData();
+            if ($img) {
+                $addPhotosService->addNewPicture($img, $hall);
+            } else {
+                $hall->setLogo('/assets/img/profil_hall.png');
             }
+         
             $entityManager->persist($hall);
             $entityManager->flush();
             $hallMember = new HallMember();

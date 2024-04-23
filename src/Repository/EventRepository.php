@@ -182,7 +182,6 @@ class EventRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-
     public function getPastEventsByBand(Band $band)
     {
 

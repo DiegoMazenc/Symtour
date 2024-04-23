@@ -48,17 +48,19 @@ class BandController extends AbstractController
     }
 
     #[Route('/new', name: 'app_band_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, TokenInterface $token): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, TokenInterface $token, AddPhotosService $addPhotosService): Response
     {
         $band = new Band();
 
         $form = $this->createForm(BandType::class, $band);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if($form->getData()->getLogo() == null){
+            $img = $form->get('logo')->getData();
+            if ($img) {
+                $addPhotosService->addNewPicture($img, $band);
+            } else {
                 $band->setLogo('/assets/img/profil_band.png');
-
-           }
+            }
             $entityManager->persist($band);
             $entityManager->flush();
             $bandMember = new BandMember();

@@ -12,10 +12,11 @@ use App\Form\ProfilType;
 use App\Form\BandInfoType;
 
 use App\Form\HallInfoType;
+use App\Service\AddPhotosService;
 use App\Repository\BandRepository;
-use App\Repository\EventRepository;
 use App\Repository\HallRepository;
 use App\Repository\UserRepository;
+use App\Repository\EventRepository;
 use App\Repository\ProfilRepository;
 use App\Repository\BandInfoRepository;
 use App\Repository\HallInfoRepository;
@@ -55,7 +56,7 @@ class AdminController extends AbstractController
         ]);
     }
     #[Route('/user/{id}/edit', name: 'app_admin_user_edit', methods: ['GET', 'POST'])]
-    public function userEdit(Request $request, UserRepository $userRepository, User $user, FormFactoryInterface $formFactory, EntityManagerInterface $em): Response
+    public function userEdit(Request $request, UserRepository $userRepository, User $user, FormFactoryInterface $formFactory, EntityManagerInterface $em, AddPhotosService $addPhotosService): Response
     {
         $formUser = $formFactory->create(UserType::class, $user);
         $formUser->remove('password');
@@ -82,6 +83,8 @@ class AdminController extends AbstractController
         $formUser->handleRequest($request);
 
         if ($formUser->isSubmitted() && $formUser->isValid()) {
+          
+
             $data = $formUser->getData();
             $role = [];
             $roleCount = 0;
@@ -105,6 +108,10 @@ class AdminController extends AbstractController
 
         // Vérifier si le formulaire est valide
         if ($formProfil->isSubmitted() && $formProfil->isValid()) {
+            $img = $formProfil->get('picture')->getData();
+            if ($img) {
+                $addPhotosService->addNewPicture($img, $profil);
+            }
             $em->persist($user);
             $em->flush();
 
@@ -164,12 +171,16 @@ class AdminController extends AbstractController
     }
 
     #[Route('/band/{id}/edit', name: 'app_admin_band_edit', methods: ['GET', 'POST'])]
-    public function bandEdit(BandRepository $bandRepository, Band $band, Request $request, FormFactoryInterface $formFactory, EntityManagerInterface $em): Response
+    public function bandEdit(BandRepository $bandRepository, Band $band, Request $request, FormFactoryInterface $formFactory, EntityManagerInterface $em, AddPhotosService $addPhotosService): Response
     {
         $formBand = $formFactory->create(BandType::class, $band);
         $formBand->handleRequest($request);
 
         if ($formBand->isSubmitted() && $formBand->isValid()) {
+            $img = $formBand->get('logo')->getData();
+            if ($img) {
+                $addPhotosService->addNewPicture($img, $band);
+            }
 
             $em->persist($band);
             $em->flush();
@@ -236,13 +247,16 @@ class AdminController extends AbstractController
 
 
     #[Route('/hall/{id}/edit', name: 'app_admin_hall_edit', methods: ['GET', 'POST'])]
-    public function hallEdit(HallRepository $hallRepository, Hall $hall, Request $request, FormFactoryInterface $formFactory, EntityManagerInterface $em): Response
+    public function hallEdit(HallRepository $hallRepository, Hall $hall, Request $request, FormFactoryInterface $formFactory, EntityManagerInterface $em, AddPhotosService $addPhotosService): Response
     {
         $formHall = $formFactory->create(HallType::class, $hall);
         $formHall->handleRequest($request);
 
         if ($formHall->isSubmitted() && $formHall->isValid()) {
-
+            $img = $formHall->get('logo')->getData();
+            if ($img) {
+                $addPhotosService->addNewPicture($img, $hall);
+            }
             $em->persist($hall);
             $em->flush();
 
