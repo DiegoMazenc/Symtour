@@ -4,11 +4,10 @@
 namespace App\Controller;
 
 use App\Entity\Hall;
-use App\Repository\BandRepository;
 use App\Repository\HallRepository;
+use App\Repository\EventRepository;
 use App\Repository\BandMemberRepository;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +23,7 @@ class ApiController extends AbstractController
 
 
     #[Route('/api/search', name: 'app_api_search', methods: ['GET'])]
-    public function index(HallRepository $hallRepository, BandMemberRepository $BandMemberRepository): JsonResponse
+    public function searchApi(HallRepository $hallRepository, BandMemberRepository $BandMemberRepository): JsonResponse
     {
         $halls = $hallRepository->findAll();
         $bandMembers = $this->security->getUser()->getProfil()->getBandMembers();
@@ -49,9 +48,10 @@ class ApiController extends AbstractController
             foreach ($events as $event) {
                 $eventDate = $event->getDate();
                 $formattedEventDate = $eventDate->format('Y-m-d');
-                $nbrEvent++;
+                $nbrEvent += $event->getStatus() == 1 ? 1 : 0;
                 if ($event->getStatus() == 1 && new \DateTime() < $eventDate) {
                     $eventListe[] = $formattedEventDate;
+
                 }
             }
             $data['eventListe'] = $eventListe;
@@ -84,5 +84,23 @@ class ApiController extends AbstractController
         return $displayedBands;
     }
 
+    #[Route('/api/booking/{id}', name: 'app_api_booking', methods: ['GET'])]
+    public function bookingApi(EventRepository $eventRepository, Hall $hall): JsonResponse
+    {
+        $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
+        $eventData = [];
+        foreach ($eventCome as $event){
+            $data = [
+                'date' => $event->getDate()->format('Y - m - d'),
+                'statusDate' => strval($event->getStatus())
+            ];
+            $eventData[] = $data;
+        }
+
+        return $this->json($eventData);
+    }
+
 
 }
+
+

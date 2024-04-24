@@ -11,7 +11,7 @@
 		{% include "hall/show-modules/_header.html.twig" with {hall:hall} %}
 
 		<div class="tab_project">
-			<div class="my-3">
+			<container class="my-3">
 				<div class="lg:flex lg:relative">
 					<div class=" calendar bg-slate-700  text-white p-5 rounded-md lg:mr-3 mb-3 lg:mb-0">
 						<div class="flex justify-between">
@@ -26,13 +26,13 @@
 					<div id="eventModal" class="modal  bg-white rounded-md shadow-md lg:absolute">
 						<div class="modal-content"></div>
 					</div>
-					<div class="event-list-db bg-white rounded-md shadow-md w-full mt-3 lg:mt-0">
+					<section class="event-list-db bg-white rounded-md shadow-md w-full mt-3 lg:mt-0">
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mes demandes de date</h4>
 						{% include "hall/show-modules/_add_date.html.twig" with {hall:hall} %}
-					</div>
+					</section>
 				</div>
 				<div class="lg:flex lg:justify-between">
-					<div class="md:w-full lg:w-1/2 lg:mr-3 bg-white rounded-md shadow-md mt-3 ">
+					<section class="md:w-full lg:w-1/2 lg:mr-3 bg-white rounded-md shadow-md mt-3 ">
 						<div class="flex justify-between item-align bg-slate-700 relative rounded-t-md">
 							<h4 class=" text-white p-2 ">Mes prochains events</h4>
 							<div class="flex absolute right-2 top-2">
@@ -58,17 +58,17 @@
 								{% include "hall/show-modules/_come_events.html.twig" with {eventPast:eventPast} %}
 							</div>
 						</div>
-					</div>
-					<div class="md:w-full lg:w-1/2 lg:ml-3 bg-slate-200 rounded-md shadow-md mt-3 ">
+					</section>
+					<section class="md:w-full lg:w-1/2 lg:ml-3 bg-slate-200 rounded-md shadow-md mt-3 ">
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Mon dernier events</h4>
 						<div class=" flex justify-between">
 							{% include "hall/show-modules/_last_events.html.twig" with {eventPast:eventPast} %}
 
 						</div>
-					</div>
+					</section>
 				</div>
-			</div>
-			<div class="my-3">
+			</container>
+			<section class="my-3">
 				<div class="event-list-db bg-white rounded-md shadow-md mt-3 ">
 					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Membres
 					</h4>
@@ -78,7 +78,7 @@
 							<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Ajouter un nouveau membre</a>
 					</div>
 				</div>
-			</div>
+			</section>
 		</div>
 
 	</div>

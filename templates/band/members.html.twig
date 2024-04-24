@@ -4,23 +4,13 @@
 {% endblock %}
 
 {% block body %}
-
+	
 	<div class="user-contain bg-slate-100">
 		<div class="form-edit bg-white p-10 rounded-l-xl shadow-lg">
 			<div class="w-flex">
 				<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5">Membres Actifs</h4>
-
-				{% set isAdmin = false %}
 				{% for member in band.bandMembers %}
-					{% if is_granted('band_member_edit', member) %}
-						{% set isAdmin = true %}
-					{% endif %}
-				{% endfor %}
-
-				{% for member in band.bandMembers %}
-
 					{% if member.status != "guest" and member.status != "reject" %}
-
 						<div class="flex justify-between">
 							<div class="cardAdminProfil flex justify-between">
 								<div class="flex items-center">
@@ -90,7 +80,7 @@
 									<div class=" w-full ">
 										<label for="status">Status</label><br>
 										{% for message in app.flashes('denied') %}
-												<p class="text-red-500">{{ message }}</p>
+											<p class="text-red-500">{{ message }}</p>
 										{% endfor %}
 										<select name="status" id="" class=" w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
 											<option value="admin" {% if member.status == "admin" %} selected {% endif %}>Admin</option>
@@ -227,14 +217,14 @@ searchMemberDiv.style.display = 'none';
 
 
 $(document).ready(function () {
-	$(".update").click(function () {
-		$(this).closest('.flex').next(".openMember").toggle();
-	});
+$(".update").click(function () {
+$(this).closest('.flex').next(".openMember").toggle();
+});
 
-	$(".roleToggle").click(function () {
-		$(this).hide();
-		$(this).closest('.Parent').find(".openRole").toggle();
-	});
+$(".roleToggle").click(function () {
+$(this).hide();
+$(this).closest('.Parent').find(".openRole").toggle();
+});
 });
 </script>
 

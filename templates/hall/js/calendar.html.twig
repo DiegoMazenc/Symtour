@@ -1,6 +1,7 @@
 	<script>
 
-    const events = {{ eventsData | raw }}
+
+const events = {{ eventsData | raw }}
 
 document.addEventListener('DOMContentLoaded', function () {
     const calendar = document.getElementById('calendrier');
@@ -178,86 +179,72 @@ function openEventModal(date) {
 
             if (statusDate == "1") {
                 modalContent.innerHTML += `
-	<div class="flex justify-between item-align bg-green-500 relative rounded-t-md text-white p-2 ">
-	<p> ${formatDate(date)
-                    }</p>
-	<div class="close ml-3 px-1 font-bold bg-green-700 rounded-full " onclick="closeModal()">&times;</div>
-	</div>
-	`;
+	            <div class="flex justify-between item-align bg-green-500 relative rounded-t-md text-white p-2 ">
+	            <p> ${formatDate(date)}</p>
+	            <div class="close ml-3 px-1 font-bold bg-green-700 rounded-full " onclick="closeModal()">&times;</div>
+	            </div>
+	            `;
                 bands.forEach(band => {
                     if (band.status == "validate") {
                         modalContent.innerHTML += `
-    <div class="flex justify-between items-center">
-        <div class="flex p-2 items-center relative">
-            <div class="img-project-db border-2 border-green-500 ">
-				<img src="${band.logo
-                            }" alt="">
-			</div>
-			<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
-				✓
-			</div>
-            <div>
-                <p class="text-blue-400 font-semibold">${band.name
-                            }</p>
-                <p>${band.music
-                            }/${band.style
-                            }</p>
-            </div>
-        </div>
-    </div>
-`;
+                        <div class="flex justify-between items-center">
+                            <div class="flex p-2 items-center relative">
+                                <div class="img-project-db border-2 border-green-500 ">
+                    				<img src="${band.logo}" alt="">
+                    			</div>
+                    			<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+                    				✓
+                    			</div>
+                                <div>
+                                    <p class="text-blue-400 font-semibold">${band.name}</p>
+                                    <p>${band.music}/${band.style}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                     } else if (band.status == "guest") {
                         modalContent.innerHTML += `
-    <div class="flex justify-between items-center">
-        <div class="flex p-2 items-center relative">
-            <div class="img-project-db border-2 bg-slate-300">
-                <img src="${band.logo
-                            }" alt="">
-            </div>
-            <div class="bg-slate-300 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
-                ⧖
-            </div>
-            <div>
-                <p class="text-blue-400 font-semibold">${band.name
-                            }</p>
-                <p>${band.music
-                            }/${band.style
-                            }</p>
-            </div>
-        </div>
-    </div>
-`;
+                        <div class="flex justify-between items-center">
+                            <div class="flex p-2 items-center relative">
+                                <div class="img-project-db border-2 bg-slate-300">
+                                    <img src="${band.logo}" alt="">
+                                </div>
+                                <div class="bg-slate-300 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+                                    ⧖
+                                </div>
+                                <div>
+                                    <p class="text-blue-400 font-semibold">${band.name}</p>
+                                    <p>${band.music}/${band.style}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                     }
                 });
             } else {
                 modalContent.innerHTML += `
-	<div class="flex justify-between item-align bg-slate-500 relative rounded-t-md text-white p-2 ">
-	<p> ${formatDate(date)
-                    }</p>
-	<div class="close ml-3 px-1 font-bold bg-slate-700 rounded-full " onclick="closeModal()">&times;</div>
-	</div>
-	`;
+	                <div class="flex justify-between item-align bg-slate-500 relative rounded-t-md text-white p-2 ">
+	                <p> ${formatDate(date)}</p>
+	                <div class="close ml-3 px-1 font-bold bg-slate-700 rounded-full " onclick="closeModal()">&times;</div>
+	                </div>
+	                `;
 
                 bands.forEach(band => {
                     if (band.status == "validate") {
                         modalContent.innerHTML += `
-    <div class="flex justify-between items-center">
-        <div class="flex p-2 items-center relative">
-            <div class="img-project-db border-2 border-slate-500 ">
-				<img src="${band.logo
-                            }" alt="">
-			</div>
-			
-            <div>
-                <p class="text-blue-400 font-semibold">${band.name
-                            }</p>
-                <p>${band.music
-                            }/${band.style
-                            }</p>
-            </div>
-        </div>
-    </div>
-`;
+                            <div class="flex justify-between items-center">
+                                <div class="flex p-2 items-center relative">
+                                    <div class="img-project-db border-2 border-slate-500 ">
+                        				<img src="${band.logo}" alt="">
+                        			</div>
+
+                                    <div>
+                                        <p class="text-blue-400 font-semibold">${band.name}</p>
+                                        <p>${band.music}/${band.style}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
                     }
                 })
             }
@@ -288,62 +275,63 @@ function closeModal() {
 }
 
 
-		document.addEventListener('DOMContentLoaded', function () {
-const container = document.querySelector('.event-confirm-db-container');
-const content = document.querySelector('.event-confirm-db-content');
-const arrowLeft = document.getElementById('arrow-left');
-const arrowRight = document.getElementById('arrow-right');
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.querySelector('.event-confirm-db-container');
+    const content = document.querySelector('.event-confirm-db-content');
+    const arrowLeft = document.getElementById('arrow-left');
+    const arrowRight = document.getElementById('arrow-right');
 
-// Initialisation de la position à 0
-let currentPosition = 0;
+    // Initialisation de la position à 0
+    let currentPosition = 0;
 
-arrowLeft.addEventListener('click', function () {
-currentPosition -= 100;
-updatePosition();
-});
+    arrowLeft.addEventListener('click', function () {
+        currentPosition -= 100;
+        updatePosition();
+    });
 
-arrowRight.addEventListener('click', function () {
-currentPosition += 100;
-updatePosition();
-});
+    arrowRight.addEventListener('click', function () {
+        currentPosition += 100;
+        updatePosition();
+    });
 
-arrowLeft.addEventListener('mouseover', function () {
-arrowLeft.style.cursor = 'pointer';
-});
+    arrowLeft.addEventListener('mouseover', function () {
+        arrowLeft.style.cursor = 'pointer';
+    });
 
-arrowRight.addEventListener('mouseover', function () {
-arrowRight.style.cursor = 'pointer';
-});
+    arrowRight.addEventListener('mouseover', function () {
+        arrowRight.style.cursor = 'pointer';
+    });
 
-arrowLeft.addEventListener('mouseout', function () {
-arrowLeft.style.cursor = 'default';
-});
+    arrowLeft.addEventListener('mouseout', function () {
+        arrowLeft.style.cursor = 'default';
+    });
 
-arrowRight.addEventListener('mouseout', function () {
-arrowRight.style.cursor = 'default';
-});
+    arrowRight.addEventListener('mouseout', function () {
+        arrowRight.style.cursor = 'default';
+    });
 
-function updatePosition() { // Limite la position pour éviter de dépasser le contenu
-currentPosition = Math.max(0, Math.min(currentPosition, content.scrollWidth - container.clientWidth));
+    function updatePosition() { // Limite la position pour éviter de dépasser le contenu
+        currentPosition = Math.max(0, Math.min(currentPosition, content.scrollWidth - container.clientWidth));
 
-// Ajout d'une transition pour une animation fluide
-content.style.transition = 'left 0.5s ease-in-out';
-content.style.left = `-${currentPosition}%`;
+        // Ajout d'une transition pour une animation fluide
+        content.style.transition = 'left 0.5s ease-in-out';
+        content.style.left = `-${currentPosition}%`;
 
-// Rend la flèche gauche transparente et non cliquable si à la limite gauche
-arrowLeft.style.opacity = currentPosition === 0 ? 0.5 : 1;
-arrowLeft.style.pointerEvents = currentPosition === 0 ? 'none' : 'auto';
+        // Rend la flèche gauche transparente et non cliquable si à la limite gauche
+        arrowLeft.style.opacity = currentPosition === 0 ? 0.5 : 1;
+        arrowLeft.style.pointerEvents = currentPosition === 0 ? 'none' : 'auto';
 
-// Rend la flèche droite transparente et non cliquable si à la limite droite
-const count = {{ count }};
-arrowRight.style.opacity = currentPosition >= (count - 1) * 100 ? 0.5 : 1;
-arrowRight.style.pointerEvents = currentPosition >= (count - 1) * 100 ? 'none' : 'auto';
+        // Rend la flèche droite transparente et non cliquable si à la limite droite
+        const count = {{ count }}
+    };
+    arrowRight.style.opacity = currentPosition >= (count - 1) * 100 ? 0.5 : 1;
+    arrowRight.style.pointerEvents = currentPosition >= (count - 1) * 100 ? 'none' : 'auto';
 
-// Réinitialise la transition après l'animation
-setTimeout(() => {
-content.style.transition = '';
-}, 500);
+    // Réinitialise la transition après l'animation
+    setTimeout(() => {
+        content.style.transition = '';
+    }, 500);
 }
-});
+);
 
 </script>

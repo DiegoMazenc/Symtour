@@ -42,31 +42,69 @@
 			</div>
 		</div>
 		<div class="form-login">
-			<div class=" bg-white rounded-lg shadow-md p-5">
+			<div class="bg-white rounded-lg shadow-md p-5">
 				<h1 class="font-bold text-slate-700 text-xl">Inscription</h1>
-				{{ form_errors(registrationForm) }}
+
+				{{ form_errors(registrationForm, {
+       				    'attr': {
+       				        'class': 'text-red-500'
+       				    }
+       				}) }}
 
 				{{ form_start(registrationForm) }}
 				<div class="text-start">
-					{{ form_row(registrationForm.email, {
-                        'attr': {
-                            'placeholder': 'Votre Email'
-                        }
-                    })  }}
+					{{ form_label(registrationForm.email) }}
+				<div class="text-red-500">
 
-					{{ form_row(registrationForm.plainPassword) }}
+						{{ form_errors(registrationForm.email) }}
+					</div>
+					{{ form_widget(registrationForm.email, {
+       				    'attr': {
+       				        'placeholder': 'Votre Email'
+       				    }
+       				}) }}
+
+
+					{# <div class="error-form"> #}
+					{{ form_label(registrationForm.plainPassword.first) }}
+					<div class="text-red-500">
+						{{ form_errors(registrationForm.plainPassword.first) }}
+					</div>
+					{{ form_widget(registrationForm.plainPassword.first,  {'id': 'passwordInput'}) }}
+						<p class="text-center">
+							<span id="lengthRequirement">+ 7 caractères</span>
+							|
+							<span id="specialCharRequirement"> 1 caractère spécial</span>
+							|
+							<span id="uppercaseRequirement"> 1 majuscule</span>
+						</p>
+					<div class="password-strength-bar mb-5">
+						<div class="progress-bar" id="progressBar">
+							<div class="progress" id="progress"></div>
+						</div>
+					</div>
+
+
+					{{ form_label(registrationForm.plainPassword.second) }}
+					<div class="text-red-500">
+						{{ form_errors(registrationForm.plainPassword.second) }}
+					</div>
+					{{ form_widget(registrationForm.plainPassword.second) }}
+
+
+					<div class="flex">
+						{{ form_row(registrationForm.agreeTerms) }}
+						<p class="ml-2">J'accepte les
+							<a href="{{ path('app_cgu') }}" class="text-blue-400 underline hover:text-blue-600 hover:no-underline">Conditions Générales D'utilisation</a>.
+						</p>
+					</div>
+
+					<button class="rounded-lg p-2 bg-blue-700 w-full mt-3 text-white" id="inscriptionForm">{{ button_label|default('Inscription') }}</button>
+					{{ form_end(registrationForm) }}
 				</div>
-				<div class="flex">
-					{{ form_row(registrationForm.agreeTerms) }}
-					<p class="ml-2">J'accepte les
-						<a href="{{ path('app_cgu') }}" class="text-blue-400 underline hover:text-blue-600 hover:no-underline">Conditions Générales D'utilisation</a>.</p>
-				</div>
-				<button class="rounded-lg p-2 bg-blue-700 w-full mt-3 text-white" id="inscriptionForm">{{ button_label|default('Inscription') }}</button>
-				{{ form_end(registrationForm) }}
 			</div>
+
 		</div>
-
 	</div>
-
 
 {% endblock %}

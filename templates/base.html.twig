@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<meta name="description" content="Outil de gestion d'évènement musicale pour le musiciens et les salles">
+		<meta name="keywords" content="gestion, évènement, concert, live, musique, groupe, salle, musicien, artiste, technicien, ingénieur, scène, stage, ">
+		<meta name="author" content="Mr Mazenc Diégo">
+		<meta name="robots" content="index, follow">
 		<title>
-			{% block title %}Welcome!
-			{% endblock %}
+			{% block title %}Bienvenu sur Symtour!{% endblock %}
 		</title>
 		<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
@@ -15,25 +18,25 @@
 
 
 	</head>
-	<body  class="bg-slate-100 ">
-			{% include 'nav.html.twig' %}
-			<div class="user-dashboard  flex bg-sky-950 ">
-				<div class="hidden md:block">
-					{% include 'sidebar.html.twig' %}
-				</div>
-				{% block body %}{% endblock %}
-				{% include 'bottombar.html.twig' %}
+	<body class="bg-slate-100 ">
+		{% include 'nav.html.twig' %}
+		<nav class="user-dashboard  flex bg-sky-950 ">
+			<div class="hidden md:block">
+				{% include 'sidebar.html.twig' %}
 			</div>
+			{% block body %}{% endblock %}
+			{% include 'bottombar.html.twig' %}
+		</nav>
 
-			{% block javascripts %}
-				{{ encore_entry_script_tags('app') }}
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
 
-				{% block importmap %}
-					{{ importmap('app') }}
-				{% endblock %}
-
-
+			{% block importmap %}
+				{{ importmap('app') }}
 			{% endblock %}
-				{% include 'footer.html.twig' %}
+
+
+		{% endblock %}
+		{% include 'footer.html.twig' %}
 	</body>
 </html>

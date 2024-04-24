@@ -7,7 +7,13 @@
 	
 		<div class="form-contain w-full  py-20 bg bg-slate-100">
         <div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
+{{ form_start(form) }}
+
             {{ include('band/_form.html.twig') }}
+				    <button class="btnFormAccess">Enregistrer</button>
+
+{{ form_end(form) }}
+
         </div>
         </div>
 	

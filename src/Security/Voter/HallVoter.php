@@ -17,7 +17,7 @@ class HallVoter extends Voter
     protected function supports(string $attribute, mixed $subject): bool
     {
         return in_array($attribute, [self::HALL_MEMBER_EDIT, self::HALL_MEMBER_VIEW, self::HALL_MEMBER])
-            && $subject instanceof \App\Entity\HallMember;
+            && $subject instanceof HallMember;
     }
 
     protected function voteOnAttribute(string $attribute, $hallMember, TokenInterface $token): bool
