@@ -38,8 +38,6 @@ class SearchController extends AbstractController
         $formatDateBooking = $dateTimeBooking->format('Y-m-d');
         $bandId = $request->request->get('band_id');
 
-        $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
-
         if ($request->isMethod('POST')) {
 
             $band = $em->getRepository(Band::class)->find($bandId);
@@ -58,16 +56,14 @@ class SearchController extends AbstractController
             $em->persist($bandEvent);
             $em->flush();
 
-
-
             $notification->addNotificationHall("hall", $bandName, $id, "band", $bandId, "event", $hall, $em);
         }
 
         return $this->render('search/booking.html.twig', [
             'hall' => $hall,
             'date' => $date,
-            'eventCome' => $eventCome,
 
         ]);
     }
 }
+  

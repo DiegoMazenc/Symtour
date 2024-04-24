@@ -3,17 +3,12 @@
 {% block title %}Band{% endblock %}
 
 {% block body %}
-	{% set isAdmin = false %}
-	{% for member in band.bandMembers %}
-		{% if is_granted('band_member_edit', member ) %}
-			{% set isAdmin = true %}
-		{% endif %}
-	{% endfor %}
+
 	<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
 		{% include "band/show-modules/_header.html.twig" %}
 		{# dashboard #}
 		<container class="tab_project">
-			{% if isAdmin %}
+			{% if isAdmin or isMember %}
 				<section class="my-3">
 					<div class="lg:flex lg:relative">
 						<div class=" calendar bg-slate-700  text-white p-5 rounded-md lg:mr-3 mb-3 lg:mb-0">
@@ -23,12 +18,9 @@
 								<button id="nextMonth" class="arrow-right text-white rounded-full bg-slate-500 font-bold  px-2 mx-1">&#10095;</button>
 							</div>
 							<div id="calendrier"></div>
-							{# <div id="calendar-holder"></div> #}
 						</div>
 						<div id="eventModal" class="modal  bg-white rounded-md shadow-md lg:absolute">
-							<div class="modal-content"><!-- Contenu de la modale -->
-								<!-- Ajoutez ici les éléments pour afficher les détails de l'événement -->
-							</div>
+							<div class="modal-content"></div>
 						</div>
 						{% include "band/show-modules/_add_date.html.twig" %}
 					</div>

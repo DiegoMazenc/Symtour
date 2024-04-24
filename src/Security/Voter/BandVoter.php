@@ -20,7 +20,7 @@ class BandVoter extends Voter
     protected function supports(string $attribute, mixed $subject): bool
     {
         return in_array($attribute, [self::BAND_MEMBER_EDIT, self::BAND_MEMBER_VIEW, self::BAND_MEMBER])
-            && $subject instanceof \App\Entity\BandMember;
+            && $subject instanceof BandMember;
     }
 
     protected function voteOnAttribute(string $attribute, $bandMember, TokenInterface $token): bool
@@ -43,24 +43,19 @@ class BandVoter extends Voter
 
         return false;
     }
-
-    private function isAdmin(BandMember $bandMember): bool
-    {
-        return $bandMember->getStatus() === 'admin';
-    }
-
-    private function canEdit(BandMember $bandMember, User $user): bool
-    {
-        return $this->isUserInBand($bandMember, $user) && $this->isAdmin($bandMember);
-    }
-
-    private function canView(BandMember $bandMember, User $user): bool
-    {
-        return $this->isUserInBand($bandMember, $user) && $bandMember->getStatus() === "member";
-    }
-
     private function isUserInBand(BandMember $bandMember, User $user): bool
     {
           return $bandMember->getProfil() !== null &&  $bandMember->getProfil()->getIdUser()->getId() ===  $user->getId();
     }
+    private function canView(BandMember $bandMember, User $user): bool
+    {
+        return $this->isUserInBand($bandMember, $user) && $bandMember->getStatus() === "member";
+    }
+    private function canEdit(BandMember $bandMember, User $user): bool
+    {
+        return $this->isUserInBand($bandMember, $user) && $bandMember->getStatus() === 'admin';
+    }
+
+
 }
+

@@ -103,8 +103,22 @@ class BandController extends AbstractController
         EventRepository $eventRepository,
         Request $request,
         HallRepository $hallRepository,
-        NotificationService $notification
+        NotificationService $notification,
+        BandMemberRepository $bandMemberRepository,
+        TokenInterface $token
     ): Response {
+        $profilUser = $token->getUser()->getProfil();
+        $isMember = false;
+        $isAdmin = false;
+        
+        $userMember = $bandMemberRepository->findMemberInBand($band->getId(), $profilUser->getId());
+        
+        if ($userMember) {
+            $isMember = $this->isGranted('band_member', $userMember);
+            $isAdmin = $this->isGranted('band_member_edit', $userMember);
+        }
+
+
         $eventCome = $eventRepository->getComeEventsByBand($band);
         $eventPast = $eventRepository->getPastEventsByBandForShow($band);
         $eventAll = $eventRepository->getAllEventsByBand($band);
@@ -156,6 +170,8 @@ class BandController extends AbstractController
             'eventCome' => $eventCome,
             'eventPast' => $eventPast,
             'allEvent' => $eventAll,
+            'isMember' => $isMember,
+            'isAdmin' => $isAdmin,
             'eventsData' => json_encode($eventsData),
         ]);
     }
@@ -176,12 +192,17 @@ class BandController extends AbstractController
 
         $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
         $canAccess = false;
+        $canEdit = false;
 
         foreach ($allBandMembers as $bandMember) {
             if ($this->isGranted('band_member', $bandMember)) {
                 $canAccess = true;
+                if ($this->isGranted('band_member_edit', $bandMember)) {
+                    $canEdit = true;
+                }
                 break;
             }
+            
         }
 
         if (!$canAccess) {
@@ -309,7 +330,8 @@ class BandController extends AbstractController
             'searchForm' => $searchForm->createView(),
             'addRoleBand' => $addRoleBand->createView(),
             'profil' => $profil,
-            'roles' => $roles
+            'roles' => $roles,
+            'isAdmin' => $canEdit
         ]);
     }
 
@@ -469,13 +491,18 @@ class BandController extends AbstractController
 
         $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
         $canAccess = false;
+        $isAdmin = false;
 
         foreach ($allBandMembers as $bandMember) {
             if ($this->isGranted('band_member', $bandMember)) {
                 $canAccess = true;
+                if ($this->isGranted('band_member_edit', $bandMember)) {
+                    $isAdmin = true;
+                }
                 break;
             }
         }
+        
 
         if (!$canAccess) {
             return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
@@ -495,6 +522,7 @@ class BandController extends AbstractController
         return $this->render('band/edit.html.twig', [
             'band' => $band,
             'form' => $form,
+            'isAdmin' => $isAdmin
         ]);
     }
 
@@ -507,10 +535,14 @@ class BandController extends AbstractController
     ): Response {
         $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
         $canAccess = false;
+        $isAdmin = false;
 
         foreach ($allBandMembers as $bandMember) {
             if ($this->isGranted('band_member', $bandMember)) {
                 $canAccess = true;
+                if ($this->isGranted('band_member_edit', $bandMember)) {
+                    $isAdmin = true;
+                }
                 break;
             }
         }
@@ -533,6 +565,8 @@ class BandController extends AbstractController
         return $this->render('band/infos.html.twig', [
             'band' => $band,
             'form' => $form,
+            'isAdmin' => $isAdmin
+
         ]);
     }
 

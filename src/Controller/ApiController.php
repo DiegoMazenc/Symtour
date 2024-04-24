@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\Hall;
 use App\Repository\HallRepository;
+use App\Repository\EventRepository;
 use App\Repository\BandMemberRepository;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Routing\Annotation\Route;
@@ -83,5 +84,23 @@ class ApiController extends AbstractController
         return $displayedBands;
     }
 
+    #[Route('/api/booking/{id}', name: 'app_api_booking', methods: ['GET'])]
+    public function bookingApi(EventRepository $eventRepository, Hall $hall): JsonResponse
+    {
+        $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
+        $eventData = [];
+        foreach ($eventCome as $event){
+            $data = [
+                'date' => $event->getDate()->format('Y - m - d'),
+                'statusDate' => strval($event->getStatus())
+            ];
+            $eventData[] = $data;
+        }
+
+        return $this->json($eventData);
+    }
+
 
 }
+
+

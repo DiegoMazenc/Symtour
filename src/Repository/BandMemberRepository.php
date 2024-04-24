@@ -35,6 +35,18 @@ class BandMemberRepository extends ServiceEntityRepository
         );
    }
 
+   public function findMemberInBand($bandId, $profilId): object|null
+   {
+       return $this->createQueryBuilder('b')
+           ->andWhere('b.band = :band')
+           ->andWhere('b.profil = :profil')
+           ->setParameter('band', $bandId)
+           ->setParameter('profil', $profilId)
+           ->getQuery()
+           ->getOneOrNullResult()
+       ;
+   }
+
 
     
 
