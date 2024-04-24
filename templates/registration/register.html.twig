@@ -54,7 +54,7 @@
 				{{ form_start(registrationForm) }}
 				<div class="text-start">
 					{{ form_label(registrationForm.email) }}
-				<div class="text-red-500">
+					<div class="text-red-500">
 
 						{{ form_errors(registrationForm.email) }}
 					</div>
@@ -71,13 +71,15 @@
 						{{ form_errors(registrationForm.plainPassword.first) }}
 					</div>
 					{{ form_widget(registrationForm.plainPassword.first,  {'id': 'passwordInput'}) }}
-						<p class="text-center">
-							<span id="lengthRequirement">+ 7 caractères</span>
-							|
-							<span id="specialCharRequirement"> 1 caractère spécial</span>
-							|
-							<span id="uppercaseRequirement"> 1 majuscule</span>
-						</p>
+					<p class="text-center">
+						<span id="lengthRequirement">+ 7 caractères</span>
+						|
+						<span id="specialCharRequirement">
+							1 caractère spécial</span>
+						|
+						<span id="uppercaseRequirement">
+							1 majuscule</span>
+					</p>
 					<div class="password-strength-bar mb-5">
 						<div class="progress-bar" id="progressBar">
 							<div class="progress" id="progress"></div>

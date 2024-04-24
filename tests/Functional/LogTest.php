@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class LogTest extends WebTestCase
 {
-    public function testConnexion(): void
+    public function testLoginAccess(): void
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
@@ -30,7 +30,6 @@ class LogTest extends WebTestCase
         $form['registration_form[email]'] = 'nouveau_utilisateur@example.com';
         $form['registration_form[plainPassword][first]'] = 'mot_de_passe';
         $form['registration_form[plainPassword][second]'] = 'mot_de_passe';
-        // $form['registration_form[agreeTerms]']->tick();
 
         // Soumettre le formulaire
         $client->submit($form);

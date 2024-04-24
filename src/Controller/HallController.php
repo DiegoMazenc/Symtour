@@ -30,6 +30,7 @@ use App\Repository\BandEventRepository;
 use App\Repository\HallMemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\HallMemberRoleRepository;
+use PHPUnit\Framework\Constraint\IsEmpty;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,6 +63,13 @@ class HallController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if($form->get('music_category')->getData()->IsEmpty()){
+                // dd('coucou');
+                $this->addFlash(
+                   'errorMusicCategory',
+                   'Veuillez sélectionner au moins une catégorie musicale accepté'
+                );
+            } else {
             
             $img = $form->get('logo')->getData();
             if ($img) {
@@ -96,6 +104,8 @@ class HallController extends AbstractController
             $entityManager->flush();
 
             return $this->redirectToRoute('app_hall_infos', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
+        }
+
         }
 
         return $this->render('hall/new.html.twig', [

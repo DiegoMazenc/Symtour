@@ -6,6 +6,11 @@
  
 		<div class="form-contain w-full  py-20 bg bg-slate-100">
         <div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
+        {% for message in app.flashes('error') %}
+					<div class="bg-red-100">
+						<p class="text-red-500 font-bold py-2 px-3">{{ message }}</p>
+					</div>
+				{% endfor %}
     {{ include('hall/_form.html.twig') }}
         </div>
         </div>

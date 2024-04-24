@@ -46,7 +46,7 @@ class HallInfoType extends AbstractType
             'attr' => [
                 'class' => 'inputForm',
             ],
-            'label' => 'Départmeent *',
+            'label' => 'Département *',
 
         ])
         ->add('region', TextType::class, [
