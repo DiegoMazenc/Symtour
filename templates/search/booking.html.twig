@@ -76,7 +76,7 @@
 					</div>
 
 					<div class="event-list-db bg-white rounded-md shadow-md w-full ">
-						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Historique de mes évènements
+						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Ma réservation
 						</h4>
 						<div class="p-3 w-flex">
 
@@ -122,29 +122,33 @@
 				<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Membres</h4>
 				<div class="p-3">
 					{% for member in hall.hallMembers %}
-						<div class="cardAdminProfil flex justify-between items-center">
-							<div class="flex items-center">
-							<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">
-								<div class=" img-member-db">
-									{% if member.profile.picture %}
-										<img src="{{ member.profile.picture }}" alt="{{ member.profile.pseudo }}">
-									{% else %}
-										<img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="{{ member.profile.pseudo }}">
-									{% endif %}
+						{% if member.status in ["member", "admin"] %}						
+							<div class="cardAdminProfil flex justify-between items-center">
+								<div class="flex items-center">
+								<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">
+									<div class=" img-member-db">
+										{% if member.profile.picture %}
+											<img src="{{ member.profile.picture }}" alt="{{ member.profile.pseudo }}">
+										{% else %}
+											<img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="{{ member.profile.pseudo }}">
+										{% endif %}
 
-								</div>
-								</a>
-								<div>
-									<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">{{ member.profile.pseudo}}</a>
-									<div class="flex">
-										{% for hallMemberRole in member.hallMemberRoles %}
-											<p class="mr-3">{{ hallMemberRole.roleHall.roleName}}</p>
-										{% endfor %}
+									</div>
+									</a>
+									<div>
+										<a href="{{ path('app_profil_show', {'id': member.profile.id}) }}" class="text-blue-400 font-semibold">{{ member.profile.pseudo}}</a>
+										<div class="flex">
+											{% for hallMemberRole in member.hallMemberRoles %}
+												<p class="mr-3">{{ hallMemberRole.roleHall.roleName}}</p>
+											{% endfor %}
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<hr class="mr-3 my-2">
+							{% if not loop.last %}
+        					    <hr class="mr-3 my-2">
+        					{% endif %}
+						{% endif %}
 					{% endfor %}
 
 				</div>
@@ -161,7 +165,7 @@
 
 
 
-document.addEventListener('DOMContentLoaded', function () {
+// document.addEventListener('DOMContentLoaded', function () {
     const calendar = document.getElementById('calendrier');
     const prevMonthButton = document.getElementById('prevMonth');
     const nextMonthButton = document.getElementById('nextMonth');
@@ -176,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Construire l'URL de l'API
     const apiUrl = `/api/booking/${hallId}`;
 
-	 let events;
+	 let events = [];
     // Effectuer la requête fetch vers l'API
     fetch(apiUrl)
         .then(response => response.json())
@@ -188,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => console.error('Erreur lors de la récupération des données :', error));
 
     // Function to render the calendar
-    function renderCalendar() {
+    function renderCalendar(events) {
         const currentMonth = currentDate.getMonth();
         const currentYear = currentDate.getFullYear();
         const daysInCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -247,6 +251,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
                 });
 
+
                 // Process events based on statusDate
                 const eventWithStatus1 = eventsOnDay.find(event => event.statusDate === '1');
                 const eventWithStatus2 = eventsOnDay.find(event => event.statusDate === '2');
@@ -304,17 +309,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event listeners for navigation buttons
     prevMonthButton.addEventListener('click', function () {
         currentDate.setMonth(currentDate.getMonth() - 1);
-        renderCalendar();
+        renderCalendar(events);
     });
 
     nextMonthButton.addEventListener('click', function () {
         currentDate.setMonth(currentDate.getMonth() + 1);
-        renderCalendar();
+        renderCalendar(events);
     });
 
     // Initial render
-    renderCalendar();
-});
+    // renderCalendar(events);
+// });
 
 
 function formatDate(date) {

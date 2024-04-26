@@ -63,48 +63,48 @@ class HallController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if($form->get('music_category')->getData()->IsEmpty()){
+            if ($form->get('music_category')->getData()->IsEmpty()) {
                 // dd('coucou');
                 $this->addFlash(
-                   'errorMusicCategory',
-                   'Veuillez sélectionner au moins une catégorie musicale accepté'
+                    'errorMusicCategory',
+                    'Veuillez sélectionner au moins une catégorie musicale accepté'
                 );
             } else {
-            
-            $img = $form->get('logo')->getData();
-            if ($img) {
-                $addPhotosService->addNewPicture($img, $hall);
-            } else {
-                $hall->setLogo('/assets/img/profil_hall.png');
+
+                $img = $form->get('logo')->getData();
+                if ($img) {
+                    $addPhotosService->addNewPicture($img, $hall);
+                } else {
+                    $hall->setLogo('/assets/img/profil_hall.png');
+                }
+
+                $entityManager->persist($hall);
+                $entityManager->flush();
+                $hallMember = new HallMember();
+                $profil = $entityManager->getRepository(Profil::class)->findBy(["IdUser" => $token->getUser()]);
+                $defaultRoleId = 1;
+                $defaultRole = $entityManager->getRepository(RoleHall::class)->find($defaultRoleId);
+
+                $hallMember->setHall($hall)
+                    ->setProfile($profil[0])
+                    ->setStatus("admin");
+                $entityManager->persist($hallMember);
+                $entityManager->flush();
+
+                $hallInfo = new HallInfo;
+                $hallInfo->setHall($hall);
+                $entityManager->persist($hallInfo);
+                $entityManager->flush();
+
+                $hallMemberRole = new HallMemberRole();
+                $hallMemberRole
+                    ->setHallMember($hallMember)
+                    ->setRoleHall($defaultRole);
+                $entityManager->persist($hallMemberRole);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_hall_infos', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
             }
-         
-            $entityManager->persist($hall);
-            $entityManager->flush();
-            $hallMember = new HallMember();
-            $profil = $entityManager->getRepository(Profil::class)->findBy(["IdUser" => $token->getUser()]);
-            $defaultRoleId = 1;
-            $defaultRole = $entityManager->getRepository(RoleHall::class)->find($defaultRoleId);
-
-            $hallMember->setHall($hall)
-                ->setProfile($profil[0])
-                ->setStatus("admin");
-            $entityManager->persist($hallMember);
-            $entityManager->flush();
-
-            $hallInfo = new HallInfo;
-            $hallInfo->setHall($hall);
-            $entityManager->persist($hallInfo);
-            $entityManager->flush();
-
-            $hallMemberRole = new HallMemberRole();
-            $hallMemberRole
-                ->setHallMember($hallMember)
-                ->setRoleHall($defaultRole);
-            $entityManager->persist($hallMemberRole);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_hall_infos', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
-        }
 
         }
 
@@ -228,43 +228,38 @@ class HallController extends AbstractController
         $searchForm = $this->createForm(SearchFormType::class);
         $searchForm->handleRequest($request);
         $profil = '';
+        $hallName = $hall->getName();
+
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
             $searchData = $searchForm->getData();
             $profil = $profilRepository->findBySearch($searchForm->isSubmitted() && $searchForm->isValid() ? $searchData['search'] : null);
         }
 
-        $addRoleHall = $this->createForm(AddRoleHallType::class);
-        $addRoleHall->handleRequest($request);
-        $hallName = $hall->getName();
-
-        if ($addRoleHall->isSubmitted() && $addRoleHall->isValid()) {
-            $addRoleHallData = $addRoleHall->getData();
-            $hallEntity = $hallRepository->find($addRoleHallData['hall']);
-            $hallId = $hallEntity->getId();
-            $roleEntity = $roleHallRepository->find($addRoleHallData['role']);
-            $profilEntity = $profilRepository->find($addRoleHallData['profil']);
-            $profilId = $profilEntity->getId();
+        if ($request->isMethod('POST') && $request->request->has('roleId') && $request->request->has('profilId') && $request->request->has('hallId'))  {
+            $profilId = $request->request->get('profilId');
+            $profil = $profilRepository->find($profilId);
+            $hallId = $request->request->get('hallId');
+            $hall = $hallRepository->find($hallId);
+            $roleId = $request->request->get('roleId');
+            $role = $roleHallRepository->find($roleId);
 
             $hallMember = new HallMember();
-
             $hallMember
-                ->setHall($hallEntity)
-                ->setProfile($profilEntity)
-                ->setStatus("guest");
-
+                ->setHall($hall)
+                ->setProfile($profil)
+                ->setStatus('guest');
 
             $em->persist($hallMember);
 
             $hallMemberRole = new HallMemberRole();
             $hallMemberRole->setHallMember($hallMember)
-                ->setRoleHall($roleEntity);
+                ->setRoleHall($role);
             $em->persist($hallMemberRole);
-
             $em->flush();
-
 
             $notification->addNotificationProfil("profil", $hallName, $profilId, "hall", $hallId, "add", $em);
         }
+
 
         if ($request->isMethod('POST')) {
             $member = $request->request->get('memberId');
@@ -347,7 +342,7 @@ class HallController extends AbstractController
         return $this->render('hall/members.html.twig', [
             'hall' => $hall,
             'searchForm' => $searchForm->createView(),
-            'addRoleHall' => $addRoleHall->createView(),
+            // 'addRoleHall' => $addRoleHall->createView(),
             'profil' => $profil,
             'roles' => $roles
 
@@ -608,7 +603,7 @@ class HallController extends AbstractController
         $canAccess = false;
         $events = $eventRepository->findBy(['hall' => $hall]);
 
-       
+
 
         foreach ($allHallMembers as $hallMember) {
             if ($this->isGranted('hall_member', $hallMember)) {
@@ -619,8 +614,8 @@ class HallController extends AbstractController
 
         if (!$canAccess) {
             $this->addFlash(
-               'error',
-               'Vous n\'avez pas les droits pour fermer cette Salle'
+                'error',
+                'Vous n\'avez pas les droits pour fermer cette Salle'
             );
             return $this->redirectToRoute('app_hall_edit', ["id" => $hall->getId()], Response::HTTP_SEE_OTHER);
         } else {

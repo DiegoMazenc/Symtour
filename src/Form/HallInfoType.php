@@ -31,6 +31,7 @@ class HallInfoType extends AbstractType
         ])
         ->add('nbrStreet', TextType::class, [
             'label' => 'N°',
+            'required' => false,
             'attr' => [
                 'class' => 'inputForm',
             ],

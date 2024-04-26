@@ -12,8 +12,8 @@ class SearchFormType extends AbstractType
     {
         $builder
             ->add('search', TextType::class, [
-                'label' => false,
-                'attr' => ['placeholder' => 'Recherche'],
+                'label' => 'Rechercher un utilisateur',
+                'attr' => ['placeholder' => 'Pseudo, email,...'],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Rechercher',

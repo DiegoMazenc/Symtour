@@ -91,7 +91,7 @@ class ApiController extends AbstractController
         $eventData = [];
         foreach ($eventCome as $event){
             $data = [
-                'date' => $event->getDate()->format('Y - m - d'),
+                'date' => $event->getDate()->format('Y-m-d'),
                 'statusDate' => strval($event->getStatus())
             ];
             $eventData[] = $data;

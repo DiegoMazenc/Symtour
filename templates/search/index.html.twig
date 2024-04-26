@@ -41,7 +41,7 @@
         document.addEventListener('DOMContentLoaded', () => {
            const hallContainer = document.getElementById('hallContainer');
        
-           const updateDisplayedHalls = () => {
+        const updateDisplayedHalls = () => {
         fetch(`/api/search`)
             .then(response => response.json())
             .then(data => {

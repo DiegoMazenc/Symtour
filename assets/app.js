@@ -9,9 +9,10 @@ import './styles/app.css'
 
 
 // Style pour le mot de passe inscription
-const passwordInput = document.getElementById('passwordInput');
-const progress = document.getElementById('progress');
+// const passwordInput = document.getElementById('passwordInput');
+// const progress = document.getElementById('progress');
 
+if (window.location.href.includes("/register")){
 passwordInput.addEventListener('input', function () {
     const password = passwordInput.value;
     const hasLength = password.length >= 8;
@@ -45,4 +46,4 @@ passwordInput.addEventListener('input', function () {
         progress.classList.remove('segment-yellow', 'segment-orange', 'segment-green');
     }
 });
-
+}

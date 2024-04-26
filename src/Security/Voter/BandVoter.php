@@ -31,7 +31,6 @@ class BandVoter extends Voter
             return false;
         }
 
-
         switch ($attribute) {
             case self::BAND_MEMBER_EDIT:
                 return $this->canEdit($bandMember, $user);

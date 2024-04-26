@@ -147,35 +147,17 @@
 								<a href="{{ path('app_profil_show', {'id': profil.id}) }}" class="text-blue-400 font-semibold">{{ profil.pseudo}}</a>
 							</div>
 							<div>
-								{{ form_start(addRoleHall) }}
-								<select id="{{ addRoleHall.role.vars.id }}" name="{{ addRoleHall.role.vars.full_name }}" class="border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
-									<option value="">Choisissez son rôle</option>
+							<form action="{{ path('app_hall_members', {'id': hall.id}) }}" method="post" name="inviteMemberForm">
+							<select class="border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300" name="roleId" required>
+									<option value="" disabled selected>Choisissez son rôle</option>
 									{% for role in roles %}
-										<option value="{{ role.id }}">{{ role.roleName|capitalize }}</option>
+										<option value="{{ role.id }}" >{{ role.roleName|capitalize }}</option>
 									{% endfor %}
 								</select>
-								{{ form_widget(addRoleHall.profil, {
-								'attr': {
-									'class': 'hidden',  
-									'value': profil.id
-								}
-							}) }}
-								{{ form_widget(addRoleHall.hall, {
-								'attr': {
-									'class': 'hidden',  
-									'value': hall.id
-								}
-							}) }}
-
-								{{ form_widget(addRoleHall.submit, {
-								'attr': {
-									'class': 'border-2 border-blue-200 hover:bg-white hover:border-blue-500 rounded-lg p-2 duration-300',  
-								}
-							}) }}
-								{{ form_widget(addRoleHall._token) }}
-
-								{{ form_end(addRoleHall, {render_rest: false}) }}
-
+								<input type="hidden" name="profilId" value="{{ profil.id }}">
+								<input type="hidden" name="hallId" value="{{ hall.id }}">
+								<button type="submit" class="border-2 border-blue-200 hover:bg-white hover:border-blue-500 rounded-lg p-2 duration-300">Inviter</button>
+								</form>
 							</div>
 						</div>
 

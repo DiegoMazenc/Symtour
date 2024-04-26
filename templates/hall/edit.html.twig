@@ -20,9 +20,20 @@
 				{% endfor %}
 
 				{{ include('hall/_form.html.twig', {'button_label': 'Enregistrer'}) }}
-				<div class="flex items-center justify-center">
-					<a href="{{ path('app_hall_delete', {'id': hall.id}) }}" class="text-center w-full  border-2 border-red-200 hover:border-red-500 hover:bg-red-300 rounded-lg p-2 duration-300" onclick="return confirm('Voulez-vous vraiment supprimer cette salle ?')">Fermer La salle</a>
-				</div>
+				{% set isMember = false %}
+				{% for member in hall.hallMembers %}
+					{% if is_granted('hall_member_view', member)%}
+						{% set isMember = true %}
+					{% endif %}
+				{% endfor %}
+
+				{% if isMember %}
+
+					{% else %}
+						<div class="flex items-center justify-center">
+							<a href="{{ path('app_hall_delete', {'id': hall.id}) }}" class="text-center w-full  border-2 border-red-200 hover:border-red-500 hover:bg-red-300 rounded-lg p-2 duration-300" onclick="return confirm('Voulez-vous vraiment supprimer cette salle ?')">Fermer La salle</a>
+						</div>
+				{% endif %}
 
 			</div>
 		</div>
