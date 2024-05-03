@@ -160,36 +160,36 @@ class HallController extends AbstractController
             $notification->addNotificationBand("band", $hall->getName(), $bandId, "hall", $hall->getId(), "response", $band, $status, $em);
         }
 
-        $eventsData = [];
-        foreach ($eventAll as $event) {
-            // Ignorer les événements avec un statut de 2 (rejeté)
-            if ($event->getStatus() != 2) {
-                $eventData = [
-                    'date' => $event->getDate()->format('Y-m-d'),
-                    'statusDate' => $event->getStatus(),
-                    'bands' => [],
-                ];
+        // $eventsData = [];
+        // foreach ($eventAll as $event) {
+        //     // Ignorer les événements avec un statut de 2 (rejeté)
+        //     if ($event->getStatus() != 2) {
+        //         $eventData = [
+        //             'date' => $event->getDate()->format('Y-m-d'),
+        //             'statusDate' => $event->getStatus(),
+        //             'bands' => [],
+        //         ];
 
-                foreach ($event->getBandEvents() as $bandEvent) {
-                    $bandData = [
-                        'name' => $bandEvent->getBand()->getName(),
-                        'logo' => $bandEvent->getBand()->getLogo(),
-                        'music' => $bandEvent->getBand()->getMusicCategory()->getCategory(),
-                        'style' => $bandEvent->getBand()->getDefineStyle(),
-                        'status' => $bandEvent->getStatus(),
-                    ];
-                    $eventData['bands'][] = $bandData;
-                }
+        //         foreach ($event->getBandEvents() as $bandEvent) {
+        //             $bandData = [
+        //                 'name' => $bandEvent->getBand()->getName(),
+        //                 'logo' => $bandEvent->getBand()->getLogo(),
+        //                 'music' => $bandEvent->getBand()->getMusicCategory()->getCategory(),
+        //                 'style' => $bandEvent->getBand()->getDefineStyle(),
+        //                 'status' => $bandEvent->getStatus(),
+        //             ];
+        //             $eventData['bands'][] = $bandData;
+        //         }
 
-                $eventsData[] = $eventData;
-            }
-        }
+        //         $eventsData[] = $eventData;
+        //     }
+        // }
         return $this->render('hall/show.html.twig', [
             'hall' => $hall,
             'eventCome' => $eventCome,
             'eventPast' => $eventPast,
             'eventAll' => $eventAll,
-            'eventsData' => json_encode($eventsData),
+            // 'eventsData' => json_encode($eventsData),
         ]);
     }
 

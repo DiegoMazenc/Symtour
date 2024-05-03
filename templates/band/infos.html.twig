@@ -24,12 +24,17 @@
 					</span>
 					Mon Adresse
 				</h4>
+				{% if band.bandInfo.zipCode is null %}
+					<p class="p-3 mb-3 bg-slate-200 border border-slate-500 rounded flex ">
+						<svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewbox="0 0 24 24" class="mr-3"><path fill="#41516d" d="M11 9h2V7h-2m1 13c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2m-1 15h2v-6h-2z"/></svg>
+						Une partie des champs se remplissent automatiquement à la saisie du code postal</p>
+				{% endif %}
 
+				<div id="zipCodeWarning" class="text-red-500"></div>
 				{{ form_row(form.zipCode) }}
 				<div>
 					<label for="cityOption">Ville *</label><br>
 					<select name="cityOption" id="cityOption" class="inputForm"></select>
-					<div id="zipCodeWarning" class="text-red-500"></div>
 
 				</div>
 				{{ form_row(form.city) }}
@@ -62,83 +67,4 @@
 			</div>
 		</div>
 	</div>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-	$(document).ready(function () {
-const apiUrl = 'https://geo.api.gouv.fr/communes?codePostal=';
-const format = '&format=json';
-const regionApiUrl = 'https://geo.api.gouv.fr/regions/';
-const departementApiUrl = 'https://geo.api.gouv.fr/departements/';
-let zipCode = $('#band_info_zipCode');
-let cityOption = $('#cityOption');
-let city = $('#band_info_city');
-let region = $('#band_info_region');
-let departement = $('#band_info_department');
-let country = $('#band_info_country');
-let zipCodeWarning = $('#zipCodeWarning');
-
-// $(city).append('<option value="{{ bandInfos.city|default('') }}" selected>{{ bandInfos.city|default('') }}</option>');
-
-let defaultCity = $(city).val();
-if (defaultCity) { // Définissez la valeur du sélecteur sur la valeur par défaut
-$(cityOption).append('<option value="' + defaultCity + '" selected >' + defaultCity + '</option>');
-}
-
-$(cityOption).on('change', function () { // Mettez à jour la valeur du champ 'form.city' avec la valeur sélectionnée dans 'cityOption'
-let selectedCity = $(this).val();
-$(city).val(selectedCity);
-});
-$(zipCode).on('blur', function () {
-let code = $(this).val();
-
-if (! code) { // Afficher le message d'avertissement si le code postal est vide
-$(zipCodeWarning).text('Saisissez en premier le code postal');
-return;
-} else { // Cacher le message d'avertissement si le code postal est rempli
-$(zipCodeWarning).text('');
-}
-
-let url = apiUrl + code + format;
-
-fetch(url, {method: 'get'}).then(response => response.json()).then(results => {
-if (results.length) {
-let regionCode = results[0].codeRegion;
-let regionUrl = regionApiUrl + regionCode;
-
-fetch(regionUrl, {method: 'get'}).then(response => response.json()).then(regionData => {
-if (regionData.nom) {
-$(region).val(regionData.nom);
-$(country).val('France');
-}
-}).catch(err => {
-console.log(err);
-});
-
-let departementCode = results[0].codeDepartement;
-let departementUrl = departementApiUrl + departementCode;
-
-fetch(departementUrl, {method: 'get'}).then(response => response.json()).then(departementData => {
-if (departementData.nom) {
-$(departement).val(departementData.nom);
-}
-}).catch(err => {
-console.log(err);
-});
-
-$(cityOption).empty();
-$.each(results, function (key, value) {
-$(cityOption).append('<option value="' + value.nom + '">' + value.nom + '</option>');
-});
-$(cityOption).append('<option value="" disabled selected>Sélectionnez une ville</option>');
-
-// Vérifiez si le champ 'city' a une valeur par défaut
-
-}
-}).catch(err => {
-console.log(err);
-});
-});
-});
-</script>{% endblock %}
+{% endblock %}

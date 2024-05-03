@@ -2,37 +2,23 @@
 
 namespace App\Controller;
 
-use App\Entity\Chat;
-use App\Entity\User;
 use App\Service\AddPhotosService;
-use Aws\S3\S3Client;
 use App\Entity\Profil;
-use App\Entity\ChatRoom;
 use App\Form\ProfilType;
 use App\Entity\BandMember;
 use App\Entity\HallMember;
-use Doctrine\ORM\Mapping\Id;
 use App\Security\EmailVerifier;
-use Aws\Credentials\Credentials;
-use Aws\S3\Exception\S3Exception;
 use App\Repository\BandRepository;
-use App\Repository\ChatRepository;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Repository\ProfilRepository;
 use App\Service\NotificationService;
-use App\Repository\ChatRoomRepository;
-use App\Repository\BandMemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\NotificationRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 

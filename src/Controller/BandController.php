@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Band;
-use App\Entity\Event;
 use App\Entity\Profil;
 use App\Form\BandType;
 use App\Entity\BandInfo;
@@ -11,7 +10,6 @@ use App\Entity\RoleBand;
 use App\Entity\BandEvent;
 use App\Entity\BandMember;
 use App\Form\BandInfoType;
-use App\Form\BandMemberType;
 use App\Form\SearchFormType;
 use App\Form\AddRoleBandType;
 use App\Entity\BandMemberRole;
@@ -87,7 +85,7 @@ class BandController extends AbstractController
             $entityManager->persist($bandMemberRole);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_band_infos', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('band/new.html.twig', [
@@ -145,25 +143,25 @@ class BandController extends AbstractController
             }
         }
 
-        $eventsData = [];
-        foreach ($eventAll as $event) {
-            // Ignorer les événements avec un statut de 2 (rejeté)
-            if ($event->getStatus() != 2) {
-                $eventData = [
-                    'date' => $event->getDate()->format('Y-m-d'),
-                    'halls' => [
-                        [
-                            'name' => $event->getHall()->getName(),
-                            'logo' => $event->getHall()->getLogo(),
-                            'city' => $event->getHall()->getHallInfo()->getCity(),
-                            'status' => $event->getStatus(),
-                        ]
-                    ],
-                ];
+        // $eventsData = [];
+        // foreach ($eventAll as $event) {
+        //     // Ignorer les événements avec un statut de 2 (rejeté)
+        //     if ($event->getStatus() != 2) {
+        //         $eventData = [
+        //             'date' => $event->getDate()->format('Y-m-d'),
+        //             'halls' => [
+        //                 [
+        //                     'name' => $event->getHall()->getName(),
+        //                     'logo' => $event->getHall()->getLogo(),
+        //                     'city' => $event->getHall()->getHallInfo()->getCity(),
+        //                     'status' => $event->getStatus(),
+        //                 ]
+        //             ],
+        //         ];
     
-                $eventsData[] = $eventData;
-            }
-        }
+        //         $eventsData[] = $eventData;
+        //     }
+        // }
         
         return $this->render('band/show.html.twig', [
             'band' => $band,
@@ -172,7 +170,7 @@ class BandController extends AbstractController
             'allEvent' => $eventAll,
             'isMember' => $isMember,
             'isAdmin' => $isAdmin,
-            'eventsData' => json_encode($eventsData),
+            // 'eventsData' => json_encode($eventsData),
         ]);
     }
 

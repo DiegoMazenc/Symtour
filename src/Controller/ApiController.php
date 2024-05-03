@@ -3,6 +3,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Band;
 use App\Entity\Hall;
 use App\Repository\HallRepository;
 use App\Repository\EventRepository;
@@ -98,6 +99,63 @@ class ApiController extends AbstractController
         }
 
         return $this->json($eventData);
+    }
+
+    #[Route('/api/band-event/{id}', name: 'app_api_band_event', methods: ['GET'])]
+    public function bandEventgApi(EventRepository $eventRepository, Band $band): JsonResponse
+    {
+        $eventAll = $eventRepository->getAllEventsByBand($band);
+        $eventsData = [];
+        foreach ($eventAll as $event) {
+            // Ignorer les événements avec un statut de 2 (rejeté)
+            if ($event->getStatus() != 2) {
+                $eventData = [
+                    'date' => $event->getDate()->format('Y-m-d'),
+                    'halls' => [
+                        [
+                            'name' => $event->getHall()->getName(),
+                            'logo' => $event->getHall()->getLogo(),
+                            'city' => $event->getHall()->getHallInfo()->getCity(),
+                            'status' => $event->getStatus(),
+                        ]
+                    ],
+                ];
+    
+                $eventsData[] = $eventData;
+            }
+        }
+        return $this->json($eventsData);
+    }
+
+    #[Route('/api/hall-event/{id}', name: 'app_api_hall_event', methods: ['GET'])]
+    public function hallEventgApi(EventRepository $eventRepository, Hall $hall): JsonResponse
+    {
+        $eventAll = $eventRepository->getAllEventsByHall($hall);
+        $eventsData = [];
+        foreach ($eventAll as $event) {
+            // Ignorer les événements avec un statut de 2 (rejeté)
+            if ($event->getStatus() != 2) {
+                $eventData = [
+                    'date' => $event->getDate()->format('Y-m-d'),
+                    'statusDate' => $event->getStatus(),
+                    'bands' => [],
+                ];
+
+                foreach ($event->getBandEvents() as $bandEvent) {
+                    $bandData = [
+                        'name' => $bandEvent->getBand()->getName(),
+                        'logo' => $bandEvent->getBand()->getLogo(),
+                        'music' => $bandEvent->getBand()->getMusicCategory()->getCategory(),
+                        'style' => $bandEvent->getBand()->getDefineStyle(),
+                        'status' => $bandEvent->getStatus(),
+                    ];
+                    $eventData['bands'][] = $bandData;
+                }
+
+                $eventsData[] = $eventData;
+            }
+        }
+        return $this->json($eventsData);
     }
 
 

@@ -18,7 +18,6 @@ class BandInfoType extends AbstractType
         ->add('zipCode', TextType::class, [
             'attr' => [
                 'class' => 'inputForm',
-                'placeholder' => 'Choisissez un code postal pour remplir automatiquement vos infos'
             ],
             'label' => 'Code Postal *',
 
