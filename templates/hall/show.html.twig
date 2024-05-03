@@ -10,8 +10,13 @@
 
 		{% include "hall/show-modules/_header.html.twig" with {hall:hall} %}
 
-		<div class="tab_project">
-			<container class="my-3">
+		<container class="tab_project">
+		{% if hall.hallInfo.ZipCode is null %}
+			<div class="bg-red-100 mt-3  rounded-md border border-red-500">
+				<p class="text-red-500 font-bold py-2 px-3">⚠️ Remplissez <a href="{{ path('app_hall_infos', {'id': hall.id}) }}" class="underline text-blue-700 hover:no-underline	hover:text-blue-500">vos informations</a> pour être référencé dans les recherches </p>
+			</div>
+		{% endif %}
+			<section class="my-3">
 				<div class="lg:flex lg:relative">
 					<div class=" calendar bg-slate-700  text-white p-5 rounded-md lg:mr-3 mb-3 lg:mb-0">
 						<div class="flex justify-between">
@@ -67,7 +72,7 @@
 						</div>
 					</section>
 				</div>
-			</container>
+			</section>
 			<section class="my-3">
 				<div class="event-list-db bg-white rounded-md shadow-md mt-3 ">
 					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Membres
@@ -79,7 +84,7 @@
 					</div>
 				</div>
 			</section>
-		</div>
+		</container>
 
 	</div>
 

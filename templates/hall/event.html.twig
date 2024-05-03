@@ -17,7 +17,7 @@
 			{% set countEvent = countEvent + 1 %}
 		{% endif %}
 	{% endfor %}
-	<div class="user-contain ">
+	<div class="user-contain min-h-screen">
 		<div class="flex justify-between w-flex">
 			<form action="{{ path('app_hall_event', {'id': hall.id}) }}" method="post" name="all">
 				<button type="submit" name="filter" value="all" {% if filterEvent == "all" %} class="border-2 border-blue-200 hover:border-blue-500 bg-blue-500 font-bold text-white rounded-lg p-2 duration-300" {% else %} class="border-2 border-blue-200 hover:border-blue-500 font-bold rounded-lg p-2 duration-300" {% endif %}>Toute mes dates</button>

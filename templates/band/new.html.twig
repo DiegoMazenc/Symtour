@@ -4,19 +4,21 @@
 {% endblock %}
 
 {% block body %}
-	
-		<div class="form-contain w-full  py-20 bg bg-slate-100">
-        <div class="form-edit bg-white ml-36 p-10 rounded-l-xl shadow-lg">
-{{ form_start(form) }}
 
-            {{ include('band/_form.html.twig') }}
-				    <button class="btnFormAccess">Enregistrer</button>
+	<div class="user-contain bg-slate-100">
+		<div class="form-edit bg-white p-5 md:p-10 rounded-xl shadow-lg">
+			<div class="w-flex">
+				{{ form_start(form) }}
 
-{{ form_end(form) }}
+				{{ include('band/_form.html.twig') }}
+				<button class="btnFormAccess">Enregistrer</button>
 
-        </div>
-        </div>
-	
+				{{ form_end(form) }}
+
+			</div>
+		</div>
+	</div>
+
 
 	{# <a href="{{ path('app_band_index') }}">back to list</a> #}
 {% endblock %}

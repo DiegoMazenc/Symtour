@@ -25,7 +25,7 @@ class ApiController extends AbstractController
     #[Route('/api/search', name: 'app_api_search', methods: ['GET'])]
     public function searchApi(HallRepository $hallRepository, BandMemberRepository $BandMemberRepository): JsonResponse
     {
-        $halls = $hallRepository->findAll();
+        $halls = $hallRepository->findByCompleteInfo();
         $bandMembers = $this->security->getUser()->getProfil()->getBandMembers();
 
         $bandListe = [];

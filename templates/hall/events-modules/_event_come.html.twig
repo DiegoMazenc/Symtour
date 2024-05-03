@@ -1,3 +1,9 @@
+{% if eventCome is empty %}
+<div class="bg-slate-200 rounded border border-slate-500">
+	<p class="text-slate-500 font-bold py-2 px-3">Vous n'avez aucun évènement de prévu</p>
+</div>
+
+{% else %}
 {% for events in eventCome %}
 	{% if filterEvent == "all" %}
 		{% set condition = events.status != 2 %}
@@ -227,3 +233,4 @@
 			</div>
 		{% endif %}
 	{% endfor %}
+		{% endif %}

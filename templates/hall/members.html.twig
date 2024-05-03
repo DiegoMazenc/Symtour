@@ -5,8 +5,8 @@
 
 {% block body %}
 
-	<div class="user-contain bg-slate-100">
-		<div class="form-edit bg-white p-10 rounded-xl shadow-lg">
+	<div class="user-contain bg-slate-100 min-h-screen">
+		<div class="form-edit bg-white p-5 md:p-10  rounded-xl shadow-lg">
 			<div class="w-flex">
 				<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5">Membres Actifs</h4>
 
@@ -164,7 +164,8 @@
 					{% endfor %}
 				{% endif %}
 
-				<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5" style="margin-top: 50px;">Mes demandes d'hadhésion</h4>
+				<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5" style="margin-top: 50px;">Mes demandes d'adhésion</h4>
+				
 				{% for member in hall.hallMembers|reverse %}
 					{% if member.status == "guest" or member.status == "reject" %}
 

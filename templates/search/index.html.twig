@@ -1,33 +1,38 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 
-<div
-	class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
-	
-	<div class="relative">
+<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100  min-h-screen">
 
+	<div class="relative">
 		<input type="text" id="searchName" class="bg-white" placeholder="Chercher un salle">
-		<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewbox="0 0 24 24" class="absolute right-2 top-4"><path fill="black" d="m20.71 19.29l-3.4-3.39A7.92 7.92 0 0 0 19 11a8 8 0 1 0-8 8a7.92 7.92 0 0 0 4.9-1.69l3.39 3.4a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.42M5 11a6 6 0 1 1 6 6a6 6 0 0 1-6-6"/></svg>
+		<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewbox="0 0 24 24" class="absolute right-2 top-4">
+      <path fill="black" d="m20.71 19.29l-3.4-3.39A7.92 7.92 0 0 0 19 11a8 8 0 1 0-8 8a7.92 7.92 0 0 0 4.9-1.69l3.39 3.4a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.42M5 11a6 6 0 1 1 6 6a6 6 0 0 1-6-6"/>
+    </svg>
 	</div>
 
 	<div class="flex-responsive">
+
 		<div class="relative w-flex-search">
-
 			<input type="text" id="searchGeo" class="bg-white " placeholder="Lieu (Ville, CP, département...)">
-			<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewbox="0 0 256 256" class="absolute right-2 top-4"><path fill="currentColor" d="M128 64a40 40 0 1 0 40 40a40 40 0 0 0-40-40m0 64a24 24 0 1 1 24-24a24 24 0 0 1-24 24m0-112a88.1 88.1 0 0 0-88 88c0 31.4 14.51 64.68 42 96.25a254.19 254.19 0 0 0 41.45 38.3a8 8 0 0 0 9.18 0a254.19 254.19 0 0 0 41.37-38.3c27.45-31.57 42-64.85 42-96.25a88.1 88.1 0 0 0-88-88m0 206c-16.53-13-72-60.75-72-118a72 72 0 0 1 144 0c0 57.23-55.47 105-72 118"/></svg>
-
+			<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewbox="0 0 256 256" class="absolute right-2 top-4">
+       <path fill="currentColor" d="M128 64a40 40 0 1 0 40 40a40 40 0 0 0-40-40m0 64a24 24 0 1 1 24-24a24 24 0 0 1-24 24m0-112a88.1 88.1 0 0 0-88 88c0 31.4 14.51 64.68 42 96.25a254.19 254.19 0 0 0 41.45 38.3a8 8 0 0 0 9.18 0a254.19 254.19 0 0 0 41.37-38.3c27.45-31.57 42-64.85 42-96.25a88.1 88.1 0 0 0-88-88m0 206c-16.53-13-72-60.75-72-118a72 72 0 0 1 144 0c0 57.23-55.47 105-72 118"/>
+      </svg>
 		</div>
+
 		<select id="searchMusic" class="bg-white w-flex-search">
 			<option value=""  selected class="text-gray-500">-- Genre Musical --</option>
-
 			{% for music_category in music_categories %}
 				<option value="{{ music_category.category }}">{{ music_category.category }}</option>
 			{% endfor %}
 		</select>
+
 		<input type="date" id="searchDate" class="bg-white w-flex-search" min="{{ "now"|date("Y-m-d") }}">
+
 	</div>
 	<hr>
+
 	<div id="hallContainer" class="card-container"></div>
+  
 </div>
 
 

@@ -1,4 +1,11 @@
+{% if eventCome is empty %}
+<div class="bg-slate-200 rounded border border-slate-500  py-2 px-3">
+	<p class="text-slate-500 font-bold">Vous n'avez aucun évènement de prévu</p>
+	<a href="{{ path('app_search') }}" class="text-blue-800">ᐅ Organiser un évènement</a>
+</div>
+{% else %}
 {% for events in eventCome %}
+	
 	{% if filterEvent == "all" %}
 		{% set condition = events.status != 2 %}
 	{% elseif filterEvent == "valid" %}
@@ -243,3 +250,5 @@
 			</div>
 		{% endif %}
 	{% endfor %}
+{% endif %}
+

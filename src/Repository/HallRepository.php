@@ -64,6 +64,15 @@ class HallRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+
+   public function findByCompleteInfo()
+    {
+        return $this->createQueryBuilder('h')
+            ->leftJoin('h.hallInfo', 'info')
+            ->andWhere('info.zip_code IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+    }
    
 
 

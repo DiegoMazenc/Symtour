@@ -5,16 +5,25 @@
 		{% if event.status == 3 %}
 			{% set anyEvents = true %}
 			<div id="event_{{ event.id }}" class="transition">
-				<div class="cardAdminProfil flex justify-between">
-					<p>{{ event.date|date('d-m-Y') }}</p>
-					{% for bandEvent in event.bandEvents %}
-						<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}">{{ bandEvent.band.name }}</a>
-						<p>{{ bandEvent.band.musicCategory.category }}
-							/
-							{{ bandEvent.band.defineStyle }}</p>
+				<div class="cardAdminProfil flex justify-between items-center">
+						<div>
+						<p>{{ event.date|date('d-m-Y') }}</p>
+						{% for bandEvent in event.bandEvents %}
+							<div class="flex">
+								<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}" class="mr-3 text-blue-400 font-semibold">{{ bandEvent.band.name }}</a>
+								<p>({{ bandEvent.band.musicCategory.category }}
+									/
+									{{ bandEvent.band.defineStyle }})</p>
+							</div>
+						</div>
+						
 						<div class="flex">
-							<button type="submit" class="bg-green-300 hover:bg-green-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif" data-eventid="{{ event.id }}" data-bandid="{{ bandEvent.band.id }}" data-action="validate">✓</button>
-							<button type="submit" class="bg-red-300 hover:bg-red-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif" data-eventid="{{ event.id }}" data-bandid="{{ bandEvent.band.id }}" data-action="reject">X</button>
+						<div class="bg-green-300  hover:bg-green-500 h-6 w-6 rounded-full relative mr-2">
+							<button type="submit" class="text-white text-xs mx-1  deleteNotif absolute left-1 top-1" data-eventid="{{ event.id }}" data-bandid="{{ bandEvent.band.id }}" data-action="validate">✓</button>
+						</div>
+						<div class="bg-red-300  hover:bg-red-500 h-6 w-6 rounded-full relative">
+							<button type="submit" class=" text-white text-xs mx-1 deleteNotif absolute left-1 top-1" data-eventid="{{ event.id }}" data-bandid="{{ bandEvent.band.id }}" data-action="reject">X</button>
+						</div>
 						</div>
 					{% endfor %}
 				</div>
