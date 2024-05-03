@@ -1,13 +1,23 @@
 {{ form_start(form) }}
-<h4 class="title-option"> <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="mr-3"><path fill="white" fill-rule="evenodd" d="M8 7a4 4 0 1 1 8 0a4 4 0 0 1-8 0m0 6a5 5 0 0 0-5 5a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3a5 5 0 0 0-5-5z" clip-rule="evenodd"/></svg></span>Mon profil</h4>
+<h4 class="title-option">
+	<span>
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" class="mr-3"><path fill="white" fill-rule="evenodd" d="M8 7a4 4 0 1 1 8 0a4 4 0 0 1-8 0m0 6a5 5 0 0 0-5 5a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3a5 5 0 0 0-5-5z" clip-rule="evenodd"/></svg>
+	</span>Mon profil</h4>
 
-    {{ form_row(form.pseudo) }}
-    {{ form_row(form.picture) }}
-    {{ form_row(form.description) }}
-    {{ form_row(form.zip_code) }}
-    {{ form_row(form.city) }}
-    {{ form_row(form.country) }}
+{{ form_row(form.pseudo) }}
+<div class="mb-1">
+	{{ form_row(form.picture, {
+    'attr': {
+        'class': 'mb-0'
+    }
+}) }}
+	<p class="text-xs text-end text-slate-600">Format PNG, JPG, JPEG, max 6Mo</p>
+</div>
+{{ form_row(form.description) }}
+{{ form_row(form.zip_code) }}
+{{ form_row(form.city) }}
+{{ form_row(form.country) }}
 
-    <button class="btnFormAccess">Enregistrer</button>
+<button class="btnFormAccess">Enregistrer</button>
 
 {{ form_end(form ) }}

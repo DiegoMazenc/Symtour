@@ -144,6 +144,8 @@
 
 
 									{% if hallMember.status == "guest" %}
+										{% if is_granted('profil_edit', profil) %}
+									
 										<div>
 											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
 												<input type="hidden" name="action" value="validate">
@@ -158,6 +160,8 @@
 												<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
 											</form>
 										</div>
+											{% endif %}
+
 									{% else %}
 										{% set countEvent = 0 %}
 										{% set countInProgress = 0 %}
@@ -199,6 +203,7 @@
 
 
 					{% for bandMember in profil.bandMembers %}
+
 						{% if bandMember.status == "member" or bandMember.status == "admin" %}
 							<a href="/band/{{ bandMember.band.id }}">
 								<div class="flex justify-between p-3 hover:bg-slate-100 items-start">
@@ -231,20 +236,24 @@
 									</div>
 
 									{% if bandMember.status == "guest" %}
-										<div>
-											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
-												<input type="hidden" name="action" value="validate">
-												<input type="hidden" name="page" value="band">
-												<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
-												<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
-											</form>
-											<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
-												<input type="hidden" name="action" value="reject">
-												<input type="hidden" name="page" value="band">
-												<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
-												<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
-											</form>
-										</div>
+										{% if is_granted('profil_edit', profil) %}
+
+											<div>
+												<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+													<input type="hidden" name="action" value="validate">
+													<input type="hidden" name="page" value="band">
+													<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
+													<button type="submit" class="validate-button px-2 py-1 rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Valider</button>
+												</form>
+												<form action="{{ path('app_profil_show', {'id': app.user.profil.id}) }}" method="post">
+													<input type="hidden" name="action" value="reject">
+													<input type="hidden" name="page" value="band">
+													<input type="hidden" name="bandMemberId" value="{{ bandMember.id }}">
+													<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Refuser</button>
+												</form>
+											</div>
+										{% endif %}
+
 									{% else %}
 										{% set countEvent = 0 %}
 										{% set countInProgress = 0 %}
@@ -270,6 +279,7 @@
 							<hr>
 
 						{% endif %}
+
 					{% endfor %}
 					{% for bandMember in profil.bandMembers %}
 						{% if bandMember.status == "guest" and is_granted('profil_edit', profil)%}

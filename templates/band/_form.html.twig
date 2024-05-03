@@ -2,7 +2,17 @@
     {{ form_row(form.name) }}
     <hr class="my-5 border-1"> 
 
-    {{ form_row(form.logo) }}
+    <div class="mb-1">
+
+	{{ form_label(form.logo) }}
+	{{ form_errors(form.logo) }}
+	{{ form_widget(form.logo, {
+    'attr': {
+        'class': 'mb-0'
+    }
+}) }}
+	<p class="text-xs text-end text-slate-600">Format PNG, JPG, JPEG, max 6Mo</p>
+</div>
 
     {{ form_row(form.music_category) }}
     

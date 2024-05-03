@@ -33,12 +33,12 @@ class BandType extends AbstractType
                 'required' =>false,
                 'constraints' => [
                     new File([
-                        'maxSize' => '2500k',
+                        'maxSize' => '6000k',
                         'mimeTypes' => [
                             'image/jpeg',
                             'image/png',
                         ],
-                        'mimeTypesMessage' => 'veuillez sélectione une image jpg, jpeg ou png'
+                        'mimeTypesMessage' => 'veuillez sélectione une image jpg, jpeg ou png 6Mo maximum'
                     ])
                 ]
         ])

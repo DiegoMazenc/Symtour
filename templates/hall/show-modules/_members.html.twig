@@ -1,4 +1,6 @@
 {% for member in hall.hallMembers %}
+{% if member.status in ["admin", "member"] %}
+	
 	<div class="cardAdminProfil flex justify-between items-center">
 		<div class="flex items-center">
 			<div class=" img-member-db">
@@ -16,4 +18,6 @@
 		<p>{{ member.dateCreate|date('d-m-Y')  }}</p>
 	</div>
 	<hr class="mr-3 my-2">
+{% endif %}
+
 {% endfor %}

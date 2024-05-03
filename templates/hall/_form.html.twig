@@ -1,107 +1,115 @@
 {{ form_start(form) }}
 
-    <h4 class="title-option">
-    	<span>
-    		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M6.27 2.289a2.936 2.936 0 0 0-2.159 2.035A37.876 37.876 0 0 0 4.1     9.842c.045 0 .491-.086.992-.188L6 9.467l.023-2.334c.027-2.711.016-2.652.584-2.938L6.8 4.1H12c5.737 0 5.316-.019 5.64.256c.324.275.308.2.334 2.776L18 9.467l.91.187c.5.1.947.187.992.    188a37.876 37.876 0 0 0-.01-5.518a2.927 2.927 0 0 0-2.177-2.037c-.551-.132-10.9-.13-11.442 0m2.515 4.2l-.466 1.862L8 9.637l-.507.475l-.507.474l-2.486.465l-2.485.466v3.754A31.9 31.9 0 0    0 2.071 19l2.415-.9c1.3-.487 2.4-.893 2.45-.9c.069-.014.22.1.577.438l.487.45l.322 1.283l.466 1.861l.145.579h6.14l.145-.579l.466-1.861l.316-1.283l.484-.455c.357-.337.508-.452.577-.438c.   051.009 1.154.415 2.45.9l2.418.905a31.9 31.9 0 0 0 .058-3.732v-3.751l-2.487-.466l-2.485-.465l-.507-.474L16 9.637l-.322-1.283l-.466-1.862l-.145-.579H8.93l-.145.579m4.2 5.182c2.541.608 3.  471 3.2 1.83 5.091c-2.094 2.419-6.41 1.1-6.428-1.964c-.012-2.149 2.253-3.689 4.6-3.127"/></svg>
-    	</span>
-    	Ma salle
-    </h4>
-    {{ form_label(form.name) }}
-    {{ form_errors(form.name) }}
-    {{ form_widget(form.name) }}
-    {{ form_label(form.logo) }}
-    {{ form_errors(form.logo) }}
-    {{ form_widget(form.logo) }}
-    {{ form_label(form.structure) }}
-    <div class="text-red-500">
-    	{{ form_errors(form.structure) }}
-    </div>
-    {{ form_widget(form.structure) }}
+<h4 class="title-option">
+	<span>
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="mr-3"><path fill="white" d="M6.27 2.289a2.94 2.94 0 0 0-2.159 2.035A38 38 0 0 0 4.1 9.842c.045 0 .491-.086.992-.188L6 9.467l.023-2.334c.027-2.711.016-2.652.584-2.938L6.8 4.1H12c5.737 0 5.316-.019 5.64.256s.308.2.334 2.776L18 9.467l.91.187c.5.1.947.187.992.188a38 38 0 0 0-.01-5.518a2.93 2.93 0 0 0-2.177-2.037c-.551-.132-10.9-.13-11.442 0m2.515 4.2l-.466 1.862L8 9.637l-.507.475l-.507.474l-2.486.465l-2.485.466v3.754A32 32 0 0 0 2.071 19l2.415-.9c1.3-.487 2.4-.893 2.45-.9c.069-.014.22.1.577.438l.487.45l.322 1.283l.466 1.861l.145.579h6.14l.145-.579l.466-1.861l.316-1.283l.484-.455c.357-.337.508-.452.577-.438c.051.009 1.154.415 2.45.9l2.418.905a32 32 0 0 0 .058-3.732v-3.751l-2.487-.466l-2.485-.465l-.507-.474L16 9.637l-.322-1.283l-.466-1.862l-.145-.579H8.93l-.145.579m4.2 5.182c2.541.608 3.471 3.2 1.83 5.091c-2.094 2.419-6.41 1.1-6.428-1.964c-.012-2.149 2.253-3.689 4.6-3.127"/></svg>
+	</span>
+	Ma salle
+</h4>
+{{ form_label(form.name) }}
+{{ form_errors(form.name) }}
+{{ form_widget(form.name) }}
+<div class="mb-1">
 
-    <h4 class="title-option">
-    	<span>
-    		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" class="mr-3"><path fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round"     stroke-width="2" d="M3 17a3 3 0 1 0 6 0a3 3 0 0 0-6 0m6 0V4h10v9.5M9 8h10m-4 11l2 2l4-4"/></svg>
-    	</span>
-    	Musique(s) Acceptée(s) *</h4>
-    {% for message in app.flashes('errorMusicCategory') %}
-    	<p class="text-red-500 font-bold py-2 px-3">{{ message }}</p>
-    {% endfor %}
-    <div class="inputForm">
-    	{% for category in form.music_category %}
-    		<div class="checkbox-item p-2 rounded flex border">
-    			<div class="  text-white px-2 py-1 rounded-full text-xs mr-3 border-2 checkIcon">
-    				✓
-    			</div>
-    			<span class="category-label" data-category-id="{{ category.vars.id }}">
-    				{{ category.vars.label }}
-    			</span>
-    			{{ form_widget(category) }}
-    		</div>
-    	{% endfor %}
-    </div>
+	{{ form_label(form.logo) }}
+	{{ form_errors(form.logo) }}
+	{{ form_widget(form.logo, {
+    'attr': {
+        'class': 'mb-0'
+    }
+}) }}
+	<p class="text-xs text-end text-slate-600">Format PNG, JPG, JPEG, max 6Mo</p>
+</div>
+{{ form_label(form.structure) }}
+<div class="text-red-500">
+	{{ form_errors(form.structure) }}
+</div>
+{{ form_widget(form.structure) }}
 
-    {% set isMember = false %}
-    {% for member in hall.hallMembers %}
-    	{% if is_granted('hall_member_view', member)%}
-    		{% set isMember = true %}
-    	{% endif %}
-    {% endfor %}
+<h4 class="title-option">
+	<span>
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" class="mr-3"><path fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 17a3 3 0 1 0 6 0a3 3 0 0 0-6 0m6 0V4h10v9.5M9 8h10m-4 11l2 2l4-4"/></svg>
+	</span>
+	Musique(s) Acceptée(s) *</h4>
+{% for message in app.flashes('errorMusicCategory') %}
+	<p class="text-red-500 font-bold py-2 px-3">{{ message }}</p>
+{% endfor %}
+<div class="inputForm">
+	{% for category in form.music_category %}
+		<div class="checkbox-item p-2 rounded flex border">
+			<div class="  text-white px-2 py-1 rounded-full text-xs mr-3 border-2 checkIcon">
+				✓
+			</div>
+			<span class="category-label" data-category-id="{{ category.vars.id }}">
+				{{ category.vars.label }}
+			</span>
+			{{ form_widget(category) }}
+		</div>
+	{% endfor %}
+</div>
 
-    {% if isMember %}
-    	<div class="btnFormDenied" disabled>
-    		<p>Vous devez être Admin pour modifier les informations</p>
-    	</div>
-    {% else %}
-    	<button class="btnFormAccess">Enregistrer</button>
-    {% endif %}
+{% set isMember = false %}
+{% for member in hall.hallMembers %}
+	{% if is_granted('hall_member_view', member)%}
+		{% set isMember = true %}
+	{% endif %}
+{% endfor %}
+
+{% if isMember %}
+	<div class="btnFormDenied" disabled>
+		<p>Vous devez être Admin pour modifier les informations</p>
+	</div>
+{% else %}
+	<button class="btnFormAccess">Enregistrer</button>
+{% endif %}
 
 {{ form_end(form) }}
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let checkboxes = document.querySelectorAll(".checkbox-item input[type='checkbox']");
+	document.addEventListener('DOMContentLoaded', function () {
+let checkboxes = document.querySelectorAll(".checkbox-item input[type='checkbox']");
 
-        checkboxes.forEach(function (checkbox) {
-            checkbox.style.display = 'none';
-            updateStyle(checkbox);
-        });
+checkboxes.forEach(function (checkbox) {
+checkbox.style.display = 'none';
+updateStyle(checkbox);
+});
 
-        document.querySelectorAll(".checkbox-item").forEach(function (item) {
-            let checkbox = item.querySelector("input[type='checkbox']");
-            let checkIcon = item.querySelector('.checkIcon');
-            let unCheckIcon = item.querySelector('.unCheckIcon');
+document.querySelectorAll(".checkbox-item").forEach(function (item) {
+let checkbox = item.querySelector("input[type='checkbox']");
+let checkIcon = item.querySelector('.checkIcon');
+let unCheckIcon = item.querySelector('.unCheckIcon');
 
-            item.addEventListener('click', function () {
-                checkbox.checked = !checkbox.checked;
-                updateStyle(checkbox);
-            });
+item.addEventListener('click', function () {
+checkbox.checked = ! checkbox.checked;
+updateStyle(checkbox);
+});
 
-            item.addEventListener('mouseenter', function () {
-                item.classList.add("bg-green-100");
-            });
+item.addEventListener('mouseenter', function () {
+item.classList.add("bg-green-100");
+});
 
-            item.addEventListener('mouseleave', function () {
-                if (!checkbox.checked) {
-                    item.classList.remove("bg-green-100");
-                }
-            });
-        });
+item.addEventListener('mouseleave', function () {
+if (! checkbox.checked) {
+item.classList.remove("bg-green-100");
+}
+});
+});
 
-        function updateStyle(checkbox) {
-            let checkboxItem = checkbox.closest(".checkbox-item");
-            let checkIcon = checkboxItem.querySelector('.checkIcon');
+function updateStyle(checkbox) {
+let checkboxItem = checkbox.closest(".checkbox-item");
+let checkIcon = checkboxItem.querySelector('.checkIcon');
 
-            if (checkbox.checked) {
-                checkboxItem.classList.remove("border-slate-100");
-                checkIcon.classList.remove("border-slate-300");
-                checkboxItem.classList.add("bg-green-100", "border-green-500");
-                checkIcon.classList.add("border-green-500", "bg-green-500");
-            } else {
-                checkboxItem.classList.remove("bg-green-100", "border-green-500");
-                checkIcon.classList.remove("border-green-500", "bg-green-500");
-                checkboxItem.classList.add("border-slate-100");
-                checkIcon.classList.add("border-slate-300");
-            }
-        }
-    });
+if (checkbox.checked) {
+checkboxItem.classList.remove("border-slate-100");
+checkIcon.classList.remove("border-slate-300");
+checkboxItem.classList.add("bg-green-100", "border-green-500");
+checkIcon.classList.add("border-green-500", "bg-green-500");
+} else {
+checkboxItem.classList.remove("bg-green-100", "border-green-500");
+checkIcon.classList.remove("border-green-500", "bg-green-500");
+checkboxItem.classList.add("border-slate-100");
+checkIcon.classList.add("border-slate-300");
+}
+}
+});
 </script>
