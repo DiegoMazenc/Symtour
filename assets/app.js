@@ -20,8 +20,8 @@ const hallEditPage = currentUrl.match(/\/hall\/\d+\/edit/);
 const hallInfoPage = currentUrl.match(/\/hall\/\d+\/infos/);
 const registerPage = currentUrl.includes("/register")
 const searchPage = currentUrl.match(/\/search+$/)
-const bandPageOnly = (bandPage && (!bandEventPage || !bandMemberPage || !bandEditPage || !bandInfoPage));
-const hallPageOnly = (hallPage && (!hallEventPage || !hallMemberPage || !hallEditPage || !hallInfoPage));
+const bandPageOnly = (bandPage && (!bandEventPage && !bandMemberPage && !bandEditPage && !bandInfoPage));
+const hallPageOnly = (hallPage && (!hallEventPage && !hallMemberPage && !hallEditPage && !hallInfoPage));
 
 
 //****************************\\
