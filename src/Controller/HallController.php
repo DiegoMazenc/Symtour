@@ -115,7 +115,7 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_hall_show', methods: ['GET', 'POST'])]
-    public function show(Hall $hall, BandRepository $bandRepository, HallMemberRepository $hallMemberRepository, EventRepository $eventRepository, Request $request, EntityManagerInterface $em, NotificationService $notification): Response
+    public function show(Hall $hall, BandRepository $bandRepository, HallMemberRepository $hallMemberRepository, BandEventRepository $bandEventRepository, EventRepository $eventRepository, Request $request, EntityManagerInterface $em, NotificationService $notification): Response
     {
 
         $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
@@ -139,12 +139,18 @@ class HallController extends AbstractController
         $notification->isRead((int) $request->query->get('notification_id'));
         if ($request->isMethod('POST')) {
             $action = $request->request->get('action');
-            $eventId = $request->request->get('event_id');
+            $eventId = $request->request->get('eventid');
             $bandId = $request->request->get('bandId');
+            $eventDate = $request->request->get('eventDate');
             $band = $bandRepository->find($bandId);
+            $otherDates = null;
+            $otherBandDates = null;
 
             if ($action === 'validate') {
                 $status = 1;
+                $otherDates = $eventRepository->getOtherDateForReject($eventDate, $hall, $eventId);
+                $otherBandDates = $bandEventRepository->getOtherDateForReject($eventDate, $band, $eventId);
+
             } elseif ($action === 'reject') {
                 $status = 2;
             } else {
@@ -154,42 +160,36 @@ class HallController extends AbstractController
             $event = $em->getRepository(Event::class)->find($eventId);
             if ($event) {
                 $event->setStatus($status);
+                if ($otherDates) {
+                    foreach ($otherDates as $d) {
+                        $d->setStatus(2);
+                        foreach ($d->getBandEvents() as $bandEvent) {
+                            $bandReject = $bandEvent->getBand();
+                            $notification->addNotificationBand("band", $hall->getName(), $bandReject->getId(), "hall", $hall->getId(), "response", $bandReject, 2, $em);
+                        }
+                    }
+                }
+                if ($otherBandDates) {
+                    foreach ($otherBandDates as $bd) {
+                        $eventBD = $bd->getEvent();
+                        $notification->addNotificationHall("hall", $band->getName(), $eventBD->getHall()->getId(), "band", $band->getId(), "cancel", $eventBD->getHall(), $em);
+                        $em->remove($eventBD);
+                        $em->remove($bd);
+
+                    }
+                }
                 $em->flush();
             }
 
             $notification->addNotificationBand("band", $hall->getName(), $bandId, "hall", $hall->getId(), "response", $band, $status, $em);
         }
 
-        // $eventsData = [];
-        // foreach ($eventAll as $event) {
-        //     // Ignorer les événements avec un statut de 2 (rejeté)
-        //     if ($event->getStatus() != 2) {
-        //         $eventData = [
-        //             'date' => $event->getDate()->format('Y-m-d'),
-        //             'statusDate' => $event->getStatus(),
-        //             'bands' => [],
-        //         ];
 
-        //         foreach ($event->getBandEvents() as $bandEvent) {
-        //             $bandData = [
-        //                 'name' => $bandEvent->getBand()->getName(),
-        //                 'logo' => $bandEvent->getBand()->getLogo(),
-        //                 'music' => $bandEvent->getBand()->getMusicCategory()->getCategory(),
-        //                 'style' => $bandEvent->getBand()->getDefineStyle(),
-        //                 'status' => $bandEvent->getStatus(),
-        //             ];
-        //             $eventData['bands'][] = $bandData;
-        //         }
-
-        //         $eventsData[] = $eventData;
-        //     }
-        // }
         return $this->render('hall/show.html.twig', [
             'hall' => $hall,
             'eventCome' => $eventCome,
             'eventPast' => $eventPast,
             'eventAll' => $eventAll,
-            // 'eventsData' => json_encode($eventsData),
         ]);
     }
 
@@ -235,7 +235,7 @@ class HallController extends AbstractController
             $profil = $profilRepository->findBySearch($searchForm->isSubmitted() && $searchForm->isValid() ? $searchData['search'] : null);
         }
 
-        if ($request->isMethod('POST') && $request->request->has('roleId') && $request->request->has('profilId') && $request->request->has('hallId'))  {
+        if ($request->isMethod('POST') && $request->request->has('roleId') && $request->request->has('profilId') && $request->request->has('hallId')) {
             $profilId = $request->request->get('profilId');
             $profil = $profilRepository->find($profilId);
             $hallId = $request->request->get('hallId');

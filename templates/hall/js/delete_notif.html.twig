@@ -9,6 +9,7 @@
             let eventId = button.data('eventid');
             let bandId = button.data('bandid');
             let action = button.data('action');
+            let eventDate = button.data('eventDate');
 
             let notification = document.querySelector('#event_' + eventId);
             notification.classList.add('transition-delete');
@@ -22,7 +23,8 @@
                 data: {
                     action: action,
                     event_id: eventId,
-                    bandId: bandId
+                    bandId: bandId,
+                    eventDate: eventDate
                 }
             });
         });

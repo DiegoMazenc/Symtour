@@ -11,11 +11,14 @@
 		{% include "hall/show-modules/_header.html.twig" with {hall:hall} %}
 
 		<container class="tab_project">
-		{% if hall.hallInfo.ZipCode is null %}
-			<div class="bg-red-100 mt-3  rounded-md border border-red-500">
-				<p class="text-red-500 font-bold py-2 px-3">⚠️ Remplissez <a href="{{ path('app_hall_infos', {'id': hall.id}) }}" class="underline text-blue-700 hover:no-underline	hover:text-blue-500">vos informations</a> pour être référencé dans les recherches </p>
-			</div>
-		{% endif %}
+			{% if hall.hallInfo.ZipCode is null %}
+				<div class="bg-red-100 mt-3  rounded-md border border-red-500">
+					<p class="text-red-500 font-bold py-2 px-3">⚠️ Remplissez
+						<a href="{{ path('app_hall_infos', {'id': hall.id}) }}" class="underline text-blue-700 hover:no-underline	hover:text-blue-500">vos informations</a>
+						pour être référencé dans les recherches
+					</p>
+				</div>
+			{% endif %}
 			<section class="my-3">
 				<div class="lg:flex lg:relative">
 					<div class=" calendar bg-slate-700  text-white p-5 rounded-md lg:mr-3 mb-3 lg:mb-0">
@@ -78,7 +81,7 @@
 					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Membres
 					</h4>
 					<div class="p-3">
-							{% include "hall/show-modules/_members.html.twig" with {hall:hall} %}
+						{% include "hall/show-modules/_members.html.twig" with {hall:hall} %}
 						<a href="{{ path('app_hall_members', {'id': hall.id}) }}" class="text-slate-400 hover:text-blue-500 ">
 							<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>Ajouter un nouveau membre</a>
 					</div>

@@ -18,20 +18,20 @@
 		{% endif %}
 	{% endfor %}
 	<div class="user-contain min-h-screen">
-		<div class="flex justify-between w-flex">
+		<div class="md:flex justify-between w-flex">
 			<form action="{{ path('app_hall_event', {'id': hall.id}) }}" method="post" name="all">
-				<button type="submit" name="filter" value="all" {% if filterEvent == "all" %} class="border-2 border-blue-200 hover:border-blue-500 bg-blue-500 font-bold text-white rounded-lg p-2 duration-300" {% else %} class="border-2 border-blue-200 hover:border-blue-500 font-bold rounded-lg p-2 duration-300" {% endif %}>Toute mes dates</button>
+				<button type="submit" name="filter" value="all" {% if filterEvent == "all" %} class="border-2 border-blue-200 hover:border-blue-500 bg-blue-500 font-bold text-white rounded-lg p-2 duration-300 w-full my-2" {% else %} class="border-2 border-blue-200 hover:border-blue-500 font-bold rounded-lg p-2 duration-300 w-full my-2" {% endif %}>Toute mes dates</button>
 			</form>
 
 			<form action="{{ path('app_hall_event', {'id': hall.id}) }}" method="post" name="valid">
-				<button type="submit" name="filter" value="valid" {% if filterEvent == "valid" %} class="border-2 border-blue-200 hover:border-blue-500 bg-blue-500 font-bold text-white rounded-lg p-2 duration-300" {% else %} class="border-2 border-blue-200 hover:border-blue-500 font-bold rounded-lg p-2 duration-300" {% endif %}>Dates validées</button>
+				<button type="submit" name="filter" value="valid" {% if filterEvent == "valid" %} class="border-2 border-blue-200 hover:border-blue-500 bg-blue-500 font-bold text-white rounded-lg p-2 duration-300 w-full my-2" {% else %} class="border-2 border-blue-200 hover:border-blue-500 font-bold rounded-lg p-2 duration-300 w-full my-2" {% endif %}>Dates validées</button>
 			</form>
 
 			<form action="{{ path('app_hall_event', {'id': hall.id}) }}" method="post" name="in-progress">
 				<div class="relative">
-					<button type="submit" name="filter" value="in-progress" {% if filterEvent == "in-progress" %} class="border-2 border-blue-200 hover:border-blue-500 bg-blue-500 font-bold text-white rounded-lg p-2 duration-300" {% else %} class="border-2 border-blue-200 hover:border-blue-500 font-bold rounded-lg p-2 duration-300" {% endif %}>Demandes de date</button>
+					<button type="submit" name="filter" value="in-progress" {% if filterEvent == "in-progress" %} class="border-2 border-blue-200 hover:border-blue-500 bg-blue-500 font-bold text-white rounded-lg p-2 duration-300 w-full my-2" {% else %} class="border-2 border-blue-200 hover:border-blue-500 font-bold rounded-lg p-2 duration-300 w-full my-2" {% endif %}>Demandes de date</button>
 					{% if countEvent > 0 %}
-						<div class="bg-red-500 text-white py-1 px-2 rounded-full absolute bottom-7 left-36 text-xs ">
+						<div class="bg-red-500 text-white py-1 px-2 rounded-full absolute bottom-9 text-xs ">
 							{{ countEvent }}
 						</div>
 					{% endif %}

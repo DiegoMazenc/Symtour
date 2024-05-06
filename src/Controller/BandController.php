@@ -143,26 +143,6 @@ class BandController extends AbstractController
             }
         }
 
-        // $eventsData = [];
-        // foreach ($eventAll as $event) {
-        //     // Ignorer les événements avec un statut de 2 (rejeté)
-        //     if ($event->getStatus() != 2) {
-        //         $eventData = [
-        //             'date' => $event->getDate()->format('Y-m-d'),
-        //             'halls' => [
-        //                 [
-        //                     'name' => $event->getHall()->getName(),
-        //                     'logo' => $event->getHall()->getLogo(),
-        //                     'city' => $event->getHall()->getHallInfo()->getCity(),
-        //                     'status' => $event->getStatus(),
-        //                 ]
-        //             ],
-        //         ];
-    
-        //         $eventsData[] = $eventData;
-        //     }
-        // }
-        
         return $this->render('band/show.html.twig', [
             'band' => $band,
             'eventCome' => $eventCome,
@@ -185,7 +165,7 @@ class BandController extends AbstractController
         BandMemberRepository $bandMemberRepository,
         BandMemberRoleRepository $bandMemberRoleRepository,
         BandRepository $bandRepository
-    ): Response {
+        ): Response {
         $notification->isRead((int)$request->query->get('notification_id'));
 
         $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);

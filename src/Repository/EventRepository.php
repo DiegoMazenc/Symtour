@@ -36,6 +36,20 @@ class EventRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+    
+    public function getOtherDateForReject($eventDate, Hall $hall, $eventId)
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->andWhere('e.date = :date')
+            ->andWhere('e.hall = :hall')
+            ->andWhere('e.id != :id')
+            ->setParameter('date', $eventDate)
+            ->setParameter('hall', $hall->getId())
+            ->setParameter('id', $eventId);
+    
+        return $qb->getQuery()->getResult();
+    }
+    
 
     public function getAllEventsByHall(Hall $hall)
     {

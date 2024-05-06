@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Band;
 use App\Entity\BandEvent;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<BandEvent>
@@ -21,7 +22,21 @@ class BandEventRepository extends ServiceEntityRepository
         parent::__construct($registry, BandEvent::class);
     }
 
-//    /**
+    public function getOtherDateForReject($eventDate, Band $band, $eventId)
+    {
+        $qb = $this->createQueryBuilder('be')
+            ->leftJoin('be.event', 'e')
+            ->andWhere('e.date = :date')
+            ->andWhere('be.band = :band')
+            ->andWhere('e.id != :id')
+            ->setParameter('date', $eventDate)
+            ->setParameter('band', $band->getId())
+            ->setParameter('id', $eventId);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    //    /**
 //     * @return BandEvent[] Returns an array of BandEvent objects
 //     */
 //    public function findByExampleField($value): array
@@ -36,7 +51,7 @@ class BandEventRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?BandEvent
+    //    public function findOneBySomeField($value): ?BandEvent
 //    {
 //        return $this->createQueryBuilder('b')
 //            ->andWhere('b.exampleField = :val')

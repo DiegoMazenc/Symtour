@@ -6,7 +6,7 @@
 			{% set anyEvents = true %}
 			<div id="event_{{ event.id }}" class="transition">
 				<div class="cardAdminProfil flex justify-between items-center">
-						<div>
+					<div>
 						<p>{{ event.date|date('d-m-Y') }}</p>
 						{% for bandEvent in event.bandEvents %}
 							<div class="flex">
@@ -16,14 +16,35 @@
 									{{ bandEvent.band.defineStyle }})</p>
 							</div>
 						</div>
-						
+
+						{# <div class="flex">
+													<div class="bg-green-300  hover:bg-green-500 h-6 w-6 rounded-full relative mr-2">
+														<button type="submit" class="text-white text-xs mx-1  deleteNotif absolute left-1 top-1" date-eventdate="{{event.date|date()}}" data-eventid="{{ event.id }}" data-bandid="{{ bandEvent.band.id }}" data-action="validate">✓</button>
+													</div>
+													<div class="bg-red-300  hover:bg-red-500 h-6 w-6 rounded-full relative">
+														<button type="submit" class=" text-white text-xs mx-1 deleteNotif absolute left-1 top-1" date-eventdate="{{event.date|date()}}" data-eventid="{{ event.id }}" data-bandid="{{ bandEvent.band.id }}" data-action="reject">X</button>
+													</div>
+												</div> #}
 						<div class="flex">
-						<div class="bg-green-300  hover:bg-green-500 h-6 w-6 rounded-full relative mr-2">
-							<button type="submit" class="text-white text-xs mx-1  deleteNotif absolute left-1 top-1" data-eventid="{{ event.id }}" data-bandid="{{ bandEvent.band.id }}" data-action="validate">✓</button>
-						</div>
-						<div class="bg-red-300  hover:bg-red-500 h-6 w-6 rounded-full relative">
-							<button type="submit" class=" text-white text-xs mx-1 deleteNotif absolute left-1 top-1" data-eventid="{{ event.id }}" data-bandid="{{ bandEvent.band.id }}" data-action="reject">X</button>
-						</div>
+							<form method="post">
+								<input type="hidden" name="action" value="validate">
+								<input type="hidden" name="bandId" value="{{ bandEvent.band.id }}">
+								<input type="hidden" name="eventid" value="{{ event.id }}">
+								<input type="hidden" name="eventDate" value="{{event.date|date('Y-m-d')}}">
+								<div class="bg-green-300  hover:bg-green-500 h-6 w-6 rounded-full relative mr-2">
+									<button type="submit" class="text-white text-xs mx-1  absolute left-1 top-1">✓</button>
+								</div>
+							</form>
+							<form method="post">
+								<input type="hidden" name="action" value="reject">
+								<input type="hidden" name="bandId" value="{{ bandEvent.band.id }}">
+								<input type="hidden" name="eventid" value="{{ event.id }}">
+								<input type="hidden" name="eventDate" value="{{event.date|date('Y-m-d')}}">
+								<div class="bg-red-300  hover:bg-red-500 h-6 w-6 rounded-full relative">
+									<button type="submit" class=" text-white text-xs mx-1  absolute left-1 top-1">X</button>
+								</div>
+							</form>
+
 						</div>
 					{% endfor %}
 				</div>

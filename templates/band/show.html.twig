@@ -1,16 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Band{% endblock %}
+{% block title %}Band
+{% endblock %}
 
 {% block body %}
 
 	<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
 		{% include "band/show-modules/_header.html.twig" %}
-{% if band.bandInfo.ZipCode is null %}
+		{% if band.bandInfo.ZipCode is null %}
 			<div class="bg-red-100 mt-3  rounded-md border border-red-500">
-				<p class="text-red-500 font-bold py-2 px-3">⚠️ Il est conseillé de remplir <a href="{{ path('app_band_infos', {'id': band.id}) }}" class="underline text-blue-700 hover:no-underline	hover:text-blue-500">vos informations</a> pour en informer les salles de concert que vous souhaitez démarcher </p>
+				<p class="text-red-500 font-bold py-2 px-3">⚠️ Il est conseillé de remplir
+					<a href="{{ path('app_band_infos', {'id': band.id}) }}" class="underline text-blue-700 hover:no-underline	hover:text-blue-500">vos informations</a>
+					pour en informer les salles de concert que vous souhaitez démarcher
+				</p>
 			</div>
-		{% endif %}		<container class="tab_project">
+		{% endif %}
+		<container class="tab_project">
 			{% if isAdmin or isMember %}
 				<section class="my-3">
 					<div class="lg:flex lg:relative">
@@ -68,7 +73,7 @@
 						Ajouter un nouveau membre
 					</a>
 				{% endif %}
-				
+
 			</div>
 		</section>
 	</div>
@@ -76,6 +81,4 @@
 </div>
 {% include "band/js/calendar.html.twig"  %}
 {% include "band/js/delete_notif.html.twig" with {band:band} %}
-
-
-<script></script>{% endblock %}
+{% endblock %}

@@ -6,20 +6,37 @@ import './bootstrap.js';
  * which should already be in your base.html.twig.
  */
 import './styles/app.css'
+const currentUrl = window.location.href;
+const bookingPage = currentUrl.includes("/booking");
+const bandPage = currentUrl.includes("/band");
+const bandEventPage = currentUrl.match(/\/band\/\d+\/event/);
+const bandMemberPage = currentUrl.match(/\/band\/\d+\/members/);
+const bandEditPage = currentUrl.match(/\/band\/\d+\/edit/);
+const bandInfoPage = currentUrl.match(/\/band\/\d+\/infos/);
+const hallPage = currentUrl.includes("/hall");
+const hallEventPage = currentUrl.match(/\/hall\/\d+\/event/);
+const hallMemberPage = currentUrl.match(/\/hall\/\d+\/members/);
+const hallEditPage = currentUrl.match(/\/hall\/\d+\/edit/);
+const hallInfoPage = currentUrl.match(/\/hall\/\d+\/infos/);
+const registerPage = currentUrl.includes("/register")
+const searchPage = currentUrl.match(/\/search+$/)
+const bandPageOnly = (bandPage && (!bandEventPage || !bandMemberPage || !bandEditPage || !bandInfoPage));
+const hallPageOnly = (hallPage && (!hallEventPage || !hallMemberPage || !hallEditPage || !hallInfoPage));
+
 
 //****************************\\
 //***** PAGE INSCRIPTION *****\\
 //****************************\\
-if (window.location.href.includes("/register")) {
+if (registerPage) {
     passwordInput.addEventListener('input', function () {
         const password = passwordInput.value;
         const hasLength = password.length >= 8;
         const specialChars = ['!', '@', '#', '$', '%', '^', '&', '-', '_', ':', ';', '"', "'", '?', '*'];
         const hasSpecialChar = password.split('').some(char => specialChars.includes(char));
         const hasUppercase = /[A-Z]/.test(password);
-        const lengthRequirement = document.getElementById('lengthRequirement');
-        const specialCharRequirement = document.getElementById('specialCharRequirement');
-        const uppercaseRequirement = document.getElementById('uppercaseRequirement');
+        const lengthRequirement = document.querySelector('#lengthRequirement');
+        const specialCharRequirement = document.querySelector('#specialCharRequirement');
+        const uppercaseRequirement = document.querySelector('#uppercaseRequirement');
         lengthRequirement.style.color = hasLength ? 'green' : 'red';
         specialCharRequirement.style.color = hasSpecialChar ? 'green' : 'red';
         uppercaseRequirement.style.color = hasUppercase ? 'green' : 'red';
@@ -49,7 +66,7 @@ if (window.location.href.includes("/register")) {
 //************************\\
 //***** CALENDRIER *****\\
 //************************\\
-if (window.location.href.includes("/booking") || window.location.href.match(/\/band\/\d+$/) || window.location.href.match(/\/hall\/\d+$/)) {
+if (bookingPage || bandPageOnly || hallPageOnly) {
     document.addEventListener('DOMContentLoaded', function () {
 
         function openEventModal(date, events) {
@@ -128,7 +145,7 @@ if (window.location.href.includes("/booking") || window.location.href.match(/\/b
                 }
 
                 // Affichez la modale
-                document.getElementById('eventModal').style.display = 'block';
+                document.querySelector('#eventModal').style.display = 'block';
             } else { // Aucun événement trouvé pour la date sélectionnée
                 console.error(`Aucun détail d'événement trouvé pour la date : ${date}`);
             }
@@ -245,7 +262,7 @@ if (window.location.href.includes("/booking") || window.location.href.match(/\/b
                 }
 
                 // Affichez la modale
-                document.getElementById('eventModal').style.display = 'block';
+                document.querySelector('#eventModal').style.display = 'block';
             } else { // Aucun événement trouvé pour la date sélectionnée
                 console.error(`Aucun détail d'événement trouvé pour la date : ${date}`);
             }
@@ -255,10 +272,10 @@ if (window.location.href.includes("/booking") || window.location.href.match(/\/b
         function addClickEventListener(element, day, month, year, eventCount) {
             element.addEventListener('click', () => {
                 const formattedDate = `${day.toString().padStart(2, '0')}-${(month + 1).toString().padStart(2, '0')}-${year}`;
-                document.getElementById('booking_date').value = formattedDate;
+                document.querySelector('#booking_date').value = formattedDate;
 
                 // Afficher le nombre d'événements avec le statut 3 au-dessus du formulaire
-                const eventCountDisplay = document.getElementById('eventCountDisplay');
+                const eventCountDisplay = document.querySelector('#eventCountDisplay');
                 if (eventCount == 0) {
                     eventCountDisplay.innerHTML = `<span class=" text-green-500">Libre</span>`;
                 } else {
@@ -268,29 +285,28 @@ if (window.location.href.includes("/booking") || window.location.href.match(/\/b
             });
         }
 
-        const calendar = document.getElementById('calendrier');
-        const prevMonthButton = document.getElementById('prevMonth');
-        const nextMonthButton = document.getElementById('nextMonth');
-        const currentUrl = window.location.href;
+        const calendar = document.querySelector('#calendrier');
+        const prevMonthButton = document.querySelector('#prevMonth');
+        const nextMonthButton = document.querySelector('#nextMonth');
 
 
         let currentDate = new Date();
         let apiUrl = '';
-        if (currentUrl.includes("/booking")) {
+        if (bookingPage) {
             // Extraire l'ID de la salle de l'URL
             const hallId = currentUrl.split('/').pop();
 
             // Construire l'URL de l'API
             apiUrl = `/api/booking/${hallId}`;
         }
-        if (currentUrl.match(/\/band\/\d+/)) {
+        if (bandPage) {
             const bandId = currentUrl.split('/').pop();
 
             // Construire l'URL de l'API
             apiUrl = `/api/band-event/${bandId}`;
         }
 
-        if (currentUrl.match(/\/hall\/\d+/)) {
+        if (hallPage) {
             const hallId = currentUrl.split('/').pop();
 
             // Construire l'URL de l'API
@@ -350,12 +366,12 @@ if (window.location.href.includes("/booking") || window.location.href.match(/\/b
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayElement = document.createElement('div');
                 dayElement.classList.add('day', 'current-month-day');
-                if (currentUrl.includes("/booking")) {
+                if (bookingPage) {
                     dayElement.classList.add('valide-day');
                 }
                 dayElement.textContent = day;
 
-                if (currentUrl.includes("/booking")) {
+                if (bookingPage) {
 
                     // Ajoutez une condition pour vérifier si le jour est dans le passé
                     if (new Date(currentYear, currentMonth, day) < new Date()) {
@@ -400,7 +416,7 @@ if (window.location.href.includes("/booking") || window.location.href.match(/\/b
                         return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
                     });
 
-                    if (currentUrl.match(/\/band\/\d+$/)) {
+                    if (bandPage) {
 
                         // Add event styling if there are events
                         if (eventsOnDay.length > 0 && eventsOnDay.every(event => event.halls.every(hall => hall.status !== "2"))) {
@@ -419,8 +435,7 @@ if (window.location.href.includes("/booking") || window.location.href.match(/\/b
                             } else if (eventsOnDay.every(event => event.statusDate == "3")) {
                                 dayElement.classList.add('event-day');
                             }
-                            dayElement.addEventListener('click', () => openEventModalHall(`${currentYear}-${currentMonth + 1
-                                }-${day}`));
+                            dayElement.addEventListener('click', () => openEventModalHall(`${currentYear}-${currentMonth + 1}-${day}`));
                         }
 
                     }
@@ -478,16 +493,15 @@ if (window.location.href.includes("/booking") || window.location.href.match(/\/b
 //***********************\\
 //***** PAGE SEARCH *****\\
 //***********************\\
-if (
-    window.location.href.match(/\/search+$/)) {
+if (searchPage) {
 
-    let searchGeo = document.getElementById('searchGeo');
-    let searchName = document.getElementById('searchName');
-    let searchMusic = document.getElementById('searchMusic');
-    let searchDate = document.getElementById('searchDate');
+    const searchGeo = document.querySelector('#searchGeo');
+    const searchName = document.querySelector('#searchName');
+    const searchMusic = document.querySelector('#searchMusic');
+    const searchDate = document.querySelector('#searchDate');
 
     document.addEventListener('DOMContentLoaded', () => {
-        const hallContainer = document.getElementById('hallContainer');
+        const hallContainer = document.querySelector('#hallContainer');
 
         const updateDisplayedHalls = () => {
             fetch(`/api/search`)
@@ -573,10 +587,10 @@ if (
 //***** PAGE HALL/BAND INFO *****\\
 //*****       API GEO       *****\\
 //*******************************\\
-if (window.location.href.match(/\/hall\/\d+\/infos/) || window.location.href.match(/\/band\/\d+\/infos/)) {
+if (hallInfoPage || bandInfoPage) {
     document.addEventListener('DOMContentLoaded', function () {
         let page = "";
-        if (window.location.href.match(/\/hall\/\d+\/infos/)) {
+        if (hallInfoPage) {
             page = "hall"
         } else {
             page = "band"
@@ -585,13 +599,13 @@ if (window.location.href.match(/\/hall\/\d+\/infos/) || window.location.href.mat
         const format = '&format=json';
         const regionApiUrl = 'https://geo.api.gouv.fr/regions/';
         const departementApiUrl = 'https://geo.api.gouv.fr/departements/';
-        const zipCode = document.getElementById(`${page}_info_zipCode`);
-        const cityOption = document.getElementById(`cityOption`);
-        const city = document.getElementById(`${page}_info_city`);
-        const region = document.getElementById(`${page}_info_region`);
-        const departement = document.getElementById(`${page}_info_department`);
-        const country = document.getElementById(`${page}_info_country`);
-        const zipCodeWarning = document.getElementById('zipCodeWarning');
+        const zipCode = document.querySelector(`#${page}_info_zipCode`);
+        const cityOption = document.querySelector(`#cityOption`);
+        const city = document.querySelector(`#${page}_info_city`);
+        const region = document.querySelector(`#${page}_info_region`);
+        const departement = document.querySelector(`#${page}_info_department`);
+        const country = document.querySelector(`#${page}_info_country`);
+        const zipCodeWarning = document.querySelector('#zipCodeWarning');
 
         let defaultCity = city.value;
         if (defaultCity) {
@@ -668,21 +682,21 @@ if (window.location.href.match(/\/hall\/\d+\/infos/) || window.location.href.mat
 }
 
 
-//**************************\\
-//***** PAGE BAND SHOW *****\\
-//**************************\\
-if (window.location.href.match(/\/band\/\d+$/) || window.location.href.match(/\/hall\/\d+$/)) {
+//*******************************\\
+//***** PAGE BAND/HALL SHOW *****\\
+//*******************************\\
+if (bandPageOnly || hallPageOnly) {
     document.addEventListener('DOMContentLoaded', function () {
         const container = document.querySelector('.event-confirm-db-container');
         const content = document.querySelector('.event-confirm-db-content');
-        const arrowLeft = document.getElementById('arrow-left');
-        const arrowRight = document.getElementById('arrow-right');
+        const arrowLeft = document.querySelector('#arrow-left');
+        const arrowRight = document.querySelector('#arrow-right');
         const currentUrl = window.location.href;
         let count = 0;
 
         let apiUrl = '';
 
-        if (currentUrl.match(/\/band\/\d+$/)) {
+        if (bandPageOnly) {
             const bandId = currentUrl.split('/').pop();
 
             // Construire l'URL de l'API
@@ -699,10 +713,10 @@ if (window.location.href.match(/\/band\/\d+$/) || window.location.href.match(/\/
                         const eventDate = new Date(e.date);
                         const currentDate = new Date();
                         if (e.halls.length > 0 && e.halls[0].status == 1 && eventDate >= currentDate) {
-                            count++; 
+                            count++;
                         }
                     });
-                    updatePosition(); 
+                    updatePosition();
                 })
                 .catch(error => console.error('Erreur lors de la récupération des données :', error));
 
@@ -722,12 +736,12 @@ if (window.location.href.match(/\/band\/\d+$/) || window.location.href.match(/\/
                     events.forEach(e => {
                         const eventDate = new Date(e.date);
                         const currentDate = new Date();
-                        if (e.statusDate == 1 && eventDate >= currentDate){
-                            count++; 
+                        if (e.statusDate == 1 && eventDate >= currentDate) {
+                            count++;
                         }
                     });
 
-                    updatePosition(); 
+                    updatePosition();
                 })
                 .catch(error => console.error('Erreur lors de la récupération des données :', error));
         }
@@ -784,3 +798,5 @@ if (window.location.href.match(/\/band\/\d+$/) || window.location.href.match(/\/
 
     });
 }
+
+
