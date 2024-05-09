@@ -88,12 +88,29 @@ class ApiController extends AbstractController
     #[Route('/api/booking/{id}', name: 'app_api_booking', methods: ['GET'])]
     public function bookingApi(EventRepository $eventRepository, Hall $hall): JsonResponse
     {
+        $bandMembers = $this->security->getUser()->getProfil()->getBandMembers();
+
         $eventCome = $eventRepository->getComeEventsByHallAsc($hall);
         $eventData = [];
-        foreach ($eventCome as $event){
+        $currentDate = new \DateTime();
+        foreach ($bandMembers as $bandMember) {
+            foreach ($bandMember->getBand()->getBandEvents() as $event) {
+                if ($event->getEvent()->getStatus() !== 2 && $event->getStatus() !== 'reject' && $event->getEvent()->getDate() > $currentDate) {
+                    $BandEvents = [
+                        'dateBandEvent' => $event->getEvent()->getDate()->format('Y-m-d'),
+                        'bandName' => $bandMember->getBand()->getName(),
+                        'eventStatus' => $event->getEvent()->getStatus(),
+                        'bandStatus' => $event->getStatus()
+                    ];
+                    $eventData[] = $BandEvents;
+                }
+            }
+        }
+        foreach ($eventCome as $event) {
+
             $data = [
                 'date' => $event->getDate()->format('Y-m-d'),
-                'statusDate' => strval($event->getStatus())
+                'statusDate' => strval($event->getStatus()),
             ];
             $eventData[] = $data;
         }
@@ -120,7 +137,7 @@ class ApiController extends AbstractController
                         ]
                     ],
                 ];
-    
+
                 $eventsData[] = $eventData;
             }
         }

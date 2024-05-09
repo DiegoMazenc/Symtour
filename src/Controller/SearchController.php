@@ -40,23 +40,60 @@ class SearchController extends AbstractController
 
         if ($request->isMethod('POST')) {
 
+
             $band = $em->getRepository(Band::class)->find($bandId);
-            $bandName = $band->getName();
-            $event = new Event();
-            $event->setHall($hall)
-                ->setDate(new \DateTime($formatDateBooking))
-                ->setStatus(3);
 
-            $em->persist($event);
-            $em->flush();
-            $bandEvent = new BandEvent();
-            $bandEvent->setBand($band)
-                ->setEvent($event)
-                ->setStatus("validate");
-            $em->persist($bandEvent);
-            $em->flush();
+            $isConfirmEvent = false;
+            $nbrAwaitEvents = 0;
+            $canBooking = true;
+            $CheckBandAlwayBookingInHall = $eventRepository->getEventWhereBandAlwayBookingInHall($band, $hall, $dateTimeBooking);
+            $checkBandAlwayOtherBooking = $eventRepository->getEventWhereBandAlwayOtherBooking($band, $dateTimeBooking);
+            if ($CheckBandAlwayBookingInHall) {
+                $canBooking = false;
+                $this->addFlash(
+                    'error',
+                    'Le projet musical sélectionné a déjà fait une demande de réservation à cette date pour cette salle '
+                );
+            }
 
-            $notification->addNotificationHall("hall", $bandName, $id, "band", $bandId, "event", $hall, $em);
+            if ($checkBandAlwayOtherBooking) {
+                foreach ($checkBandAlwayOtherBooking as $e) {
+                    if ($e->getStatus() == 1) {
+                        $isConfirmEvent = true;
+                        $canBooking = false;
+                        $this->addFlash(
+                            'error',
+                            'Vous avez déjà un évènement de prévu pour cette date '
+                        );
+                        break;
+                    }
+                    if ($e->getStatus() == 3) {
+                        $nbrAwaitEvents++;
+                    }
+                }
+            }
+
+            if ($canBooking) {
+                $bandName = $band->getName();
+                $event = new Event();
+                $event->setHall($hall)
+                    ->setDate(new \DateTime($formatDateBooking))
+                    ->setStatus(3);
+
+                $em->persist($event);
+                $em->flush();
+                $bandEvent = new BandEvent();
+                $bandEvent->setBand($band)
+                    ->setEvent($event)
+                    ->setStatus("validate");
+                $em->persist($bandEvent);
+                $em->flush();
+                $this->addFlash(
+                    'success',
+                    'Votre demande de réservation a été envoyée avec succès.'
+                );
+                $notification->addNotificationHall("hall", $bandName, $id, "band", $bandId, "event", $hall, $em);
+            }
         }
 
         return $this->render('search/booking.html.twig', [
@@ -66,4 +103,3 @@ class SearchController extends AbstractController
         ]);
     }
 }
-  

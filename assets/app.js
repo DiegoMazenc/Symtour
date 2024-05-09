@@ -181,7 +181,6 @@ if (bookingPage || bandPageOnly || hallPageOnly) {
                         });
                     });
                 });
-                console.log(groupedEvents);
 
                 // Bouclez sur les groupes regroupés et ajoutez-les à la modale
                 for (const [date, dateDetails] of Object.entries(groupedEvents)) {
@@ -268,23 +267,82 @@ if (bookingPage || bandPageOnly || hallPageOnly) {
             }
         }
 
+        function infoClickEventListener(element, bandEventsWithEventStatus1) {
+            element.addEventListener('click', () => {
+                console.log(bandEventsWithEventStatus1);
+                const formBooking = document.querySelector('#formBooking');
+                const confirmation = document.querySelector('#confirmation');
+                formBooking.style.display = 'none';
+                confirmation.style.display = 'block';
 
-        function addClickEventListener(element, day, month, year, eventCount) {
+                let bandName = bandEventsWithEventStatus1.bandName;
+
+                // bandEventsWithEventStatus1.forEach((bandEvent, index) => {
+                //         bandNames = '<strong>' + bandEvent.bandName + '</strong>';
+                //     });
+
+                confirmation.innerHTML = `
+                        <div class="p-2 bg-slate-200 border border-slate-700 rounded text-slate-700"><div class="flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" class="mr-2"><g fill="none"><path stroke="#334155" stroke-linejoin="round" stroke-width="4" d="M24 44a19.937 19.937 0 0 0 14.142-5.858A19.937 19.937 0 0 0 44 24a19.938 19.938 0 0 0-5.858-14.142A19.937 19.937 0 0 0 24 4A19.938 19.938 0 0 0 9.858 9.858A19.938 19.938 0 0 0 4 24a19.937 19.937 0 0 0 5.858 14.142A19.938 19.938 0 0 0 24 44Z"/><path fill="#334155" fill-rule="evenodd" d="M24 37a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5" clip-rule="evenodd"/><path stroke="#334155" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M24 12v16"/></g></svg><strong>Attention</strong>,</div> Félicitation 🎉, vous avez déjà un évènement de prévu avec  <strong>${bandName}</strong> pour cette date. <br> Cependant, vous ne pouvez pas réserver des dates ou vous n'êtes pas disponible. Merci de bien vouloir en sélectionner une autre.</div>
+                    `;
+            });
+        }
+
+        function addClickEventListener(element, day, month, year, eventCount, bandEventsWithEventStatus3) {
             element.addEventListener('click', () => {
                 const formattedDate = `${day.toString().padStart(2, '0')}-${(month + 1).toString().padStart(2, '0')}-${year}`;
                 document.querySelector('#booking_date').value = formattedDate;
-
+        
                 // Afficher le nombre d'événements avec le statut 3 au-dessus du formulaire
                 const eventCountDisplay = document.querySelector('#eventCountDisplay');
+                const formBooking = document.querySelector('#formBooking');
+                const confirmation = document.querySelector('#confirmation');
+                formBooking.style.display = 'block';
+                confirmation.style.display = 'none';
+
                 if (eventCount == 0) {
                     eventCountDisplay.innerHTML = `<span class=" text-green-500">Libre</span>`;
                 } else {
                     const demandeText = eventCount < 2 ? 'demande' : 'demandes';
                     eventCountDisplay.innerHTML = `<span class="text-red-500">${eventCount} ${demandeText} en cours</span>`;
                 }
+
+        
+                if (bandEventsWithEventStatus3.length > 0) {
+                    let bandNames = '';
+
+                    bandEventsWithEventStatus3.forEach((bandEvent, index) => {
+                        bandNames += '<strong>' + bandEvent.bandName + '</strong>';
+                
+                        if (index === bandEventsWithEventStatus3.length - 1) {
+                            bandNames += '';
+                        } else if (index === bandEventsWithEventStatus3.length - 2) {
+                            bandNames += ' et ';
+                        } else {
+                            bandNames += ', ';
+                        }
+                    });
+                    // Masquer le bouton de réservation
+                    formBooking.style.display = 'none';
+                    confirmation.style.display = 'block';
+        
+                    // Afficher le message de confirmation
+                    confirmation.innerHTML = `
+                        <div class="p-2 bg-slate-200 border border-slate-700 rounded text-slate-700"><div class="flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" class="mr-2"><g fill="none"><path stroke="#334155" stroke-linejoin="round" stroke-width="4" d="M24 44a19.937 19.937 0 0 0 14.142-5.858A19.937 19.937 0 0 0 44 24a19.938 19.938 0 0 0-5.858-14.142A19.937 19.937 0 0 0 24 4A19.938 19.938 0 0 0 9.858 9.858A19.938 19.938 0 0 0 4 24a19.937 19.937 0 0 0 5.858 14.142A19.938 19.938 0 0 0 24 44Z"/><path fill="#334155" fill-rule="evenodd" d="M24 37a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5" clip-rule="evenodd"/><path stroke="#334155" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M24 12v16"/></g></svg><strong>Attention</strong>,</div> Vous avez des demandes de réservation en cours dans d'autre salles pour cette date avec ${bandNames}. Si une salle valide votre réservation, cela annulera les autres demandes <br> Voulez-vous continuer ?</div>
+                        <button id="btnConfirm" class="btnFormAccess">C'est compris !</button>
+                    `;
+        
+                    // Ajouter un écouteur d'événements pour le bouton de confirmation
+                    const btnConfirm = document.querySelector('#btnConfirm');
+                    btnConfirm.addEventListener('click', () => {
+                        // Réafficher le bouton de réservation
+                        formBooking.style.display = 'block';
+                        // Supprimer le message de confirmation
+                        confirmation.innerHTML = '';
+                    });
+                }
             });
         }
-
+        
         const calendar = document.querySelector('#calendrier');
         const prevMonthButton = document.querySelector('#prevMonth');
         const nextMonthButton = document.querySelector('#nextMonth');
@@ -322,6 +380,7 @@ if (bookingPage || bandPageOnly || hallPageOnly) {
             .then(data => {
 
                 events = data;
+                console.log(events);
                 renderCalendar(events);
             })
             .catch(error => console.error('Erreur lors de la récupération des données :', error));
@@ -385,6 +444,12 @@ if (bookingPage || bandPageOnly || hallPageOnly) {
                             return eventDate.getDate() === day && eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
                         });
 
+                        const bandEventsOnDay = events.filter(event => {
+                            const bandEventDate = new Date(event.dateBandEvent);
+                            return bandEventDate.getDate() === day && bandEventDate.getMonth() === currentMonth && bandEventDate.getFullYear() === currentYear;
+                        })
+
+
 
                         // On cherche et on vérifie le statut de la et des dates de ce jour
                         const eventWithStatus1 = eventsOnDay.find(event => event.statusDate === '1');
@@ -392,16 +457,35 @@ if (bookingPage || bandPageOnly || hallPageOnly) {
                         // Utiliser filter pour obtenir tous les événements avec le statut 3
                         const eventWithStatus3 = eventsOnDay.filter(event => event.statusDate === '3');
 
+                        const bandEventsWithEventStatus1 = bandEventsOnDay.find(event => event.eventStatus === 1)
+                        const bandEventsWithEventStatus3 = bandEventsOnDay.filter(event => event.eventStatus === 3)
+
+                        if(bandEventsWithEventStatus1){
+                            dayElement.classList.remove('valide-day');
+                            dayElement.classList.add('band-reserved');
+                            infoClickEventListener(dayElement, bandEventsWithEventStatus1);
+                        }
+
+                        if(bandEventsWithEventStatus3.length > 0){
+                            const puce = document.createElement('div');
+                            puce.classList.add('puce');
+                            dayElement.style.position = 'relative';
+                            dayElement.appendChild(puce);
+                        }
+
                         if (eventWithStatus1) {
                             dayElement.classList.remove('valide-day');
+                            dayElement.classList.remove('band-reserved');
+
                             dayElement.classList.add('event-reserved');
-                        } else if (eventWithStatus3.length > 0) {
+                        } else if (!bandEventsWithEventStatus1) {
+                            if(eventWithStatus3.length > 0){
                             dayElement.classList.remove('valide-day');
                             dayElement.classList.add('in-progress');
-                            addClickEventListener(dayElement, day, currentMonth, currentYear, eventWithStatus3.length);
+                            addClickEventListener(dayElement, day, currentMonth, currentYear, eventWithStatus3.length, bandEventsWithEventStatus3);
                         } else {
-                            addClickEventListener(dayElement, day, currentMonth, currentYear, 0);
-                        }
+                            addClickEventListener(dayElement, day, currentMonth, currentYear, 0, bandEventsWithEventStatus3);
+                        }}
                     }
                 }
                 else {

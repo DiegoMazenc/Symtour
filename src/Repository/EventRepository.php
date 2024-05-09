@@ -36,6 +36,38 @@ class EventRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getEventWhereBandAlwayBookingInHall(Band $band, Hall $hall, $date)
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->leftJoin('e.bandEvents', 'be')
+            ->leftJoin('be.band', 'b')
+            ->andWhere('e.date = :date')
+            ->andWhere('be.band = :band')
+            ->andWhere('e.hall = :hall')
+            ->setParameters([
+                'date' => $date,
+                'band' => $band,
+                'hall' => $hall,
+            ]);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getEventWhereBandAlwayOtherBooking(Band $band, $date)
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->leftJoin('e.bandEvents', 'be')
+            ->leftJoin('be.band', 'b')
+            ->andWhere('e.date = :date')
+            ->andWhere('be.band = :band')
+            ->setParameters([
+                'date' => $date,
+                'band' => $band
+            ]);
+
+        return $qb->getQuery()->getResult();
+    }
     
     public function getOtherDateForReject($eventDate, Hall $hall, $eventId)
     {

@@ -62,7 +62,17 @@
 		</div>
 
 		<div class="tab_project">
-			<div class="my-10">
+			<div class="my-5">
+				{% for message in app.flashes('error') %}
+					<div class="bg-red-100 w-full mb-3 border border-red-500 rounded">
+						<p class="text-red-500 font-bold py-2 px-3">{{ message }}</p>
+					</div>
+				{% endfor %}
+				{% for message in app.flashes('success') %}
+					<div class="bg-green-100 w-full mb-3 border border-green-500 rounded">
+						<p class="text-green-500 font-bold py-2 px-3">{{ message }}</p>
+					</div>
+				{% endfor %}
 				<div class="flex-responsive ">
 					<div class=" calendar bg-slate-700  text-white p-5 rounded-md lg:mr-3 mb-3 lg:mb-0">
 						<div class="flex justify-between">
@@ -77,7 +87,8 @@
 						<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Ma réservation
 						</h4>
 						<div class="p-3 w-flex">
-							<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post">
+							<div id="confirmation"></div>
+							<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post"  id="formBooking">
 								<label for="booking_date" class='text-blue-400 font-semibold'>Date Sélectionné :
 									<span id="eventCountDisplay"></span>
 								</label><br>
@@ -150,4 +161,3 @@
 	</div>
 
 </div>{% endblock %}
-
