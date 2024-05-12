@@ -327,7 +327,7 @@ if (bookingPage || bandPageOnly || hallPageOnly) {
         
                     // Afficher le message de confirmation
                     confirmation.innerHTML = `
-                        <div class="p-2 bg-slate-200 border border-slate-700 rounded text-slate-700"><div class="flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" class="mr-2"><g fill="none"><path stroke="#334155" stroke-linejoin="round" stroke-width="4" d="M24 44a19.937 19.937 0 0 0 14.142-5.858A19.937 19.937 0 0 0 44 24a19.938 19.938 0 0 0-5.858-14.142A19.937 19.937 0 0 0 24 4A19.938 19.938 0 0 0 9.858 9.858A19.938 19.938 0 0 0 4 24a19.937 19.937 0 0 0 5.858 14.142A19.938 19.938 0 0 0 24 44Z"/><path fill="#334155" fill-rule="evenodd" d="M24 37a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5" clip-rule="evenodd"/><path stroke="#334155" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M24 12v16"/></g></svg><strong>Attention</strong>,</div> Vous avez des demandes de réservation en cours dans d'autre salles pour cette date avec ${bandNames}. Si une salle valide votre réservation, cela annulera les autres demandes <br> Voulez-vous continuer ?</div>
+                        <div class="p-2 bg-slate-200 border border-slate-700 rounded text-slate-700"><div class="flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" class="mr-2"><g fill="none"><path stroke="#334155" stroke-linejoin="round" stroke-width="4" d="M24 44a19.937 19.937 0 0 0 14.142-5.858A19.937 19.937 0 0 0 44 24a19.938 19.938 0 0 0-5.858-14.142A19.937 19.937 0 0 0 24 4A19.938 19.938 0 0 0 9.858 9.858A19.938 19.938 0 0 0 4 24a19.937 19.937 0 0 0 5.858 14.142A19.938 19.938 0 0 0 24 44Z"/><path fill="#334155" fill-rule="evenodd" d="M24 37a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5" clip-rule="evenodd"/><path stroke="#334155" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M24 12v16"/></g></svg><strong>Attention</strong>,</div> Vous avez déjà des demandes de réservation pour cette date avec ${bandNames}. Si une salle valide votre réservation, cela annulera les autres demandes <br> Voulez-vous continuer ?</div>
                         <button id="btnConfirm" class="btnFormAccess">C'est compris !</button>
                     `;
         
@@ -460,7 +460,7 @@ if (bookingPage || bandPageOnly || hallPageOnly) {
                         const bandEventsWithEventStatus1 = bandEventsOnDay.find(event => event.eventStatus === 1)
                         const bandEventsWithEventStatus3 = bandEventsOnDay.filter(event => event.eventStatus === 3)
 
-                        if(bandEventsWithEventStatus1){
+                        if(bandEventsWithEventStatus1 && !eventWithStatus1){
                             dayElement.classList.remove('valide-day');
                             dayElement.classList.add('band-reserved');
                             infoClickEventListener(dayElement, bandEventsWithEventStatus1);
@@ -476,6 +476,7 @@ if (bookingPage || bandPageOnly || hallPageOnly) {
                         if (eventWithStatus1) {
                             dayElement.classList.remove('valide-day');
                             dayElement.classList.remove('band-reserved');
+                            dayElement.classList.remove('puce');
 
                             dayElement.classList.add('event-reserved');
                         } else if (!bandEventsWithEventStatus1) {
