@@ -634,7 +634,7 @@ class HallController extends AbstractController
             $entityManager->remove($hallInfo);
             $entityManager->remove($hall);
             $entityManager->flush();
-            return $this->redirectToRoute('app_profil_show', ["id" => $user->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_profil_show', ["id" => $user->getProfil()->getId()], Response::HTTP_SEE_OTHER);
 
         }
 

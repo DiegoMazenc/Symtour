@@ -574,6 +574,8 @@ table {
 .band-reserved {
     color: rgb(133, 120, 120);
     background-color: #436b52;
+    cursor: pointer;
+
 
 }
 

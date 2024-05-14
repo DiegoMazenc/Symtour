@@ -21,9 +21,9 @@ class NotificationService
 
         $uniqueProfiles = [];
         if ($type == "event"){
-            $message = "$bandName vous à fait une demande d'event";
+            $message = "$bandName vous a fait une demande d'event";
         } else if ($type == "cancel"){
-            $message = "$bandName à annulé sa demande d'event";
+            $message = "$bandName a annulé sa demande d'event";
         }
     
         foreach ($hall->getHallMembers() as $hallMember) {
@@ -64,9 +64,9 @@ class NotificationService
        
 
         if ($status == 1) {
-            $message = "$hallName à accepté votre demande d'event";
+            $message = "$hallName a accepté votre demande d'event";
         } elseif ($status == 2) {
-            $message = "$hallName à rejeté votre demande d'event";
+            $message = "$hallName a rejeté votre demande d'event";
         } else {
             $message = 'Un problème est survenu';
         }
@@ -103,9 +103,9 @@ class NotificationService
        
 
         if ($status == "member") {
-            $message = "$ProfilName à accepté votre invitation";
+            $message = "$ProfilName a accepté votre invitation";
         } elseif ($status == "reject") {
-            $message = "$ProfilName à rejeté votre invitation";
+            $message = "$ProfilName a rejeté votre invitation";
         } else {
             $message = 'Un problème est survenu';
         }
@@ -281,7 +281,7 @@ class NotificationService
     {
         $notification = new Notification;
 
-        $message = "$SenderName Vous invite à les rejoindres";
+        $message = "$SenderName Vous invite à les rejoindre";
 
         $profil = $em->getRepository(Profil::class)->find($idReceipt);
 

@@ -72,7 +72,7 @@
 					</div>
 					{{ form_widget(registrationForm.plainPassword.first,  {'id': 'passwordInput'}) }}
 					<p class="text-center">
-						<span id="lengthRequirement">+ 7 caractères</span>
+						<span id="lengthRequirement">8 caractères</span>
 						|
 						<span id="specialCharRequirement">
 							1 caractère spécial</span>
@@ -103,6 +103,11 @@
 
 					<button class="rounded-lg p-2 bg-blue-700 w-full mt-3 text-white" id="inscriptionForm">{{ button_label|default('Inscription') }}</button>
 					{{ form_end(registrationForm) }}
+
+				</div>
+				<hr class="border-1 my-3">
+				<div class="w-full">
+					<p class="mb-5">Déjà un compte ? <a href="{{ path('app_login') }}" class="text-blue-400 underline hover:text-blue-600 hover:no-underline">Connectez-vous</a></p>
 				</div>
 			</div>
 
