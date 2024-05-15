@@ -23,9 +23,29 @@
 
                 if (searchMemberDiv.style.display === 'none' || searchMemberDiv.style.display === '') {
                     searchMemberDiv.style.display = 'block';
-                    event.target.style.display = 'none';
                 } else {
                     searchMemberDiv.style.display = 'none';
+                }
+            }
+        });
+
+        // Gestion du clic sur les éléments avec la classe "toggleMenuEvent"
+
+        document.addEventListener('click', function (event) {
+            if (event.target.closest('.toggleMenuEvent')) {
+                ('clic');
+                let menuEvent = event.target.closest('.card-event').querySelector('.menuEvent');
+                ('menuEvent:', menuEvent); 
+
+                if (menuEvent) {
+                    if (menuEvent.style.display === 'none' || menuEvent.style.display === '') {
+                        ('none');
+                        menuEvent.style.display = 'block';
+                    } else {
+                        menuEvent.style.display = 'none';
+                    }
+                } else {
+                    ('menuEvent non trouvé');
                 }
             }
         });

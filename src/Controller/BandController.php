@@ -110,7 +110,7 @@ class BandController extends AbstractController
         $isAdmin = false;
         
         $userMember = $bandMemberRepository->findMemberInBand($band->getId(), $profilUser->getId());
-        
+
         if ($userMember) {
             $isMember = $this->isGranted('band_member', $userMember);
             $isAdmin = $this->isGranted('band_member_edit', $userMember);
@@ -120,13 +120,13 @@ class BandController extends AbstractController
         $eventCome = $eventRepository->getComeEventsByBand($band);
         $eventPast = $eventRepository->getPastEventsByBandForShow($band);
         $eventAll = $eventRepository->getAllEventsByBand($band);
-        $notification->isRead((int)$request->query->get('notification_id'));
+        $notification->isRead((int) $request->query->get('notification_id'));
 
         if ($request->isMethod('POST')) {
             $action = $request->request->get('action');
             $eventId = $request->request->get('event_id');
             $hallId = $request->request->get('hallId');
-            $hall = $hallRepository->find((int)$hallId);
+            $hall = $hallRepository->find((int) $hallId);
 
             if ($action === 'validate') {
                 $status = "validate";
@@ -165,8 +165,8 @@ class BandController extends AbstractController
         BandMemberRepository $bandMemberRepository,
         BandMemberRoleRepository $bandMemberRoleRepository,
         BandRepository $bandRepository
-        ): Response {
-        $notification->isRead((int)$request->query->get('notification_id'));
+    ): Response {
+        $notification->isRead((int) $request->query->get('notification_id'));
 
         $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
         $canAccess = false;
@@ -180,7 +180,7 @@ class BandController extends AbstractController
                 }
                 break;
             }
-            
+
         }
 
         if (!$canAccess) {
@@ -234,9 +234,9 @@ class BandController extends AbstractController
             foreach ($request->request->all() as $key => $value) {
                 if (strpos($key, 'role_') !== false) {
                     $idRole = $value;
-                    $role = $roleBandRepository->find((int)$idRole);
+                    $role = $roleBandRepository->find((int) $idRole);
                     $idMemberRoleBand = $request->request->get("idMemberRoleBand_" . substr($key, 5));
-                    $MemberRoleBand = $bandMemberRoleRepository->find((int)$idMemberRoleBand);
+                    $MemberRoleBand = $bandMemberRoleRepository->find((int) $idMemberRoleBand);
 
                     if ($MemberRoleBand) {
                         $MemberRoleBand->setRoleBand($role);
@@ -245,7 +245,7 @@ class BandController extends AbstractController
 
                 if ($request->request->has("deleteRole_" . substr($key, 5))) {
                     $idMemberRoleBandToDelete = $request->request->get("idMemberRoleBand_" . substr($key, 5));
-                    $memberRoleToDelete = $bandMemberRoleRepository->find((int)$idMemberRoleBandToDelete);
+                    $memberRoleToDelete = $bandMemberRoleRepository->find((int) $idMemberRoleBandToDelete);
 
                     if ($memberRoleToDelete) {
                         $em->remove($memberRoleToDelete);
@@ -255,7 +255,7 @@ class BandController extends AbstractController
             }
 
             $status = $request->request->get('status');
-            $bandMember = $bandMemberRepository->find((int)$member);
+            $bandMember = $bandMemberRepository->find((int) $member);
 
             if ($bandMember) {
                 $band = $bandMember->getBand();
@@ -271,7 +271,7 @@ class BandController extends AbstractController
             }
 
             $newRole = $request->request->get('newRole');
-            $role = $roleBandRepository->find((int)$newRole);
+            $role = $roleBandRepository->find((int) $newRole);
 
             if ($newRole != "1") {
                 $newMemberRoleBand = new BandMemberRole;
@@ -385,8 +385,8 @@ class BandController extends AbstractController
             $eventId = $request->request->get('event_id');
             $hallId = $request->request->get('hallId');
             $bandEventId = $request->request->get('bandEvent_id');
-            $hall = $hallRepository->find((int)$hallId);
-
+            $hall = $hallRepository->find((int) $hallId);
+            $event = $eventRepository->find($eventId);
             if ($action === 'cancel') {
                 $notification->addNotificationHall("hall", $band->getName(), $hall->getId(), "band", $band->getId(), $action, $hall, $em);
                 $bandEvent = $bandEventRepository->find($bandEventId);
@@ -395,10 +395,12 @@ class BandController extends AbstractController
                     $em->flush();
                 }
 
-                $event = $eventRepository->find($eventId);
+               
                 if ($event) {
-                    $em->remove($event);
-                    $em->flush();
+                    if ($event->getBandEvents()->isEmpty()) {
+                        $em->remove($event);
+                        $em->flush();
+                    }
                 } else {
                     dd($event);
                 }
@@ -431,7 +433,6 @@ class BandController extends AbstractController
 
     #[Route('/{id}/event-delete', name: 'app_band_event_delete', methods: ['POST'])]
     public function deleteEvent(Request $request, BandMemberRepository $bandMemberRepository, Band $band, BandEventRepository $bandEventRepository, EntityManagerInterface $entityManager): Response
-
     {
         $allBandMembers = $bandMemberRepository->findBy(['band' => $band]);
         $canAccess = false;
@@ -480,7 +481,7 @@ class BandController extends AbstractController
                 break;
             }
         }
-        
+
 
         if (!$canAccess) {
             return $this->redirectToRoute('app_band_show', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
@@ -538,7 +539,7 @@ class BandController extends AbstractController
 
             return $this->redirectToRoute('app_band_infos', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
 
-        } 
+        }
 
         return $this->render('band/infos.html.twig', [
             'band' => $band,
@@ -553,12 +554,12 @@ class BandController extends AbstractController
     public function delete(
         Security $security,
         Request $request,
-            BandMemberRepository $bandMemberRepository,
-            BandMemberRoleRepository $bandMemberRoleRepository,
-            BandInfoRepository $bandInfoRepository,
+        BandMemberRepository $bandMemberRepository,
+        BandMemberRoleRepository $bandMemberRoleRepository,
+        BandInfoRepository $bandInfoRepository,
         BandEventRepository $bandEventRepository,
 
-            Band $band,
+        Band $band,
         EntityManagerInterface $entityManager
     ): Response {
 
@@ -569,7 +570,9 @@ class BandController extends AbstractController
 
         $canAccess = false;
 
-        if($this->isGranted('ROLE_ADMIN')){$canAccess = true;}
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $canAccess = true;
+        }
 
         foreach ($allBandMembers as $bandMember) {
             if ($this->isGranted('band_member', $bandMember)) {
@@ -578,10 +581,10 @@ class BandController extends AbstractController
             }
         }
 
-        if (!$canAccess ) {
+        if (!$canAccess) {
             $this->addFlash(
-               'error',
-               'Vous n\'avez pas les droits pour supprimer ce groupe'
+                'error',
+                'Vous n\'avez pas les droits pour supprimer ce groupe'
             );
             return $this->redirectToRoute('app_band_edit', ["id" => $band->getId()], Response::HTTP_SEE_OTHER);
         } else {

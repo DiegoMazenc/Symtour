@@ -269,7 +269,6 @@ if (bookingPage || bandPageOnly || hallPageOnly) {
 
         function infoClickEventListener(element, bandEventsWithEventStatus1) {
             element.addEventListener('click', () => {
-                console.log(bandEventsWithEventStatus1);
                 const formBooking = document.querySelector('#formBooking');
                 const confirmation = document.querySelector('#confirmation');
                 formBooking.style.display = 'none';
@@ -380,7 +379,6 @@ if (bookingPage || bandPageOnly || hallPageOnly) {
             .then(data => {
 
                 events = data;
-                console.log(events);
                 renderCalendar(events);
             })
             .catch(error => console.error('Erreur lors de la récupération des données :', error));

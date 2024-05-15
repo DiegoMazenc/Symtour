@@ -89,7 +89,7 @@
 						<div class="p-3 w-flex">
 							<div id="confirmation"></div>
 							<form action="{{ path('app_search_booking', {'id': hall.id}) }}" method="post"  id="formBooking">
-								<label for="booking_date" class='text-blue-400 font-semibold'>Date Sélectionné :
+								<label for="booking_date" class='text-blue-400 font-semibold'>Date Sélectionnée :
 									<span id="eventCountDisplay"></span>
 								</label><br>
 								<input type="text" id="booking_date" name="booking_date" value="{{ date|date('d-m-Y') }}" required readonly>

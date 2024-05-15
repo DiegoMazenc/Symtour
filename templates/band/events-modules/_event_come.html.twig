@@ -1,230 +1,203 @@
 {% if eventCome is empty %}
-<div class="bg-slate-200 rounded border border-slate-500  py-2 px-3">
-	<p class="text-slate-500 font-bold">Vous n'avez aucun évènement de prévu</p>
-	<a href="{{ path('app_search') }}" class="text-blue-800">ᐅ Organiser un évènement</a>
-</div>
+	<div class="bg-slate-200 rounded border border-slate-500  py-2 px-3">
+		<p class="text-slate-500 font-bold">Vous n'avez aucun évènement de prévu</p>
+		<a href="{{ path('app_search') }}" class="text-blue-800">ᐅ Organiser un évènement</a>
+	</div>
 {% else %}
-{% for events in eventCome %}
-	
-	{% if filterEvent == "all" %}
-		{% set condition = events.status != 2 %}
-	{% elseif filterEvent == "valid" %}
-		{% set condition = events.status == 1 %}
-	{% elseif filterEvent == "in-progress" %}
-		{% set condition = events.status == 3 %}
-	{% endif %}
-	{% if condition %}
-		<div class="card-event bg-white">
-			{% if events.status == 1 %}
-				<div class="flex bg-green-500 text-white p-2 rounded-t-md items-center justify-between">
-				{% else %}
-					<div class="flex bg-slate-500 text-white p-2 rounded-t-md items-center justify-between">
-					{% endif %}
-					<div class="flex items-center ">
-						<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
-						<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
-					</div>
-				</div>
-				<div class="plateau openEvent">
-					{% for bandEvent in events.bandEvents %}
-						{% if bandEvent.status == "validate" %}
-
-							<div class="clicBand">
-								<div class=" flex justify-between items-center">
-									<div class="flex p-2 items-center relative">
-										{% if events.status == 1 %}
-											<div class="img-project-db border-2 border-green-500 ">
-												<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}" target="_blank">
-													<img src="{{ bandEvent.band.logo }}" alt="">
-												</a>
-											</div>
-											<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
-												✓
-											</div>
-										{% else %}
-											<div class="img-project-db border-2 border-slate-500 ">
-												<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}" target="_blank">
-													<img src="{{ bandEvent.band.logo }}" alt="">
-												</a>
-
-											</div>
-										{% endif %}
-										<div>
-											<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
-											<p>{{ bandEvent.band.musicCategory.category }}
-												/
-												{{ bandEvent.band.defineStyle }}</p>
-										</div>
-									</div>
-									{% if events.status == 1 %}
-										<p class="px-5 clicBand">Détails ▽</p>
-									{% else %}
-										<div class="flex">
-											<form action="{{ path('app_band_event', {'id': band.id}) }}" method="post">
-												<input type="hidden" name="action" value="cancel">
-												<input type="hidden" name="hallId" value="{{ bandEvent.event.hall.id }}">
-												<input type="hidden" name="event_id" value="{{ events.id }}">
-												<input type="hidden" name="bandEvent_id" value="{{ bandEvent.id }}">
-												<button type="submit" class="reject-button px-2 py-1 rounded-lg bg-red-300 text-white hover:bg-red-600">Annuler</button>
-											</form>
-										</div>
-									{% endif %}
-								</div>
-								<div class="openBand">
-									{% for member in bandEvent.band.bandMembers %}
-										{% if member.status == "admin" or member.status == "member" %}
-											<div class="flex justify-between list-member-event">
-												<div class="flex">
-													<div class="img-profil-event border-2 border-slate-500">
-														<img src="{{ member.profil.picture }}" alt="" class="w-5">
-
-													</div>
-													<p>{{ member.profil.pseudo }}
-													</p>
-												</div>
-												<div class="flex">
-													{% for bandMemberRole in member.bandMemberRoles %}
-														<p class="ml-3">{{ bandMemberRole.roleBand.roleName|capitalize }}</p>
-													{% endfor %}
-												</div>
-											</div>
-										{% endif %}
-									{% endfor %}
+	{% for events in eventCome %}
+		{% set bandEventId = null %}
+		{% for bandEvent in events.bandEvents %}
+			{% if bandEvent.band.id == band.id %}
+				{% set bandEventId = bandEvent.id %}
+			{% endif %}
+		{% endfor %}
+		{% if filterEvent == "all" %}
+			{% set condition = events.status != 2 %}
+		{% elseif filterEvent == "valid" %}
+			{% set condition = events.status == 1 %}
+		{% elseif filterEvent == "in-progress" %}
+			{% set condition = events.status == 3 %}
+		{% endif %}
+		{% if condition %}
+			<div class="card-event bg-white">
+				{% if events.status == 1 %}
+					<div class="flex bg-green-500 text-white p-1 rounded-t-md items-center justify-between">
+					{% else %}
+						<div class="flex bg-slate-500 text-white p-1 rounded-t-md items-center justify-between">
+						{% endif %}
+						<div class="flex">
+							<div class="img-project-db border-2 border-white  ">
+								<a href="{{ path('app_hall_show', {'id': events.hall.id}) }}" target="_blank">
+									<img src="{{ events.hall.logo }}" alt="">
+								</a>
+							</div>
+							<div>
+								<p>{{ events.hall.name }}
+									({{ events.hall.hallInfo.city }})</p>
+								<div class="flex items-center ">
+									<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewbox="0 0 24 24" class="mr-3"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5q0-1.05.725-1.775T14.5 13q1.05 0 1.775.725T17 15.5q0 1.05-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z"/></svg>
+									<p>{{ events.date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
 								</div>
 							</div>
-							<hr>
+						</div>
+						<div class="toggleMenuEvent border border-white rounded-full mr-2 hover:bg-white hover:bg-opacity-20">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="white" d="M12 14a2 2 0 1 0 0-4a2 2 0 0 0 0 4m-6 0a2 2 0 1 0 0-4a2 2 0 0 0 0 4m12 0a2 2 0 1 0 0-4a2 2 0 0 0 0 4"/></svg>
+						</div>
+
+
+					</div>
+
+
+					<div class="plateau openEvent relative">
+						{% if isAdmin %}
+							<div class="menuEvent bg-white border border-x-slate-400 border-b-slate-400 absolute z-10 right-0 rounded-b ">
+								{% if events.status == 1 %}
+									<p class="toggleSearchLink p-2 hover:bg-slate-300 cursor-pointer flex items-center">
+									<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="mr-2"><path fill="none" stroke="#334155" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 17a3 3 0 1 0 6 0a3 3 0 0 0-6 0m6 0V4h10v8M9 8h10m-3 11h6m-3-3v6"/></svg>
+									Inviter un groupe</p>
+								{% endif %}
+								<form action="{{ path('app_band_event', {'id': band.id}) }}" method="post">
+									<input type="hidden" name="action" value="cancel">
+									<input type="hidden" name="hallId" value="{{ events.hall.id }}">
+									<input type="hidden" name="event_id" value="{{ events.id }}">
+									<input type="hidden" name="bandEvent_id" value="{{ bandEventId }}">
+									<button type="submit" class="reject-button p-2 hover:bg-red-600 hover:text-white flex items-center" onclick="alert('Confirmer l\'annulation de votre prestation ?')">
+									<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="mr-2"><path fill="#9d1b1b" d="m8.4 17l3.6-3.6l3.6 3.6l1.4-1.4l-3.6-3.6L17 8.4L15.6 7L12 10.6L8.4 7L7 8.4l3.6 3.6L7 15.6zm3.6 5q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"/></svg>
+									Annuler ma prestation</button>
+
+								</form>
+							</div>
 						{% endif %}
 
-					{% endfor %}
-					{% if events.status == 1 %}
-						<p class="bg-slate-300 w-full pl-3 text-white">Goupes invités</p>
-						<div class="p-2">
-							{% for bandEvent in events.bandEvents %}
-								{% if bandEvent.status != "validate" %}
-									<div id="event_{{ bandEvent.id }}" class="transition click">
-										<div class=" flex justify-between items-center">
-											<div class="flex p-2 items-center relative">
-												{% if bandEvent.status == "guest" %}
-													<div class="img-project-db border-2 bg-slate-300 ">
-														<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}" target="_blank">
-															<img src="{{ bandEvent.band.logo }}" alt="">
-														</a>
-													</div>
-													<div class="bg-slate-300 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
-														⧖
-													</div>
-												{% elseif bandEvent.status == "reject"%}
-													<div class="img-project-db border-2 bg-red-500 ">
-														<img src="{{ bandEvent.band.logo }}" alt="">
-													</div>
-													<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
-														X
-													</div>
-												{% endif %}
-												<div>
+
+						{% for bandEvent in events.bandEvents %}
+							{% set bandEventId = bandEvent.id %}
+
+							{% if bandEvent.status == "validate" %}
+
+								<div class="clicBand">
+									<div class=" flex justify-between items-center">
+										<div class="flex p-2 items-center relative">
+											{% if events.status == 1 %}
+												<div class="img-project-db border-2 border-green-500 ">
 													<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}" target="_blank">
-														<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+														<img src="{{ bandEvent.band.logo }}" alt="">
 													</a>
-													<p>{{ bandEvent.band.musicCategory.category }}
-														/
-														{{ bandEvent.band.defineStyle }}</p>
 												</div>
-											</div>
-											{% if bandEvent.status == "reject" %}
-												{# TODO A REFAIRE  #}
-												<form action="{{ path('app_hall_event_delete', {'id': bandEvent.event.hall.id }) }}" method="post">
-													<input type="hidden" name="idEvent" value="{{ bandEvent.id }}">
-													<button type="submit">
-														<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="#8c8c8c" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-													</button>
-												</form>
-											{% elseif bandEvent.status == "guest" and bandEvent.band.id == band.id %}
-												{% if isAdmin  %}
-													<div class="flex">
-														<button type="submit" class="bg-green-300 hover:bg-green-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif" data-eventid="{{ bandEvent.id }}" data-hallid="{{ bandEvent.event.hall.id }}" data-action="validate">✓</button>
-														<button type="submit" class="bg-red-300 hover:bg-red-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif" data-eventid="{{ bandEvent.id }}" data-hallid="{{ bandEvent.event.hall.id }}" data-action="reject">X</button>
-													</div>
-												{% endif %}
-
+												<div class=" bg-green-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+													✓
+												</div>
 											{% else %}
-												<p class="px-5 clicBand">Détails ▽</p>
+												<div class="img-project-db border-2 border-slate-500 ">
+													<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}" target="_blank">
+														<img src="{{ bandEvent.band.logo }}" alt="">
+													</a>
+
+												</div>
 											{% endif %}
+											<div>
+												<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+												<p>{{ bandEvent.band.musicCategory.category }}
+													/
+													{{ bandEvent.band.defineStyle }}</p>
+											</div>
 										</div>
-										<div class="openBand">
-											{% for member in bandEvent.band.bandMembers %}
-												{% if member.status == "admin" or member.status == "member" %}
+											<p class="px-5 clicBand">Détails ▽</p>
+										
+									</div>
+									<div class="openBand">
+										{% for member in bandEvent.band.bandMembers %}
+											{% if member.status == "admin" or member.status == "member" %}
+												<div class="flex justify-between list-member-event">
+													<div class="flex">
+														<div class="img-profil-event border-2 border-slate-500">
+															<img src="{{ member.profil.picture }}" alt="" class="w-5">
 
-													<div class="flex justify-between list-member-event">
-														<div class="flex">
-															<div class="img-profil-event border-2 border-slate-500">
-																<img src="{{ member.profil.picture }}" alt="" class="w-5">
-
-															</div>
-															<p>{{ member.profil.pseudo }}
-															</p>
 														</div>
-														<div class="flex">
-															{% for bandMemberRole in member.bandMemberRoles %}
-																<p class="ml-3">{{ bandMemberRole.roleBand.roleName|capitalize }}</p>
-															{% endfor %}
-														</div>
+														<p>{{ member.profil.pseudo }}
+														</p>
 													</div>
-												{% endif %}
-											{% endfor %}
-										</div>
-									</div>
-									<hr>
-								{% endif %}
-							{% endfor %}
-							{% if isAdmin %}
-								<div class="p-3">
-									<div class="text-slate-400 hover:text-blue-500 toggleSearchLink">
-										<span class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</span>
-										Inviter un groupe
+													<div class="flex">
+														{% for bandMemberRole in member.bandMemberRoles %}
+															<p class="ml-3">{{ bandMemberRole.roleBand.roleName|capitalize }}</p>
+														{% endfor %}
+													</div>
+												</div>
+											{% endif %}
+										{% endfor %}
 									</div>
 								</div>
-								<div class="search-member">
-									<form action="{{ path('app_band_event', {'id': band.id}) }}" method="post" name="addBandForm">
-										<input type="text" name="addBand" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
-										<input type="hidden" name="formName" value="addBandForm">
-										<input type="hidden" name="date" value="{{ events.date|date() }}">
-									</form>
-								</div>
-								{% for band in bandFind %}
-									{% if dateAdd == events.date|date() %}
-										<div class="">
+								<hr>
+							{% endif %}
+
+						{% endfor %}
+						{% if events.status == 1%}
+							{% set guestBandNotEmpty = events.bandEvents|filter(bandEvent => bandEvent.status != "validate")|length > 0 %}
+							{% if guestBandNotEmpty %}
+								<p class="bg-slate-300 w-full pl-3 text-white">Goupes invités</p>
+							{% endif %}
+
+							<div class="p-2">
+								{% for bandEvent in events.bandEvents %}
+									{% if bandEvent.status != "validate" %}
+										<div id="event_{{ bandEvent.id }}" class="transition click">
 											<div class=" flex justify-between items-center">
 												<div class="flex p-2 items-center relative">
-													<div class="img-project-db border-2 border-slate-500 ">
-														<img src="{{ band.logo }}" alt="">
-													</div>
+													{% if bandEvent.status == "guest" %}
+														<div class="img-project-db border-2 bg-slate-300 ">
+															<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}" target="_blank">
+																<img src="{{ bandEvent.band.logo }}" alt="">
+															</a>
+														</div>
+														<div class="bg-slate-300 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+															⧖
+														</div>
+													{% elseif bandEvent.status == "reject"%}
+														<div class="img-project-db border-2 bg-red-500 ">
+															<img src="{{ bandEvent.band.logo }}" alt="">
+														</div>
+														<div class="bg-red-500 text-white px-2 py-1 rounded-full absolute text-xs top-1 left-10">
+															X
+														</div>
+													{% endif %}
 													<div>
-														<p class="text-blue-400 font-semibold">{{ band.name }}</p>
-														<p>{{ band.musicCategory.category }}
+														<a href="{{ path('app_band_show', {'id': bandEvent.band.id}) }}" target="_blank">
+															<p class="text-blue-400 font-semibold">{{ bandEvent.band.name }}</p>
+														</a>
+														<p>{{ bandEvent.band.musicCategory.category }}
 															/
-															{{ band.defineStyle }}</p>
+															{{ bandEvent.band.defineStyle }}</p>
 													</div>
 												</div>
-												<div class="px-2">
-													<form action="{{ path('app_band_event', {'id': idBandConnect }) }}" method="post" name="inviteBandForm">
-														<input type="hidden" name="action" value="guest">
-														<input type="hidden" name="bandId" value="{{ band.id }}">
-														<input type="hidden" name="date" value="{{ events.date|date() }}">
-														<input type="hidden" name="eventId" value="{{ events.id }}">
-														<input type="hidden" name="formName" value="inviteBandForm">
-
-														<button type="submit" class="validate-button px-1  rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Inviter</button>
+												{% if bandEvent.status == "reject" %}
+													{# TODO A REFAIRE  #}
+													<form action="{{ path('app_band_event_delete', {'id': band.id }) }}" method="post">
+														<input type="hidden" name="idEvent" value="{{ bandEvent.id }}">
+														<button type="submit">
+															<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="#8c8c8c" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+														</button>
 													</form>
-													<p class="clicBand">Détails ▽</p>
-												</div>
+												{% elseif bandEvent.status == "guest" and bandEvent.band.id == band.id %}
+													{% if isAdmin  %}
+														<div class="flex">
+															<button type="submit" class="bg-green-300 hover:bg-green-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif" data-eventid="{{ bandEvent.id }}" data-hallid="{{ bandEvent.event.hall.id }}" data-action="validate">✓</button>
+															<button type="submit" class="bg-red-300 hover:bg-red-500 text-white px-2 py-1 rounded-full text-xs mx-1 deleteNotif" data-eventid="{{ bandEvent.id }}" data-hallid="{{ bandEvent.event.hall.id }}" data-action="reject">X</button>
+														</div>
+													{% endif %}
+
+												{% else %}
+													<p class="px-5 clicBand">Détails ▽</p>
+												{% endif %}
 											</div>
 											<div class="openBand">
-												{% for member in band.bandMembers %}
+												{% for member in bandEvent.band.bandMembers %}
 													{% if member.status == "admin" or member.status == "member" %}
+
 														<div class="flex justify-between list-member-event">
 															<div class="flex">
 																<div class="img-profil-event border-2 border-slate-500">
 																	<img src="{{ member.profil.picture }}" alt="" class="w-5">
+
 																</div>
 																<p>{{ member.profil.pseudo }}
 																</p>
@@ -242,13 +215,73 @@
 										<hr>
 									{% endif %}
 								{% endfor %}
-							{% endif %}
-						</div>
-					{% endif %}
+								{% if isAdmin %}
 
+									<div class="search-member">
+										<form action="{{ path('app_band_event', {'id': band.id}) }}" method="post" name="addBandForm">
+											<input type="text" name="addBand" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300" placeholder="Nom du projet musical">
+											<input type="hidden" name="formName" value="addBandForm">
+											<input type="hidden" name="date" value="{{ events.date|date() }}">
+										</form>
+									</div>
+									{% for band in bandFind %}
+										{% if dateAdd == events.date|date() %}
+											<div class="">
+												<div class=" flex justify-between items-center">
+													<div class="flex p-2 items-center relative">
+														<div class="img-project-db border-2 border-slate-500 ">
+															<img src="{{ band.logo }}" alt="">
+														</div>
+														<div>
+															<p class="text-blue-400 font-semibold">{{ band.name }}</p>
+															<p>{{ band.musicCategory.category }}
+																/
+																{{ band.defineStyle }}</p>
+														</div>
+													</div>
+													<div class="px-2">
+														<form action="{{ path('app_band_event', {'id': idBandConnect }) }}" method="post" name="inviteBandForm">
+															<input type="hidden" name="action" value="guest">
+															<input type="hidden" name="bandId" value="{{ band.id }}">
+															<input type="hidden" name="date" value="{{ events.date|date() }}">
+															<input type="hidden" name="eventId" value="{{ events.id }}">
+															<input type="hidden" name="formName" value="inviteBandForm">
+
+															<button type="submit" class="validate-button px-1  rounded-lg bg-emerald-300 text-white hover:bg-emerald-500">Inviter</button>
+														</form>
+														<p class="clicBand">Détails ▽</p>
+													</div>
+												</div>
+												<div class="openBand">
+													{% for member in band.bandMembers %}
+														{% if member.status == "admin" or member.status == "member" %}
+															<div class="flex justify-between list-member-event">
+																<div class="flex">
+																	<div class="img-profil-event border-2 border-slate-500">
+																		<img src="{{ member.profil.picture }}" alt="" class="w-5">
+																	</div>
+																	<p>{{ member.profil.pseudo }}
+																	</p>
+																</div>
+																<div class="flex">
+																	{% for bandMemberRole in member.bandMemberRoles %}
+																		<p class="ml-3">{{ bandMemberRole.roleBand.roleName|capitalize }}</p>
+																	{% endfor %}
+																</div>
+															</div>
+														{% endif %}
+													{% endfor %}
+												</div>
+											</div>
+											<hr>
+										{% endif %}
+									{% endfor %}
+								{% endif %}
+							</div>
+						{% endif %}
+
+					</div>
 				</div>
-			</div>
-		{% endif %}
-	{% endfor %}
-{% endif %}
-
+			{% endif %}
+		{% endfor %}
+	{% endif %}

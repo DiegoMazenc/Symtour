@@ -515,6 +515,7 @@ table {
     display: none;
 }
 
+.menuEvent,
 .search-member,
 .role-select {
     display: none;

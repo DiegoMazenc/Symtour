@@ -141,8 +141,13 @@ class NotificationService
             $notification = new Notification;
        
 
-       
-            $message = "$ProfilName vous invite à un évènement";
+            if($type == "cancelDate"){
+                $message = "$ProfilName a annulé un évènement ";
+
+            } else {
+
+                $message = "$ProfilName vous invite à un évènement";
+            }
         
 
         $notification

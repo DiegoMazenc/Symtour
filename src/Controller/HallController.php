@@ -552,7 +552,15 @@ class HallController extends AbstractController
     }
 
     #[Route('/{id}/event-delete', name: 'app_hall_event_delete', methods: ['POST'])]
-    public function deleteEvent(Request $request, HallMemberRepository $hallMemberRepository, Hall $hall, BandEventRepository $bandEventRepository, EntityManagerInterface $entityManager): Response
+    public function deleteEvent(
+        Request $request,
+        EventRepository $eventRepository,
+        NotificationService $notification,
+        HallMemberRepository $hallMemberRepository,
+        Hall $hall,
+        BandEventRepository $bandEventRepository,
+        EntityManagerInterface $em
+        ): Response
     {
         $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
         $canAccess = false;
@@ -569,13 +577,31 @@ class HallController extends AbstractController
         }
 
         if ($request->isMethod('POST')) {
-            $eventId = $request->request->get('idEvent');
+            $action = $request->request->get('action');
+            if ($action == 'cancelDate'){
 
-            $bandEvent = $bandEventRepository->find($eventId);
+                $eventId = $request->request->get('idEvent');
+    
+    
+                $event = $eventRepository->find($eventId);
+                $bandEvents = $bandEventRepository->findBy(['event' => $event]);
+    
+                // dd($bandEvents);
+                if ($event){
 
-            if ($bandEvent) {
-                $entityManager->remove($bandEvent);
-                $entityManager->flush();
+                    if ($bandEvents) {
+                        // dd($bandEvents);
+                        foreach($bandEvents as $bandEvent){
+                            $bandEvent->setStatus("reject");
+                            // $em->remove($bandEvent);
+                            $notification->addNotificationHallToBand("band", $hall->getName(), $bandEvent->getBand()->getId(), "hall", $hall->getId(), "cancelDate", $bandEvent->getBand(), $em);
+
+                        }
+                    }
+                    $event->setStatus(2);
+                    $em->flush();
+                }
+                
             }
         }
 
