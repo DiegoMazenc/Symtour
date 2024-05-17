@@ -7,7 +7,7 @@
 	{% for flash_error in app.flashes('verify_email_error') %}
 		<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
 	{% endfor %}
-	<div class="form-login-container md:h-screen bg-slate-100 w-full">
+	<div class="form-login-container md:min-h-screen bg-slate-100 w-full">
 		<div class="intro-login">
 			<div class="flex w-4/6 items-center">
 				<div class="mr-5">
@@ -71,7 +71,7 @@
 						{{ form_errors(registrationForm.plainPassword.first) }}
 					</div>
 					{{ form_widget(registrationForm.plainPassword.first,  {'id': 'passwordInput'}) }}
-					<p class="text-center">
+					<p class="text-center text-sm">
 						<span id="lengthRequirement">8 caractères</span>
 						|
 						<span id="specialCharRequirement">

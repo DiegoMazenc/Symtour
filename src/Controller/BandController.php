@@ -192,41 +192,68 @@ class BandController extends AbstractController
         $searchForm = $this->createForm(SearchFormType::class);
         $searchForm->handleRequest($request);
         $profil = '';
+        $bandName = $band->getName();
+
 
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
             $searchData = $searchForm->getData();
             $profil = $profilRepository->findBySearch($searchForm->isSubmitted() && $searchForm->isValid() ? $searchData['search'] : null);
         }
 
-        $addRoleBand = $this->createForm(AddRoleBandType::class);
-        $addRoleBand->handleRequest($request);
-        $bandName = $band->getName();
-
-        if ($addRoleBand->isSubmitted() && $addRoleBand->isValid()) {
-            $addRoleBandData = $addRoleBand->getData();
-            $bandEntity = $bandRepository->find($addRoleBandData['band']);
-            $bandId = $bandEntity->getId();
-            $roleEntity = $roleBandRepository->find($addRoleBandData['role']);
-            $profilEntity = $profilRepository->find($addRoleBandData['profil']);
-            $profilId = $profilEntity->getId();
+        
+        if ($request->isMethod('POST') && $request->request->has('roleId') && $request->request->has('profilId') && $request->request->has('bandId')) {
+            $profilId = $request->request->get('profilId');
+            $profil = $profilRepository->find($profilId);
+            $bandId = $request->request->get('bandId');
+            $band = $bandRepository->find($bandId);
+            $roleId = $request->request->get('roleId');
+            $role = $roleBandRepository->find($roleId);
 
             $bandMember = new BandMember();
             $bandMember
-                ->setBand($bandEntity)
-                ->setProfil($profilEntity)
-                ->setStatus("guest");
+                ->setBand($band)
+                ->setProfil($profil)
+                ->setStatus('guest');
 
             $em->persist($bandMember);
 
             $bandMemberRole = new BandMemberRole();
             $bandMemberRole->setBandMember($bandMember)
-                ->setRoleBand($roleEntity);
+                ->setRoleBand($role);
             $em->persist($bandMemberRole);
-
             $em->flush();
 
             $notification->addNotificationProfil("profil", $bandName, $profilId, "band", $bandId, "add", $em);
         }
+
+        // $addRoleBand = $this->createForm(AddRoleBandType::class);
+        // $addRoleBand->handleRequest($request);
+
+        // if ($addRoleBand->isSubmitted() && $addRoleBand->isValid()) {
+        //     $addRoleBandData = $addRoleBand->getData();
+        //     $bandEntity = $bandRepository->find($addRoleBandData['band']);
+        //     $bandId = $bandEntity->getId();
+        //     $roleEntity = $roleBandRepository->find($addRoleBandData['role']);
+        //     $profilEntity = $profilRepository->find($addRoleBandData['profil']);
+        //     $profilId = $profilEntity->getId();
+
+        //     $bandMember = new BandMember();
+        //     $bandMember
+        //         ->setBand($bandEntity)
+        //         ->setProfil($profilEntity)
+        //         ->setStatus("guest");
+
+        //     $em->persist($bandMember);
+
+        //     $bandMemberRole = new BandMemberRole();
+        //     $bandMemberRole->setBandMember($bandMember)
+        //         ->setRoleBand($roleEntity);
+        //     $em->persist($bandMemberRole);
+
+        //     $em->flush();
+
+        //     $notification->addNotificationProfil("profil", $bandName, $profilId, "band", $bandId, "add", $em);
+        // }
 
         if ($request->isMethod('POST')) {
             $member = $request->request->get('memberId');
@@ -299,6 +326,10 @@ class BandController extends AbstractController
 
                     $em->remove($member);
                     $em->flush();
+                    if(!$canEdit){
+                        $profilId = $this->getUser()->getProfil()->getId();
+                        return $this->redirectToRoute('app_profil_show',['id'=> $profilId]);
+                    }
                 }
             }
         }
@@ -306,7 +337,7 @@ class BandController extends AbstractController
         return $this->render('band/members.html.twig', [
             'band' => $band,
             'searchForm' => $searchForm->createView(),
-            'addRoleBand' => $addRoleBand->createView(),
+            // 'addRoleBand' => $addRoleBand->createView(),
             'profil' => $profil,
             'roles' => $roles,
             'isAdmin' => $canEdit

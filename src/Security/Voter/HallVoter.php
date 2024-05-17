@@ -40,23 +40,20 @@ class HallVoter extends Voter
         return false;
     }
 
-    private function isAdmin(HallMember $hallMember): bool
-    {
-        return $hallMember->getStatus() === 'admin';
-    }
-
-    private function canEdit(HallMember $hallMember, User $user): bool
-    {
-        return $this->isUserInBand($hallMember, $user) && $this->isAdmin($hallMember);
-    }
-
-    private function canView(HallMember $hallMember, User $user): bool
-    {
-        return $this->isUserInBand($hallMember, $user) && $hallMember->getStatus() === "member";
-    }
-
     private function isUserInBand(HallMember $hallMember, User $user): bool
     {
           return $hallMember->getProfile() !== null &&  $hallMember->getProfile()->getIdUser()->getId() ===  $user->getId();
     }
+    private function canView(HallMember $hallMember, User $user): bool
+    {
+        return $this->isUserInBand($hallMember, $user) && $hallMember->getStatus() === "member";
+    }
+    private function canEdit(HallMember $hallMember, User $user): bool
+    {
+        return $this->isUserInBand($hallMember, $user) && $hallMember->getStatus() === 'admin';
+    }
+
+
+
+
 }

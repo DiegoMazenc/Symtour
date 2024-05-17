@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block body %}
-	
+
 	<div class="user-contain bg-slate-100">
 		<div class="form-edit bg-white  p-5 md:p-10  rounded-l-xl shadow-lg">
 			<div class="w-flex">
@@ -32,51 +32,52 @@
 									</div>
 								</div>
 							</div>
-							{% if isAdmin %}
+							{% if isAdmin or member.profil.id == app.user.profil.id %}
 								<div class="update">
 									<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewbox="0 0 24 24"><path fill="none" stroke="#60a5fa" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828z"/></svg>
 								</div>
 							{% endif %}
 
 						</div>
-						{% if isAdmin %}
 
-							<div class="openMember">
-								<form action="{{ path('app_band_members', {'id': band.id}) }}" method="post">
-									<input type="hidden" name="memberId" value="{{ member.id }}">
-									{% for bandMemberRole in member.bandMemberRoles %}
-										<div class="w-full flex">
-											<div class="w-full">
-												<input type="hidden" name="idMemberRoleBand_{{ loop.index }}" value="{{ bandMemberRole.id }}">
-												<label for="role_{{ loop.index }}">Rôle
-													{{ loop.index }}</label><br>
-												<select name="role_{{ loop.index }}" id="" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
-													{% for role in roles %}
-														<option value="{{ role.id }}" {% if role.roleName == bandMemberRole.roleBand.roleName %} selected {% endif %}>{{ role.roleName|capitalize }}</option>
-													{% endfor %}
-												</select>
-											</div>
-											<div class="ml-3 mt-7">
-												<button type="submit" name="deleteRole_{{ loop.index }}" value="1">
-													<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewbox="0 0 24 24"><path fill="#8c8c8c" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-												</button>
-											</div>
-										</div>
-									{% endfor %}
-									<div class="my-3 Parent">
-										<a href="#" class="text-slate-400 hover:text-blue-500 roleToggle">
-											<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>
-											Ajouter un rôle
-										</a>
-										<div class="openRole">
-											<label for="newRole">Nouveau rôle</label><br>
-											<select name="newRole" id="" class=" w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300 ">
+						<div class="openMember">
+							<form action="{{ path('app_band_members', {'id': band.id}) }}" method="post">
+								<input type="hidden" name="memberId" value="{{ member.id }}">
+								{% for bandMemberRole in member.bandMemberRoles %}
+									<div class="w-full flex">
+										<div class="w-full">
+											<input type="hidden" name="idMemberRoleBand_{{ loop.index }}" value="{{ bandMemberRole.id }}">
+											<label for="role_{{ loop.index }}">Rôle
+												{{ loop.index }}</label><br>
+											<select name="role_{{ loop.index }}" id="" class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
 												{% for role in roles %}
-													<option value="{{ role.id }}">{{ role.roleName|capitalize }}</option>
+													<option value="{{ role.id }}" {% if role.roleName == bandMemberRole.roleBand.roleName %} selected {% endif %}>{{ role.roleName|capitalize }}</option>
 												{% endfor %}
 											</select>
 										</div>
+										<div class="ml-3 mt-7">
+											<button type="submit" name="deleteRole_{{ loop.index }}" value="1">
+												<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewbox="0 0 24 24"><path fill="#8c8c8c" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+											</button>
+										</div>
 									</div>
+								{% endfor %}
+								<div class="my-3 Parent">
+									<a href="#" class="text-slate-400 hover:text-blue-500 roleToggle">
+										<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>
+										Ajouter un rôle
+									</a>
+									<div class="openRole">
+										<label for="newRole">Nouveau rôle</label><br>
+										<select name="newRole" id="" class=" w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300 ">
+											{% for role in roles %}
+												<option value="{{ role.id }}">{{ role.roleName|capitalize }}</option>
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+								{% if isAdmin %}
+
 									<div class=" w-full ">
 										<label for="status">Status</label><br>
 										{% for message in app.flashes('denied') %}
@@ -87,24 +88,28 @@
 											<option value="member" {% if member.status == "member" %} selected {% endif %}>Membre</option>
 										</select>
 									</div>
-									<button class="w-full border-2 border-blue-200 hover:border-blue-500 rounded-lg relative mt-5 p-2 duration-300">Modifier</button>
-								</form>
-								<form action="{{ path('app_band_members', {'id': band.id}) }}" method="post">
-									<input type="hidden" name="idMember" value="{{ member.id }}">
-									<div class="flex-responsive">
-										<button name="deleteMember" class="w-full  border-2 border-red-200 hover:border-red-500 hover:bg-red-300 rounded-lg mt-5 p-2 duration-300">Supprimer ce membre</button>
-									</div>
+								{% endif %}
 
-								</form>
-							</div>
-						{% endif %}
+								<button class="btnFormAccess">Modifier</button>
+							</form>
+							<form action="{{ path('app_band_members', {'id': band.id}) }}" method="post">
+								<input type="hidden" name="idMember" value="{{ member.id }}">
+								<div class="flex-responsive">
+									<button name="deleteMember" class="w-full  border-2 border-red-200 hover:border-red-500 hover:bg-red-300 rounded-lg p-2 duration-300">
+										{{ member.profil.id == app.user.profil.id ? 'Quitter le projet' : 'Supprimer ce membre' }}
+
+									</button>
+								</div>
+
+							</form>
+						</div>
 
 						<hr class="my-3">
 					{% endif %}
 				{% endfor %}
 				{% if isAdmin %}
 
-					<a href="#" class="text-slate-400 hover:text-blue-500 " id="toggleSearch">
+					<a class="text-slate-400 hover:text-blue-500 " id="toggleSearch">
 						<button class="bg-slate-700 rounded-full px-2 pb-1 mr-4 text-white font-bold hover:bg-blue-500">+</button>
 						Ajouter un Membre
 					</a>
@@ -126,40 +131,22 @@
 						<div class="flex items-center justify-between bg-slate-100 border-1 border-slate-300 rounded-md p-2 my-2">
 							<div class="flex items-center">
 								<div class="img-member-db">
-									<img src="{{ profil.picture }}" alt="{{ profil.pseudo }}">
+									<img src="{{ profil.picture }}" alt="photo de profil de {{ profil.pseudo }}">
 								</div>
 								<a href="{{ path('app_profil_show', {'id': profil.id}) }}" class="text-blue-400 font-semibold">{{ profil.pseudo}}</a>
 							</div>
 							<div>
-								{{ form_start(addRoleBand) }}
-								<select id="{{ addRoleBand.role.vars.id }}" name="{{ addRoleBand.role.vars.full_name }}" class="border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300">
-									<option value="">Choisissez son rôle</option>
-									{% for role in roles %}
-										<option value="{{ role.id }}">{{ role.roleName|capitalize }}</option>
-									{% endfor %}
-								</select>
-								{{ form_widget(addRoleBand.profil, {
-								'attr': {
-									'class': 'hidden',  
-									'value': profil.id
-								}
-							}) }}
-								{{ form_widget(addRoleBand.band, {
-								'attr': {
-									'class': 'hidden',  
-									'value': band.id
-								}
-							}) }}
-
-								{{ form_widget(addRoleBand.submit, {
-								'attr': {
-									'class': 'border-2 border-blue-200 hover:bg-white hover:border-blue-500 rounded-lg p-2 duration-300',  
-								}
-							}) }}
-								{{ form_widget(addRoleBand._token) }}
-
-								{{ form_end(addRoleBand, {render_rest: false}) }}
-
+								<form action="{{ path('app_band_members', {'id': band.id}) }}" method="post" name="inviteMemberForm">
+									<select class="border-2 border-blue-200 hover:border-blue-500 rounded-lg p-2 duration-300" name="roleId" required>
+										<option value="" disabled selected>Choisissez son rôle</option>
+										{% for role in roles %}
+											<option value="{{ role.id }}">{{ role.roleName|capitalize }}</option>
+										{% endfor %}
+									</select>
+									<input type="hidden" name="profilId" value="{{ profil.id }}">
+									<input type="hidden" name="bandId" value="{{ band.id }}">
+									<button type="submit" class="border-2 border-blue-200 hover:bg-white hover:border-blue-500 rounded-lg p-2 duration-300">Inviter</button>
+								</form>
 							</div>
 						</div>
 
@@ -167,10 +154,10 @@
 				{% endif %}
 
 				<h4 class=" bg-slate-700  text-white w-full p-2 rounded-md mt-5 mb-5" style="margin-top: 50px;">Mes demandes d'adhésion</h4>
+				{% set guestEmpty = false %}
 				{% for member in band.bandMembers|reverse %}
 					{% if member.status == "guest" or member.status == "reject" %}
-
-
+						{% set guestEmpty = true %}
 						<div class="cardAdminProfil flex justify-between items-center">
 							<div class="flex items-center">
 								<div class="img-member-db">
@@ -184,26 +171,42 @@
 									{% endfor %}
 								</div>
 							</div>
-							{% if member.status == "reject" %}
-								<p style="color: red;">x Refusé</p>
-							{% else %}
-								<p style="color: gray;">... En cours</p>
+							<div class="flex">
+								{% if member.status == "reject" %}
+									<p class="mr-2 text-red-500">x Refusé</p>
 
-							{% endif %}
+								{% else %}
+									<p style="color: gray;" class="mr-2">... En cours</p>
+
+								{% endif %}
+								{% if isAdmin %}
+									<form action="{{ path('app_band_members', {'id': band.id }) }}" method="post">
+										<input type="hidden" name="idMember" value="{{ member.id }}">
+										<button type="submit" name="deleteMember">
+											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path fill="#8c8c8c" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+										</button>
+									</form>
+								{% endif %}
+							</div>
 						</div>
 						<hr class="my-3">
 					{% endif %}
 				{% endfor %}
+				{% if not guestEmpty %}
+					<p class="p-3 mb-3 bg-slate-200 border border-slate-500 rounded flex text-center">Vous n'avez aucune demande d'adhésion en cours</p>
+				{% endif %}
 			</div>
 		</div>
 	</div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
 
-	let toggleSearchLink = document.getElementById('toggleSearch');
+	document.addEventListener('DOMContentLoaded', function () { // Toggle the search link
+let toggleSearchLink = document.getElementById('toggleSearch');
+if (toggleSearchLink) {
+
 toggleSearchLink.addEventListener('click', function () {
 let searchMemberDiv = document.querySelector('.search-member');
 
@@ -214,18 +217,44 @@ toggleSearchLink.style.display = 'none';
 searchMemberDiv.style.display = 'none';
 }
 });
+}
 
 
-$(document).ready(function () {
-$(".update").click(function () {
-$(this).closest('.flex').next(".openMember").toggle();
+// Function to handle the click event on elements with the class 'update'
+let updateButtons = document.querySelectorAll('.update');
+updateButtons.forEach(function (button) {
+button.addEventListener('click', function () {
+let flexDiv = this.closest('.flex');
+if (flexDiv) {
+let openMemberDiv = flexDiv.nextElementSibling;
+if (openMemberDiv && openMemberDiv.classList.contains('openMember')) {
+if (openMemberDiv.style.display === 'none' || openMemberDiv.style.display === '') {
+openMemberDiv.style.display = 'block';
+} else {
+openMemberDiv.style.display = 'none';
+}
+}
+}
+});
 });
 
-$(".roleToggle").click(function () {
-$(this).hide();
-$(this).closest('.Parent').find(".openRole").toggle();
+// Function to handle the click event on elements with the class 'roleToggle'
+let roleToggleButtons = document.querySelectorAll('.roleToggle');
+roleToggleButtons.forEach(function (button) {
+button.addEventListener('click', function () {
+this.style.display = 'none';
+let parentDiv = this.closest('.Parent');
+if (parentDiv) {
+let openRoleDiv = parentDiv.querySelector('.openRole');
+if (openRoleDiv) {
+if (openRoleDiv.style.display === 'none' || openRoleDiv.style.display === '') {
+openRoleDiv.style.display = 'block';
+} else {
+openRoleDiv.style.display = 'none';
+}
+}
+}
 });
 });
-</script>
-
-{# {{ include('band_member/_delete_form.html.twig') }} #}{% endblock %}
+});
+</script>{% endblock %}

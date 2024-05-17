@@ -211,10 +211,14 @@ class HallController extends AbstractController
 
         $allHallMembers = $hallMemberRepository->findBy(['hall' => $hall]);
         $canAccess = false;
+        $canEdit = false;
 
         foreach ($allHallMembers as $hallMember) {
             if ($this->isGranted('hall_member', $hallMember)) {
                 $canAccess = true;
+                if ($this->isGranted('hall_member_edit', $hallMember)) {
+                    $canEdit = true;
+                }
                 break;
             }
         }
@@ -334,7 +338,11 @@ class HallController extends AbstractController
 
                     $em->remove($member);
                     $em->flush();
-
+                    if(!$canEdit){
+                        $profilId = $this->getUser()->getProfil()->getId();
+                        return $this->redirectToRoute('app_profil_show',['id'=> $profilId]);
+                    }
+                
                 }
             }
         }
@@ -344,7 +352,9 @@ class HallController extends AbstractController
             'searchForm' => $searchForm->createView(),
             // 'addRoleHall' => $addRoleHall->createView(),
             'profil' => $profil,
-            'roles' => $roles
+            'roles' => $roles,
+            'isAdmin' => $canEdit
+
 
         ]);
     }
