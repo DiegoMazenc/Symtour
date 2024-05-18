@@ -7,13 +7,15 @@
 
 	<div class="user-contain px-5 lg:px-28 py-5 bg-slate-100">
 		{% include "band/show-modules/_header.html.twig" %}
-		{% if band.bandInfo.ZipCode is null %}
-			<div class="bg-red-100 mt-3  rounded-md border border-red-500">
-				<p class="text-red-500 font-bold py-2 px-3">⚠️ Il est conseillé de remplir
-					<a href="{{ path('app_band_infos', {'id': band.id}) }}" class="underline text-blue-700 hover:no-underline	hover:text-blue-500">vos informations</a>
-					pour en informer les salles de concert que vous souhaitez démarcher
-				</p>
-			</div>
+		{% if isAdmin or isMember %}
+			{% if band.bandInfo.ZipCode is null %}
+				<div class="bg-red-100 mt-3  rounded-md border border-red-500">
+					<p class="text-red-500 font-bold py-2 px-3">⚠️ Il est conseillé de remplir
+						<a href="{{ path('app_band_infos', {'id': band.id}) }}" class="underline text-blue-700 hover:no-underline	hover:text-blue-500">vos informations</a>
+						pour en informer les salles de concert que vous souhaitez démarcher
+					</p>
+				</div>
+			{% endif %}
 		{% endif %}
 		<container class="tab_project">
 			{% if isAdmin or isMember %}
@@ -35,7 +37,7 @@
 				</section>
 			{% endif %}
 			<section class="lg:flex lg:justify-between">
-				<div class="md:w-full lg:w-1/2 lg:mr-3 bg-white rounded-md shadow-md mt-3 ">
+				<div class="md:w-full lg:w-1/2 lg:mr-3 bg-white rounded-md shadow-md  ">
 					<div class="flex justify-between item-align bg-slate-700 relative rounded-t-md">
 						<h4 class=" text-white p-2 ">Prochains évènements</h4>
 						<div class="flex absolute right-2 top-2">
@@ -52,7 +54,7 @@
 					{% set widthPercentage = count * 100 %}
 					{% include "band/show-modules/_come_events.html.twig" %}
 				</div>
-				<div class="md:w-full lg:w-1/2 bg-white rounded-md shadow-md mt-3 ">
+				<div class="md:w-full lg:w-1/2 bg-white rounded-md shadow-md mt-3 md:mt-0 ">
 					<h4 class="bg-slate-700 text-white p-2 rounded-t-md">Dernier évènement</h4>
 					<div class=" flex justify-between">
 						{% include "band/show-modules/_last_events.html.twig" %}
@@ -60,11 +62,11 @@
 				</div>
 			</section>
 		</container>
-		<section class="my-10">
+		<section class="my-3">
 			<div class="flex justify-between item-align bg-slate-700 relative rounded-t-md">
 				<h4 class=" text-white p-2 ">Membres</h4>
 			</div>
-			<div class="bg-white rounded-lg shadow-md p-3">
+			<div class="bg-white rounded-b-lg shadow-md p-3">
 				{% include "band/show-modules/_members.html.twig" %}
 
 				{% if isAdmin %}
@@ -80,5 +82,4 @@
 
 </div>
 {% include "band/js/calendar.html.twig"  %}
-{% include "band/js/delete_notif.html.twig" with {band:band} %}
-{% endblock %}
+{% include "band/js/delete_notif.html.twig" with {band:band} %}{% endblock %}

@@ -57,11 +57,12 @@
 
 					<h1 class="font-bold text-slate-700 text-xl">Connexion</h1>
 					<div class="text-start">
-					<label for="inputEmail">E-mail *</label>
-					<input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control rounded-lg p-2 relative border-2 border-blue-400 w-full my-3" autocomplete="email" placeholder="Votre Email" required autofocus>
-					<br>
-					<label for="inputPassword">Mot de passe *</label>
-					<input type="password" name="password" id="inputPassword" class="form-control rounded-lg p-2 relative border-2 border-blue-400 w-full my-3" autocomplete="current-password" placeholder="Mot de Passe" required>
+						<label for="inputEmail">E-mail *</label>
+						<input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control rounded-lg p-2 relative border-2 border-blue-400 w-full " autocomplete="email" placeholder="Votre Email" required autofocus>
+						<br>
+						<label for="inputPassword">Mot de passe *</label>
+						<input type="password" name="password" id="inputPassword" class="form-control rounded-lg pt-2 relative border-2 border-blue-400 w-full  mb-0" autocomplete="current-password" placeholder="Mot de Passe" required>
+						<a href="{{ path('app_forgot_password_request') }}" class="text-blue-500 underline hover:text-blue-300 hover:no-underline">Mot de passe oublié ?</a>
 					</div>
 					<br>
 
@@ -73,7 +74,9 @@
 				</form>
 				<hr class="border-1 my-3">
 				<div class="w-full">
-					<p class="mb-5">Pas de compte ? <a href="{{ path('app_register') }}" class="text-blue-400 underline hover:text-blue-600 hover:no-underline">Inscrivez-vous</a></p>
+					<p class="mb-5">Pas de compte ?
+						<a href="{{ path('app_register') }}" class="text-blue-400 underline hover:text-blue-600 hover:no-underline">Inscrivez-vous</a>
+					</p>
 				</div>
 			</div>
 		</div>
